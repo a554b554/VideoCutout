@@ -65,6 +65,7 @@
 		2658E3BC1B90399D00A1751D /* libopencv_videostab.2.4.10.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2658E3841B90399D00A1751D /* libopencv_videostab.2.4.10.dylib */; };
 		2658E3BD1B90399D00A1751D /* libopencv_videostab.2.4.10.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2658E3851B90399D00A1751D /* libopencv_videostab.2.4.10.dylib */; };
 		2658E3C11B903AA800A1751D /* App.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3BF1B903AA800A1751D /* App.cpp */; };
+		2658E3C41B908E6200A1751D /* OpticalFlow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3C21B908E6200A1751D /* OpticalFlow.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -140,6 +141,8 @@
 		2658E3851B90399D00A1751D /* libopencv_videostab.2.4.10.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.10.dylib; path = "../../../opencv-2.4.10/release/lib/libopencv_videostab.2.4.10.dylib"; sourceTree = "<group>"; };
 		2658E3BF1B903AA800A1751D /* App.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = App.cpp; sourceTree = "<group>"; };
 		2658E3C01B903AA800A1751D /* App.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = App.h; sourceTree = "<group>"; };
+		2658E3C21B908E6200A1751D /* OpticalFlow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpticalFlow.cpp; sourceTree = "<group>"; };
+		2658E3C31B908E6200A1751D /* OpticalFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpticalFlow.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,6 +234,8 @@
 			children = (
 				2658E3471B9038DD00A1751D /* main.cpp */,
 				2658E3BF1B903AA800A1751D /* App.cpp */,
+				2658E3C21B908E6200A1751D /* OpticalFlow.cpp */,
+				2658E3C31B908E6200A1751D /* OpticalFlow.h */,
 				2658E3C01B903AA800A1751D /* App.h */,
 			);
 			path = Zhong12;
@@ -356,6 +361,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2658E3481B9038DD00A1751D /* main.cpp in Sources */,
+				2658E3C41B908E6200A1751D /* OpticalFlow.cpp in Sources */,
 				2658E3C11B903AA800A1751D /* App.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
