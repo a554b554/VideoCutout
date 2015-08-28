@@ -12,7 +12,6 @@
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    cv::Mat f;
     std::cout << "Hello, World!\n";
     return 0;
 }
