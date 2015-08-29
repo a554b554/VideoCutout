@@ -21,6 +21,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "OpticalFlow.h"
 using namespace std;
 using namespace cv;
 
@@ -48,10 +49,17 @@ public:
     void nextImg();
     void prevImg();
     void showImg();
+    void calcOpticalFlows();
+    void changeShowState();
 private:
+    enum showState{
+        SHOW_ORIGIN,
+        SHOW_OPTICALFLOW
+    };
+    int currentShowState;
     int showIdx;
     vector<Mat> imgs;
-    
+    vector<Mat> optflows;
 };
 
 

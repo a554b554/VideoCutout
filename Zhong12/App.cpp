@@ -9,7 +9,18 @@
 #include "App.h"
 
 void App::showImg(){
-    imshow(winName, imgs[showIdx]);
+    switch (currentShowState) {
+        case SHOW_ORIGIN:
+            printf("show origin\n");
+            imshow(winName, imgs[showIdx]);
+            break;
+        case SHOW_OPTICALFLOW:
+            printf("show optical flow\n");
+            imshow(winName, optflows[showIdx]);
+            break;
+        default:
+            break;
+    }
 }
 
 void App::nextImg(){
@@ -22,3 +33,23 @@ void App::prevImg(){
     showImg();
 }
 
+void App::calcOpticalFlows(){
+    printf("calculating optical flow....");
+//    optflows.resize(imgs.size());
+//    for (int i = 0; i < imgs.size(); i++) {
+//        tracker->process(imgs[i], optflows[i]);
+//    }
+    vector<vector<KeyPoint>> img_pts;
+    OFFeatureMatcher* matcher = new OFFeatureMatcher(true, imgs, img_pts);
+    vector<DMatch> *m = new vector<DMatch>();
+    matcher->MatchFeatures(0, 1, m);
+    
+    
+    
+    printf("calculate finished!");
+}
+
+void App::changeShowState(){
+    currentShowState += (currentShowState+1) % 2;
+    showImg();
+}
