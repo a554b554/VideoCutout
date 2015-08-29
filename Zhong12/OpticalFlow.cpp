@@ -8,78 +8,6 @@
 
 #include "OpticalFlow.h"
 #include <set>
-
-
-void FeatureTracker::process(Mat &frame,Mat &output){
-    //得到灰度图
-    cvtColor (frame,gray,CV_BGR2GRAY);
-    frame.copyTo (output);
-    //特征点太少了，重新检测特征点
-    if(addNewPoint()){
-        detectFeaturePoint ();
-        //插入检测到的特征点
-        points[0].insert (points[0].end (),features.begin (),features.end ());
-        initial.insert (initial.end (),features.begin (),features.end ());
-    }
-    //第一帧
-    if(gray_prev.empty ()){
-        gray.copyTo (gray_prev);
-    }
-    //根据前后两帧灰度图估计前一帧特征点在当前帧的位置
-    //默认窗口是15*15
-    
-    calcOpticalFlowPyrLK (
-                          gray_prev,//前一帧灰度图
-                          gray,//当前帧灰度图
-                          points[0],//前一帧特征点位置
-                          points[1],//当前帧特征点位置
-                          status,//特征点被成功跟踪的标志
-                          err);//前一帧特征点点小区域和当前特征点小区域间的差，根据差的大小可删除那些运动变化剧烈的点
-    int k = 0;
-    //去除那些未移动的特征点
-    for(int i=0;i<points[1].size ();i++){
-        if(acceptTrackedPoint (i)){
-            initial[k]=initial[i];
-            points[1][k++] = points[1][i];
-        }
-    }
-    points[1].resize (k);
-    initial.resize (k);
-    //标记被跟踪的特征点
-    drawTrackedPoint (frame,output);
-    //为下一帧跟踪初始化特征点集和灰度图像
-    std::swap(points[1],points[0]);
-    cv::swap(gray_prev,gray);
-}
-
-void FeatureTracker::detectFeaturePoint(){
-    goodFeaturesToTrack (gray,//输入图片
-                         features,//输出特征点
-                         max_count,//特征点最大数目
-                         qlevel,//质量指标
-                         minDist);//最小容忍距离
-}
-
-bool FeatureTracker::addNewPoint(){
-    return points[0].size() <= 10;
-}
-
-bool FeatureTracker::acceptTrackedPoint(int i){
-    return status[i]&&
-    (abs(points[0][i].x-points[1][i].x)+
-     abs(points[0][i].y-points[1][i].y) >2);
-}
-
-void FeatureTracker::drawTrackedPoint(Mat &frame,Mat &output){
-    for(int i=0;i<points[i].size ();i++){
-        //当前特征点到初始位置用直线表示
-        line(output,initial[i],points[1][i],Scalar::all (0));
-        //当前位置用圈标出
-        circle(output,points[1][i],3,Scalar::all(0),(-1));
-    }
-}
-
-
 //////////////////////////////////////////////////////////////////
 
 OFFeatureMatcher::OFFeatureMatcher(
@@ -94,7 +22,7 @@ AbstractFeatureMatcher(_use_gpu),imgpts(imgpts_), imgs(imgs_)
     ffd.detect(imgs, imgpts);
 }
 
-void OFFeatureMatcher::MatchFeatures(int idx_i, int idx_j, vector<DMatch>* matches) {
+void OFFeatureMatcher::MatchFeatures(int idx_i, int idx_j, vector<DMatch>* matches, Mat& output) {
     vector<Point2f> i_pts;
     KeyPointsToPoints(imgpts[idx_i],i_pts);
     
@@ -204,13 +132,37 @@ void OFFeatureMatcher::MatchFeatures(int idx_i, int idx_j, vector<DMatch>* match
     ss << matches->size() << " matches";
     //		putText(img_matches,ss.str(),Point(10,20),CV_FONT_HERSHEY_PLAIN,1.0,Scalar(255),2);
     ss.clear(); ss << "flow_field";
-    imshow( ss.str(), img_matches );
-    waitKey(0);
+    //imshow( ss.str(), img_matches );
+    //waitKey(0);
+    output = img_matches.clone();
     
    // destroyWindow(ss.str());
 
 }
 
+void OFFeatureMatcher::registration(int idx_i, int idx_j, cv::Mat &registrated_img){
+    vector<DMatch> matches;
+    Mat tmp;
+    MatchFeatures(idx_i, idx_j, &matches, tmp);
+    vector<Point2f> i_pts,j_pts;
+    for (int i = 0; i < matches.size(); i++) {
+        Point i_pt = imgpts[idx_i][matches[i].queryIdx].pt;
+        Point j_pt = imgpts[idx_j][matches[i].trainIdx].pt;
+        i_pts.push_back(i_pt);
+        j_pts.push_back(j_pt);
+    }
+    Mat M = findHomography(i_pts, j_pts, CV_RANSAC);
+    Mat warped;
+    warpPerspective(imgs[idx_i], warped, M, imgs[0].size());
+    
+    imshow("after", warped);
+    imshow("before", imgs[idx_i]);
+    imshow("align", imgs[idx_j]);
+    imshow("align + after", 0.5*imgs[idx_j]+0.5*warped);
+    imshow("align + before", 0.5*imgs[idx_j]+0.5*imgs[idx_i]);
+    waitKey(0);
+    
+}
 
 
 

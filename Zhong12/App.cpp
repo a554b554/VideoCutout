@@ -34,22 +34,28 @@ void App::prevImg(){
 }
 
 void App::calcOpticalFlows(){
-    printf("calculating optical flow....");
-//    optflows.resize(imgs.size());
+    printf("calculating optical flow....\n");
+    optflows.resize(imgs.size());
 //    for (int i = 0; i < imgs.size(); i++) {
 //        tracker->process(imgs[i], optflows[i]);
 //    }
     vector<vector<KeyPoint>> img_pts;
     OFFeatureMatcher* matcher = new OFFeatureMatcher(true, imgs, img_pts);
-    vector<DMatch> *m = new vector<DMatch>();
-    matcher->MatchFeatures(0, 1, m);
+    vector<vector<DMatch>> matches;
+    matches.resize(imgs.size()-1);
+    matcher->registration(0, 3, optflows[0]);
+    for (int i = 0; i < imgs.size() - 1; i++) {
+        matcher->MatchFeatures(i, i+1, &matches[i], optflows[i]);
+    }
+    optflows[imgs.size()-1] = imgs[imgs.size()-1].clone();
     
     
     
-    printf("calculate finished!");
+    printf("calculate finished!\n");
 }
 
 void App::changeShowState(){
-    currentShowState += (currentShowState+1) % 2;
+    printf("currentstate:%d\n",currentShowState);
+    currentShowState = (currentShowState+1) % 2;
     showImg();
 }

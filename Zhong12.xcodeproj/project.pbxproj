@@ -67,6 +67,8 @@
 		2658E3C11B903AA800A1751D /* App.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3BF1B903AA800A1751D /* App.cpp */; };
 		2658E3C41B908E6200A1751D /* OpticalFlow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3C21B908E6200A1751D /* OpticalFlow.cpp */; };
 		2658E3CA1B9144BE00A1751D /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3C81B9144BE00A1751D /* common.cpp */; };
+		2658E3CD1B91834900A1751D /* UDC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3CB1B91834900A1751D /* UDC.cpp */; };
+		2658E3D11B9185BC00A1751D /* GMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3CF1B9185BC00A1751D /* GMM.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -146,6 +148,11 @@
 		2658E3C31B908E6200A1751D /* OpticalFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpticalFlow.h; sourceTree = "<group>"; };
 		2658E3C81B9144BE00A1751D /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = common.cpp; sourceTree = "<group>"; };
 		2658E3C91B9144BE00A1751D /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		2658E3CB1B91834900A1751D /* UDC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UDC.cpp; sourceTree = "<group>"; };
+		2658E3CC1B91834900A1751D /* UDC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDC.h; sourceTree = "<group>"; };
+		2658E3CE1B9185AD00A1751D /* gcgraph.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gcgraph.hpp; sourceTree = "<group>"; };
+		2658E3CF1B9185BC00A1751D /* GMM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GMM.cpp; sourceTree = "<group>"; };
+		2658E3D01B9185BC00A1751D /* GMM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMM.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,6 +242,11 @@
 		2658E3461B9038DD00A1751D /* Zhong12 */ = {
 			isa = PBXGroup;
 			children = (
+				2658E3CB1B91834900A1751D /* UDC.cpp */,
+				2658E3CC1B91834900A1751D /* UDC.h */,
+				2658E3CF1B9185BC00A1751D /* GMM.cpp */,
+				2658E3D01B9185BC00A1751D /* GMM.h */,
+				2658E3CE1B9185AD00A1751D /* gcgraph.hpp */,
 				2658E3C81B9144BE00A1751D /* common.cpp */,
 				2658E3C91B9144BE00A1751D /* common.h */,
 				2658E3471B9038DD00A1751D /* main.cpp */,
@@ -367,6 +379,8 @@
 			files = (
 				2658E3CA1B9144BE00A1751D /* common.cpp in Sources */,
 				2658E3481B9038DD00A1751D /* main.cpp in Sources */,
+				2658E3CD1B91834900A1751D /* UDC.cpp in Sources */,
+				2658E3D11B9185BC00A1751D /* GMM.cpp in Sources */,
 				2658E3C41B908E6200A1751D /* OpticalFlow.cpp in Sources */,
 				2658E3C11B903AA800A1751D /* App.cpp in Sources */,
 			);

@@ -47,4 +47,6 @@ dependencies: \
   /usr/local/include/opencv2/flann/ground_truth.h \
   /usr/local/include/opencv2/flann/index_testing.h \
   /usr/local/include/opencv2/flann/timer.h \
-  /usr/local/include/opencv2/flann/sampling.h
+  /usr/local/include/opencv2/flann/sampling.h \
+  /usr/local/include/opencv2/calib3d/calib3d.hpp \
+  /usr/local/include/opencv2/core/affine.hpp
