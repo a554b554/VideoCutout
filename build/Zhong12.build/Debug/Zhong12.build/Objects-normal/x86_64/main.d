@@ -50,4 +50,5 @@ dependencies: \
   /usr/local/include/opencv2/flann/ground_truth.h \
   /usr/local/include/opencv2/flann/index_testing.h \
   /usr/local/include/opencv2/flann/timer.h \
-  /usr/local/include/opencv2/flann/sampling.h
+  /usr/local/include/opencv2/flann/sampling.h \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/GMM.h

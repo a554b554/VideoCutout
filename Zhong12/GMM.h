@@ -11,12 +11,14 @@
 
 #include <stdio.h>
 #include "common.h"
+#include <opencv2/highgui/highgui.hpp>
 using namespace cv;
+using namespace std;
 
 class GMM
 {
 public:
-    static const int componentsCount = 5;
+    static const int componentsCount = 3;
     
     GMM( Mat& _model );
     double operator()( const Vec3d color ) const;
@@ -25,7 +27,9 @@ public:
     
     void initLearning();
     void addSample( int ci, const Vec3d color );
+    void learning(const vector<Vec3d>& colors);
     void endLearning();
+    void updateModel();
     
 private:
     void calcInverseCovAndDeterm( int ci );

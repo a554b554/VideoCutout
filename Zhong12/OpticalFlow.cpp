@@ -13,8 +13,9 @@
 OFFeatureMatcher::OFFeatureMatcher(
                                    bool _use_gpu,
                                    std::vector<cv::Mat>& imgs_,
-                                   std::vector<std::vector<cv::KeyPoint> >& imgpts_) :
-AbstractFeatureMatcher(_use_gpu),imgpts(imgpts_), imgs(imgs_)
+                                   std::vector<std::vector<cv::KeyPoint> >& imgpts_,
+                                   vector<Mat>& mattes_) :
+AbstractFeatureMatcher(_use_gpu),imgpts(imgpts_), imgs(imgs_),mattes(mattes_)
 {
     //detect keypoints for all images
     FastFeatureDetector ffd;
@@ -132,18 +133,19 @@ void OFFeatureMatcher::MatchFeatures(int idx_i, int idx_j, vector<DMatch>* match
     ss << matches->size() << " matches";
     //		putText(img_matches,ss.str(),Point(10,20),CV_FONT_HERSHEY_PLAIN,1.0,Scalar(255),2);
     ss.clear(); ss << "flow_field";
-    //imshow( ss.str(), img_matches );
-    //waitKey(0);
+//    imshow( ss.str(), img_matches );
+//    waitKey(0);
     output = img_matches.clone();
     
    // destroyWindow(ss.str());
 
 }
 
-void OFFeatureMatcher::registration(int idx_i, int idx_j, cv::Mat &registrated_img){
+void OFFeatureMatcher::registration(int idx_i, int idx_j, Mat &registrated_img, Mat& registrated_matte){
     vector<DMatch> matches;
     Mat tmp;
     MatchFeatures(idx_i, idx_j, &matches, tmp);
+    //warp image.
     vector<Point2f> i_pts,j_pts;
     for (int i = 0; i < matches.size(); i++) {
         Point i_pt = imgpts[idx_i][matches[i].queryIdx].pt;
@@ -152,15 +154,38 @@ void OFFeatureMatcher::registration(int idx_i, int idx_j, cv::Mat &registrated_i
         j_pts.push_back(j_pt);
     }
     Mat M = findHomography(i_pts, j_pts, CV_RANSAC);
-    Mat warped;
+    Mat warped,warped_mat;
     warpPerspective(imgs[idx_i], warped, M, imgs[0].size());
     
-    imshow("after", warped);
-    imshow("before", imgs[idx_i]);
-    imshow("align", imgs[idx_j]);
-    imshow("align + after", 0.5*imgs[idx_j]+0.5*warped);
-    imshow("align + before", 0.5*imgs[idx_j]+0.5*imgs[idx_i]);
-    waitKey(0);
+    //warp matte
+    i_pts.clear(); j_pts.clear();
+    for (int i = 0; i < matches.size(); i++) {
+        Point i_pt = imgpts[idx_i][matches[i].queryIdx].pt;
+        Point j_pt = imgpts[idx_j][matches[i].trainIdx].pt;
+        if (mattes[idx_i].at<uchar>(i_pt)==0) {
+            continue;
+        }
+        //circle(mattes[idx_i], i_pt, 2, CV_RGB(255, 0, 0));
+        i_pts.push_back(i_pt);
+        j_pts.push_back(j_pt);
+    }
+//    imshow("circle", mattes[idx_i]);
+//    waitKey(0);
+    Mat M_matte = findHomography(i_pts, j_pts, CV_RANSAC);
+    warpPerspective(mattes[idx_i], warped_mat, M_matte, mattes[0].size());
+    
+//    imshow("after", warped_mat);
+//    imshow("before", mattes[idx_i]);
+//    imshow("align", mattes[idx_j]);
+//    imshow("align + after", 0.5*mattes[idx_j]+0.5*warped_mat);
+//    imshow("align + before", 0.5*mattes[idx_j]+0.5*mattes[idx_i]);
+//    
+//    imshow("align + after img", 0.5*imgs[idx_j]+0.5*warped);
+//    imshow("align + before img", 0.5*imgs[idx_j]+0.5*imgs[idx_i]);
+//    waitKey(0);
+    warped.copyTo(registrated_img);
+    warped_mat.copyTo(registrated_matte);
+    
     
 }
 

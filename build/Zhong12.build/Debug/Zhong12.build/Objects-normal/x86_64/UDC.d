@@ -10,4 +10,9 @@ dependencies: \
   /usr/local/include/opencv2/features2d/features2d.hpp \
   /usr/local/include/opencv2/flann/miniflann.hpp \
   /usr/local/include/opencv2/flann/defines.h \
-  /usr/local/include/opencv2/flann/config.h
+  /usr/local/include/opencv2/flann/config.h \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/GMM.h \
+  /usr/local/include/opencv2/highgui/highgui.hpp \
+  /usr/local/include/opencv2/highgui/highgui_c.h \
+  /usr/local/include/opencv2/core/core_c.h \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/Classifier.h

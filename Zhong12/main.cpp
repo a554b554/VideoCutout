@@ -10,7 +10,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "App.h"
-
+#include "GMM.h"
 
 using namespace std;
 using namespace cv;
@@ -21,11 +21,12 @@ static void help(){
 }
 
 
-int main(int argc, const char * argv[]) {
+int main1(int argc, const char * argv[]) {
     // insert code here...
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
-    testPath = testPath + argv[1] + "/";
-    App app("app", testPath);
+    string dirname = argv[1];
+    //testPath = testPath + argv[1] + "/";
+    App app("app", testPath, dirname);
     app.calcOpticalFlows();
     app.showImg();
     while (1) {
@@ -49,4 +50,19 @@ int main(int argc, const char * argv[]) {
                 break;
         }
     }
+    return 0;
+}
+
+int main(int argc, const char * argv[]){
+    
+    vector<Vec3d> aa;
+    for (int i = 0; i < 40000; i++) {
+        Vec3d a(rand()%300+100,rand()%400,0);
+        aa.push_back(a);
+    }
+    Mat af;
+    GMM g(af);
+    g.learning(aa);
+    
+    return 0;
 }

@@ -27,24 +27,7 @@ using namespace cv;
 
 class App{
 public:
-    App(string winName, string testpath):winName(winName),showIdx(0){
-        DIR *dp;
-        struct dirent *dirp;
-        if((dp=opendir(testpath.c_str()))==NULL){
-            perror("opendir error");
-            free(dp);
-            exit(1);
-        }
-        
-        struct stat buf;
-        while((dirp=readdir(dp))!=NULL){
-            if((strcmp(dirp->d_name,".")==0)||(strcmp(dirp->d_name,"..")==0))
-                continue;
-            string fname = testpath+dirp->d_name;
-            imgs.push_back(imread(fname));
-        }      
-        closedir(dp);
-    };
+    App(string winName, string testpath, string dirname);
     string winName;
     void nextImg();
     void prevImg();
@@ -54,12 +37,16 @@ public:
 private:
     enum showState{
         SHOW_ORIGIN,
-        SHOW_OPTICALFLOW
+        SHOW_WARP,
+        SHOW_MATTE_GT,
+        SHOW_MATTE_WARP
     };
     int currentShowState;
     int showIdx;
     vector<Mat> imgs;
-    vector<Mat> optflows;
+    vector<Mat> mattes;
+    vector<Mat> warped_imgs;
+    vector<Mat> warped_mattes;
 };
 
 

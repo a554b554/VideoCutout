@@ -94,6 +94,59 @@ void GMM::addSample( int ci, const Vec3d color )
     totalSampleCount++;
 }
 
+void GMM::learning(const vector<Vec3d>& colors){
+    Mat samples = Mat(colors);
+    samples.convertTo(samples, CV_32FC1);
+    samples.reshape(3);
+    Mat lab;
+    kmeans(samples, 3, lab, TermCriteria( CV_TERMCRIT_ITER, 10, 0.0), 0, KMEANS_PP_CENTERS);
+    initLearning();
+    for (int i = 0; i < colors.size(); i++) {
+        this->addSample(lab.at<int>(i,0), colors[i]);
+    }
+    endLearning();
+    for (int i = 0; i < 50; i++) { //max iter num
+        vector<int> comp;
+        Mat oldmodel = model.clone();
+        for (int j = 0; j < colors.size(); j++) {
+            comp.push_back(whichComponent(colors[j]));
+        }
+        
+        //test draw
+//        Mat demo(400,400,CV_8UC3);
+//        demo.setTo(Scalar::all(0));
+//        for (int j = 0; j < colors.size(); j++) {
+//            Point p(colors[j][0],colors[j][1]);
+//            if (comp[j]==0) {
+//                circle(demo, p, 2, CV_RGB(255, 0, 0));
+//            }
+//            else if (comp[j]==1){
+//                circle(demo, p, 2, CV_RGB(0, 255, 0));
+//            }
+//            else{
+//                circle(demo, p, 2, CV_RGB(0, 0, 255));
+//            }
+//        }
+//        cout<<"iter: "<<i<<endl;
+        
+        updateModel();
+        
+        initLearning();
+        for (int j = 0; j < colors.size(); j++) {
+            this->addSample(comp[j], colors[j]);
+        }
+        endLearning();
+        double adiff = norm(oldmodel, model);
+        if (adiff < 1) { //iter threshold.
+            printf("terminate by threshold.");
+            break;
+        }
+        if (i == 49) {
+            printf("terminate by max iter.");
+        }
+    }
+}
+
 void GMM::endLearning()
 {
     const double variance = 0.01;
@@ -148,3 +201,22 @@ void GMM::calcInverseCovAndDeterm( int ci )
         inverseCovs[ci][2][2] =  (c[0]*c[4] - c[1]*c[3]) / dtrm;
     }
 }
+
+void GMM::updateModel(){
+//    model = _model;
+//    const int modelSize = 3/*mean*/ + 9/*covariance*/ + 1/*component weight*/;
+//    coefs = model.ptr<double>(0);
+//    mean = coefs + componentsCount;
+//    cov = mean + 3*componentsCount;
+    for (int i = 0; i < componentsCount; i++) {
+        model.at<double>(0,i) = coefs[i];
+    }
+    for (int i = 0; i < 3*componentsCount; i++) {
+        model.at<double>(0,i+componentsCount) = mean[i];
+    }
+    for (int i = 0; i < 9*componentsCount; i++) {
+        model.at<double>(0,i+componentsCount+3*componentsCount) = cov[i];
+    }
+}
+
+

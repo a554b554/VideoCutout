@@ -61,6 +61,10 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "BB"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "CJ"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
