@@ -16,7 +16,7 @@
 using namespace std;
 using namespace cv;
 
-static void process(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
+static void processUDC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     
 }
 
@@ -26,7 +26,7 @@ private:
     GMM* fGMM;
     GMM* bGMM;
 public:
-    
+    UDC(const vector<Vec3d>& fgdSamples, const vector<Vec3d>& bdgSamples);
 };
 
 
