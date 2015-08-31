@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "OpticalFlow.h"
+#include "UDC.h"
 using namespace std;
 using namespace cv;
 
@@ -34,6 +35,7 @@ public:
     void showImg();
     void calcOpticalFlows();
     void changeShowState();
+    void testUDC();
 private:
     enum showState{
         SHOW_ORIGIN,

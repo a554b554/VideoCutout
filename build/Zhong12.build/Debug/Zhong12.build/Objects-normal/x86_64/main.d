@@ -51,4 +51,6 @@ dependencies: \
   /usr/local/include/opencv2/flann/index_testing.h \
   /usr/local/include/opencv2/flann/timer.h \
   /usr/local/include/opencv2/flann/sampling.h \
-  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/GMM.h
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/UDC.h \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/GMM.h \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/Classifier.h

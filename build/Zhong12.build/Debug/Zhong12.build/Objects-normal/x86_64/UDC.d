@@ -15,4 +15,6 @@ dependencies: \
   /usr/local/include/opencv2/highgui/highgui.hpp \
   /usr/local/include/opencv2/highgui/highgui_c.h \
   /usr/local/include/opencv2/core/core_c.h \
-  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/Classifier.h
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/Classifier.h \
+  /usr/local/include/opencv2/imgproc/imgproc.hpp \
+  /usr/local/include/opencv2/imgproc/types_c.h

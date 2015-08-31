@@ -11,8 +11,8 @@
 #include "common.h"
 #include <stdio.h>
 class Classifier{
-    virtual double probability(const Vec3d color) = 0;
-    virtual double confidence(const Vec3d color) = 0;
+    virtual double prob(const Vec3d color)const = 0;
+    virtual double conf(const Vec3d color)const = 0;
 };
 
 #endif /* defined(__Zhong12__Classifier__) */

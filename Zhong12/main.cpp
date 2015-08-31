@@ -28,6 +28,7 @@ int main1(int argc, const char * argv[]) {
     //testPath = testPath + argv[1] + "/";
     App app("app", testPath, dirname);
     app.calcOpticalFlows();
+    app.testUDC();
     app.showImg();
     while (1) {
         int c = cvWaitKey(0);
@@ -53,7 +54,7 @@ int main1(int argc, const char * argv[]) {
     return 0;
 }
 
-int main(int argc, const char * argv[]){
+int maintest(int argc, const char * argv[]){
     
     vector<Vec3d> aa;
     for (int i = 0; i < 40000; i++) {
@@ -66,3 +67,19 @@ int main(int argc, const char * argv[]){
     
     return 0;
 }
+
+int main(int argc, const char * argv[]){
+    
+    string testPath = "../../Zhong12-SIGA-dataset/TEST/";
+    string dirname = argv[1];
+    //testPath = testPath + argv[1] + "/";
+    App app("app", testPath, dirname);
+    app.testUDC();
+    
+    return 0;
+}
+
+
+
+
+

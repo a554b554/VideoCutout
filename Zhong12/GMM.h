@@ -30,6 +30,7 @@ public:
     void learning(const vector<Vec3d>& colors);
     void endLearning();
     void updateModel();
+    double quantity(const Vec3d color, bool isForeground);
     
 private:
     void calcInverseCovAndDeterm( int ci );
@@ -45,6 +46,9 @@ private:
     double prods[componentsCount][3][3];
     int sampleCounts[componentsCount];
     int totalSampleCount;
+    
+    double error[componentsCount];
+    double correct[componentsCount];
 };
 
 

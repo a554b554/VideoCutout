@@ -107,3 +107,20 @@ void App::changeShowState(){
     currentShowState = (currentShowState+1) % 4;
     showImg();
 }
+
+void App::testUDC(){
+    vector<Rect>s;
+    getRectangle(mattes[0], 1, s);
+}
+
+
+
+
+
+
+
+
+
+
+
+

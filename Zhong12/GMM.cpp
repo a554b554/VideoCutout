@@ -18,7 +18,7 @@ GMM::GMM( Mat& _model )
     else if( (_model.type() != CV_64FC1) || (_model.rows != 1) || (_model.cols != modelSize*componentsCount) )
         CV_Error( CV_StsBadArg, "_model must have CV_64FC1 type, rows == 1 and cols == 13*componentsCount" );
     
-    model = _model;
+    model = _model.clone();
     
     coefs = model.ptr<double>(0);
     mean = coefs + componentsCount;
@@ -105,8 +105,9 @@ void GMM::learning(const vector<Vec3d>& colors){
         this->addSample(lab.at<int>(i,0), colors[i]);
     }
     endLearning();
+    vector<int> comp;
     for (int i = 0; i < 50; i++) { //max iter num
-        vector<int> comp;
+        comp.clear();
         Mat oldmodel = model.clone();
         for (int j = 0; j < colors.size(); j++) {
             comp.push_back(whichComponent(colors[j]));
@@ -135,6 +136,8 @@ void GMM::learning(const vector<Vec3d>& colors){
         for (int j = 0; j < colors.size(); j++) {
             this->addSample(comp[j], colors[j]);
         }
+        
+        
         endLearning();
         double adiff = norm(oldmodel, model);
         if (adiff < 1) { //iter threshold.
@@ -145,7 +148,13 @@ void GMM::learning(const vector<Vec3d>& colors){
             printf("terminate by max iter.");
         }
     }
+    //compute error and correct.
+    for (int i = 0; i < colors.size(); i++) {
+        error[comp[i]]+=(*this)(comp[i],colors[i]) * (1-(*this)(colors[i]));
+        correct[comp[i]]+=(*this)(comp[i],colors[i]) * (*this)(colors[i]);
+    }
 }
+
 
 void GMM::endLearning()
 {
@@ -219,4 +228,14 @@ void GMM::updateModel(){
     }
 }
 
-
+double GMM::quantity(const Vec3d color, bool isForeground){
+    double ans = 0;
+    for (int i = 0; i < componentsCount; i++) {
+        double q = correct[i]/(correct[i]+error[i]);
+        if (!isForeground) {
+            q = 1 - q;
+        }
+        ans += (*this)(i, color) * q;
+    }
+    return ans;
+}
