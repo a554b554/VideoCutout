@@ -71,6 +71,8 @@
 		2658E3D11B9185BC00A1751D /* GMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3CF1B9185BC00A1751D /* GMM.cpp */; };
 		2658E3D41B929FAC00A1751D /* Classifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3D21B929FAC00A1751D /* Classifier.cpp */; };
 		2658E3D71B956AF100A1751D /* LocalClassifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3D51B956AF100A1751D /* LocalClassifier.cpp */; };
+		2658E3DA1B95CA5D00A1751D /* GlobalClassifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3D81B95CA5D00A1751D /* GlobalClassifier.cpp */; };
+		2658E3DD1B95D27500A1751D /* ShapePrior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3DB1B95D27500A1751D /* ShapePrior.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -159,6 +161,10 @@
 		2658E3D31B929FAC00A1751D /* Classifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classifier.h; sourceTree = "<group>"; };
 		2658E3D51B956AF100A1751D /* LocalClassifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LocalClassifier.cpp; sourceTree = "<group>"; };
 		2658E3D61B956AF100A1751D /* LocalClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalClassifier.h; sourceTree = "<group>"; };
+		2658E3D81B95CA5D00A1751D /* GlobalClassifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlobalClassifier.cpp; sourceTree = "<group>"; };
+		2658E3D91B95CA5D00A1751D /* GlobalClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalClassifier.h; sourceTree = "<group>"; };
+		2658E3DB1B95D27500A1751D /* ShapePrior.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapePrior.cpp; sourceTree = "<group>"; };
+		2658E3DC1B95D27500A1751D /* ShapePrior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapePrior.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,10 +258,14 @@
 				2658E3D61B956AF100A1751D /* LocalClassifier.h */,
 				2658E3CB1B91834900A1751D /* UDC.cpp */,
 				2658E3CC1B91834900A1751D /* UDC.h */,
+				2658E3DB1B95D27500A1751D /* ShapePrior.cpp */,
+				2658E3DC1B95D27500A1751D /* ShapePrior.h */,
 				2658E3D21B929FAC00A1751D /* Classifier.cpp */,
 				2658E3D31B929FAC00A1751D /* Classifier.h */,
 				2658E3CF1B9185BC00A1751D /* GMM.cpp */,
 				2658E3D01B9185BC00A1751D /* GMM.h */,
+				2658E3D81B95CA5D00A1751D /* GlobalClassifier.cpp */,
+				2658E3D91B95CA5D00A1751D /* GlobalClassifier.h */,
 				2658E3CE1B9185AD00A1751D /* gcgraph.hpp */,
 				2658E3C81B9144BE00A1751D /* common.cpp */,
 				2658E3C91B9144BE00A1751D /* common.h */,
@@ -391,6 +401,8 @@
 				2658E3481B9038DD00A1751D /* main.cpp in Sources */,
 				2658E3CD1B91834900A1751D /* UDC.cpp in Sources */,
 				2658E3D41B929FAC00A1751D /* Classifier.cpp in Sources */,
+				2658E3DD1B95D27500A1751D /* ShapePrior.cpp in Sources */,
+				2658E3DA1B95CA5D00A1751D /* GlobalClassifier.cpp in Sources */,
 				2658E3D71B956AF100A1751D /* LocalClassifier.cpp in Sources */,
 				2658E3D11B9185BC00A1751D /* GMM.cpp in Sources */,
 				2658E3C41B908E6200A1751D /* OpticalFlow.cpp in Sources */,
