@@ -18,7 +18,7 @@ using namespace std;
 class GMM
 {
 public:
-    static const int componentsCount = 3;
+    static const int componentsCount = 5;
     
     GMM( Mat& _model );
     double operator()( const Vec3d color ) const;
@@ -50,6 +50,7 @@ private:
     double error[componentsCount];
     double correct[componentsCount];
 };
+
 
 
 #endif /* defined(__Zhong12__GMM__) */

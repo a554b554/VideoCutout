@@ -70,6 +70,7 @@ double variance(const vector<int>& data){
     for (int i = 0; i < data.size(); i++) {
         mean+=data[i];
     }
+    mean = mean / (double)data.size();
     double var = 0;
     for (int i = 0; i < data.size(); i++) {
         var += (mean-data[i])*(mean-data[i]);

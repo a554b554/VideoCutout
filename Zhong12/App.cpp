@@ -120,7 +120,9 @@ void App::testLocal(){
     vector<int> a;
     Mat train(15,3,CV_32FC1);
     train.setTo(1.5);
-    LocalClassifier k(Vec3d(12,0,0), train, a);
+    //LocalClassifier k(Vec3d(12,0,0), train, a);
+    Mat b,c;
+    processLC(imgs[2], mattes[0], b, c);
 }
 
 
