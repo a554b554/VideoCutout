@@ -141,11 +141,11 @@ void GMM::learning(const vector<Vec3d>& colors){
         endLearning();
         double adiff = norm(oldmodel, model);
         if (adiff < 1) { //iter threshold.
-            printf("terminate by threshold.");
+            printf("terminate by threshold.\n");
             break;
         }
         if (i == 49) {
-            printf("terminate by max iter.");
+            printf("terminate by max iter.\n");
         }
     }
     //compute error and correct.

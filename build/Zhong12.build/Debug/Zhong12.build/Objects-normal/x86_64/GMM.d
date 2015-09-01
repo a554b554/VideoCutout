@@ -11,6 +11,8 @@ dependencies: \
   /usr/local/include/opencv2/flann/miniflann.hpp \
   /usr/local/include/opencv2/flann/defines.h \
   /usr/local/include/opencv2/flann/config.h \
+  /usr/local/include/opencv2/imgproc/imgproc.hpp \
+  /usr/local/include/opencv2/imgproc/types_c.h \
+  /usr/local/include/opencv2/core/core_c.h \
   /usr/local/include/opencv2/highgui/highgui.hpp \
-  /usr/local/include/opencv2/highgui/highgui_c.h \
-  /usr/local/include/opencv2/core/core_c.h
+  /usr/local/include/opencv2/highgui/highgui_c.h

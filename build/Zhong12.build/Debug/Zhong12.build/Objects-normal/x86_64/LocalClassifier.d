@@ -1,6 +1,6 @@
 dependencies: \
-  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/Classifier.cpp \
-  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/Classifier.h \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/LocalClassifier.cpp \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/LocalClassifier.h \
   /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/common.h \
   /usr/local/include/opencv2/core/core.hpp \
   /usr/local/include/opencv2/core/types_c.h \
@@ -15,4 +15,6 @@ dependencies: \
   /usr/local/include/opencv2/imgproc/types_c.h \
   /usr/local/include/opencv2/core/core_c.h \
   /usr/local/include/opencv2/highgui/highgui.hpp \
-  /usr/local/include/opencv2/highgui/highgui_c.h
+  /usr/local/include/opencv2/highgui/highgui_c.h \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/Classifier.h \
+  /usr/local/include/opencv2/ml/ml.hpp

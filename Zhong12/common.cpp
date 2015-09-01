@@ -64,3 +64,23 @@ void drawArrows(Mat& frame, const vector<Point2f>& prevPts, const vector<Point2f
         }
     }
 }
+
+double variance(const vector<int>& data){
+    double mean = 0;
+    for (int i = 0; i < data.size(); i++) {
+        mean+=data[i];
+    }
+    double var = 0;
+    for (int i = 0; i < data.size(); i++) {
+        var += (mean-data[i])*(mean-data[i]);
+    }
+    return var/(double)data.size();
+}
+
+
+
+
+
+
+
+

@@ -23,6 +23,8 @@
 #include <unistd.h>
 #include "OpticalFlow.h"
 #include "UDC.h"
+#include "LocalClassifier.h"
+
 using namespace std;
 using namespace cv;
 
@@ -36,6 +38,7 @@ public:
     void calcOpticalFlows();
     void changeShowState();
     void testUDC();
+    void testLocal();
 private:
     enum showState{
         SHOW_ORIGIN,

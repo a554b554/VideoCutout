@@ -13,11 +13,10 @@
 #include "common.h"
 #include "GMM.h"
 #include "Classifier.h"
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
+
 using namespace std;
 using namespace cv;
-const int RectHeight = 45;
+const int RectHeight = 21;
 const int range = 20;
 
 void processUDC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat);
@@ -27,6 +26,8 @@ void processUDCRect(const Mat& img_rect, const Mat& matte_rect, Mat& probmat, Ma
 void getRectangle(const Mat& matte, int direction, vector<Rect>& rects);
 
 void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat, Mat& confmat);
+
+
 
 
 class UDC : public Classifier{

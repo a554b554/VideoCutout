@@ -109,12 +109,19 @@ void App::changeShowState(){
 }
 
 void App::testUDC(){
-    vector<Rect>s;
-    getRectangle(mattes[0], 1, s);
+    Mat valid(imgs[0].rows, imgs[0].cols,CV_8UC1);
+    valid.setTo(255);
+    Mat a,b;
+    processUDC(imgs[0], mattes[0], valid, a, b);
 }
 
 
-
+void App::testLocal(){
+    vector<int> a;
+    Mat train(15,3,CV_32FC1);
+    train.setTo(1.5);
+    LocalClassifier k(Vec3d(12,0,0), train, a);
+}
 
 
 

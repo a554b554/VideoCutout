@@ -74,7 +74,7 @@ int main(int argc, const char * argv[]){
     string dirname = argv[1];
     //testPath = testPath + argv[1] + "/";
     App app("app", testPath, dirname);
-    app.testUDC();
+    app.testLocal();
     
     return 0;
 }
