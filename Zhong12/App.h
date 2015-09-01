@@ -39,6 +39,8 @@ public:
     void changeShowState();
     void testUDC();
     void testLocal();
+    
+    
 private:
     enum showState{
         SHOW_ORIGIN,

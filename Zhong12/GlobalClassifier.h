@@ -10,5 +10,11 @@
 #define __Zhong12__GlobalClassifier__
 
 #include <stdio.h>
+#include "common.h"
+#include "UDC.h"
+
+// matte may contains user input
+void processGC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat);
+
 
 #endif /* defined(__Zhong12__GlobalClassifier__) */
