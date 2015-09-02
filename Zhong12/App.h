@@ -24,6 +24,9 @@
 #include "OpticalFlow.h"
 #include "UDC.h"
 #include "LocalClassifier.h"
+#include "GlobalClassifier.h"
+#include "ShapePrior.h"
+
 
 using namespace std;
 using namespace cv;
@@ -37,9 +40,14 @@ public:
     void showImg();
     void calcOpticalFlows();
     void changeShowState();
+    
+    
+    
+    //unit test
     void testUDC();
     void testLocal();
-    
+    void testGlobal();
+    void testShape();
     
 private:
     enum showState{

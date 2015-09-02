@@ -125,9 +125,15 @@ void App::testLocal(){
     processLC(imgs[2], mattes[0], b, c);
 }
 
+void App::testGlobal(){
+    Mat a,b;
+    processGC(imgs[0], mattes[0], a, b);
+}
 
-
-
+void App::testShape(){
+    Mat a,b;
+    processSP(imgs[0], mattes[0], a, b);
+}
 
 
 

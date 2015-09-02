@@ -9,6 +9,8 @@
 #include "GlobalClassifier.h"
 
 void processGC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
+    probmat.create(img.rows, img.cols, CV_64FC1);
+    confmat.create(img.rows, img.cols, CV_64FC1);
     vector<Vec3d> fSamples,bSamples;
     for (int i = 0; i < img.rows; i++) {
         for (int j = 0; j < img.cols; j++) {
@@ -30,4 +32,10 @@ void processGC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
             confmat.at<double>(i,j) = udc.conf(color);
         }
     }
+    
+    //debug
+    imshow("probmat", probmat);
+    imshow("confmat", confmat);
+    imshow("matte", matte);
+    waitKey(0);
 }

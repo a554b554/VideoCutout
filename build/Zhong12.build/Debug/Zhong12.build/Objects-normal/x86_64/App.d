@@ -55,4 +55,6 @@ dependencies: \
   /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/GMM.h \
   /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/Classifier.h \
   /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/LocalClassifier.h \
-  /usr/local/include/opencv2/ml/ml.hpp
+  /usr/local/include/opencv2/ml/ml.hpp \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/GlobalClassifier.h \
+  /Users/changxiao/Documents/videocutout/zhong12/Zhong12/Zhong12/ShapePrior.h
