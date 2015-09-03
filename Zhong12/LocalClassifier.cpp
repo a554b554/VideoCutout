@@ -45,7 +45,7 @@ void processLC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     confmat.setTo(0);
     int64 t0 = getTickCount();
     for (int i = 0; i < img.rows; i++) {
-        printf("row: %d\n", i);
+        //printf("row: %d\n", i);
         for (int j = 0; j < img.cols; j++) {
             int startx = (j-W)>=0?(j-W):0;
             int starty = (i-W)>=0?(i-W):0;

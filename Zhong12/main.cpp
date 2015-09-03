@@ -11,6 +11,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "App.h"
 #include "GMM.h"
+#include <string>
+
 
 using namespace std;
 using namespace cv;
@@ -73,10 +75,7 @@ int main(int argc, const char * argv[]){
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
     string dirname = argv[1];
     //testPath = testPath + argv[1] + "/";
-    App app("app", testPath, dirname);
-    app.testShape();
-    
-    return 0;
+    App app("app", "filelist.txt");
 }
 
 

@@ -34,8 +34,8 @@ void processGC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     }
     
     //debug
-    imshow("probmat", probmat);
-    imshow("confmat", confmat);
-    imshow("matte", matte);
-    waitKey(0);
+//    imshow("probmat", probmat);
+//    imshow("confmat", confmat);
+//    imshow("matte", matte);
+//    waitKey(0);
 }

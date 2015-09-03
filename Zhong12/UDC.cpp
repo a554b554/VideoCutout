@@ -154,9 +154,11 @@ void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat
         if (find) {
             //show rectangle
             Rect rec(rectstart, base, rectend-rectstart, base+RectHeight>=img.rows?img.rows-1-base:RectHeight);
-            Mat showrec = img.clone();
-            rectangle(showrec, rec, Scalar(255,0,0));
-            imshow("show rec", showrec);
+            
+            //debug
+//            Mat showrec = img.clone();
+//            rectangle(showrec, rec, Scalar(255,0,0));
+//            imshow("show rec", showrec);
             
             
             //compute probability and confidence
@@ -190,9 +192,12 @@ void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat
             break;
         }
     }
-    imshow("finalprob", probmat);
-    imshow("finalconf", confmat);
-    waitKey(0);
+    
+    
+    //debug
+//    imshow("finalprob", probmat);
+//    imshow("finalconf", confmat);
+//    waitKey(0);
 }
 
 

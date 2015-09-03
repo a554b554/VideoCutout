@@ -26,21 +26,25 @@
 #include "LocalClassifier.h"
 #include "GlobalClassifier.h"
 #include "ShapePrior.h"
-
+#include "CombinedClassifier.h"
+#include "common.h"
 
 using namespace std;
 using namespace cv;
 
+void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes);
+
 class App{
 public:
-    App(string winName, string testpath, string dirname);
+    App(string winName, string testpath, string dirname); // processing
+    App(string winName, string filelistpath); //training
     string winName;
     void nextImg();
     void prevImg();
     void showImg();
     void calcOpticalFlows();
     void changeShowState();
-    
+    void startTraining();
     
     
     //unit test
@@ -48,6 +52,7 @@ public:
     void testLocal();
     void testGlobal();
     void testShape();
+    void testlearn();
     
 private:
     enum showState{

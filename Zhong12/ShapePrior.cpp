@@ -39,10 +39,10 @@ void processSP(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     
     
     //debug
-    drawContours(img_copy, contours, 0, Scalar(255,0,0));
-    imshow("d", img_copy);
-    imshow("probmat", probmat);
-    imshow("confmat", confmat);
-    waitKey(0);
+//    drawContours(img_copy, contours, 0, Scalar(255,0,0));
+//    imshow("d", img_copy);
+//    imshow("probmat", probmat);
+//    imshow("confmat", confmat);
+//    waitKey(0);
     
 }

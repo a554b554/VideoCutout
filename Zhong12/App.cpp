@@ -8,13 +8,16 @@
 
 #include "App.h"
 
-App::App(string winName, string testpath, string dirname):winName(winName),showIdx(0){
+
+void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes){
+    string path = dirname + "/";
+    string alpha = dirname + "_alpha/";
     
-    //load image.
-    string imgpath = testpath + dirname + "/";
+    
+    //load image
     DIR *dp;
     struct dirent *dirp;
-    if((dp=opendir(imgpath.c_str()))==NULL){
+    if((dp=opendir(path.c_str()))==NULL){
         perror("opendir error");
         free(dp);
         exit(1);
@@ -24,14 +27,13 @@ App::App(string winName, string testpath, string dirname):winName(winName),showI
     while((dirp=readdir(dp))!=NULL){
         if((strcmp(dirp->d_name,".")==0)||(strcmp(dirp->d_name,"..")==0))
             continue;
-        string fname = imgpath+dirp->d_name;
+        string fname = path+dirp->d_name;
         imgs.push_back(imread(fname));
     }
     closedir(dp);
     
-    //load mattes
-    string mattepath = testpath + dirname + "_alpha/";
-    if((dp=opendir(mattepath.c_str()))==NULL){
+    //load mattes.
+    if((dp=opendir(alpha.c_str()))==NULL){
         perror("opendir error");
         free(dp);
         exit(1);
@@ -40,12 +42,47 @@ App::App(string winName, string testpath, string dirname):winName(winName),showI
     while((dirp=readdir(dp))!=NULL){
         if((strcmp(dirp->d_name,".")==0)||(strcmp(dirp->d_name,"..")==0))
             continue;
-        string fname = mattepath+dirp->d_name;
+        string fname = alpha+dirp->d_name;
         mattes.push_back(imread(fname,0));
-//        imshow("matte", mattes[mattes.size()-1]);
-//        waitKey(0);
+        //        imshow("matte", mattes[mattes.size()-1]);
+        //        waitKey(0);
     }
     closedir(dp);
+    
+}
+
+
+App::App(string winName, string filelistpath):winName(winName),showIdx(0){
+    vector<string> dirlist;
+    ifstream f;
+    f.open(filelistpath);
+    if(!f.is_open()){
+        cerr<<filelistpath+" not found!"<<endl;
+        exit(1);
+    }
+    char buffer[256];
+    while (!f.eof()) {
+        f.getline(buffer, 200);
+        dirlist.push_back(buffer);
+    }
+    
+    //training
+    CombinedClassifier* classifier = new CombinedClassifier();
+    for (int i = 0; i < dirlist.size(); i++) {
+        printf("traning data :%d\n",i);
+        int64 t0 = getTickCount();
+        vector<Mat> _imgs,_mattes;
+        loadimage(dirlist[i], _imgs, _mattes);
+        classifier->train(_imgs, _mattes);
+        printf("traning finished, time cost: %lf", (getTickCount()-t0)/getTickFrequency());
+    }
+    classifier->exportdata();
+}
+
+
+App::App(string winName, string testpath, string dirname):winName(winName),showIdx(0){
+    
+    loadimage(testpath+dirname, imgs, mattes);
 };
 
 void App::showImg(){
@@ -108,6 +145,13 @@ void App::changeShowState(){
     showImg();
 }
 
+void App::startTraining(){
+    
+}
+
+
+
+
 void App::testUDC(){
     Mat valid(imgs[0].rows, imgs[0].cols,CV_8UC1);
     valid.setTo(255);
@@ -135,7 +179,10 @@ void App::testShape(){
     processSP(imgs[0], mattes[0], a, b);
 }
 
-
+void App::testlearn(){
+    //string j = "d";
+    CombinedClassifier* g = new CombinedClassifier("wtf");
+}
 
 
 

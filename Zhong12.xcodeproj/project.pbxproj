@@ -73,6 +73,8 @@
 		2658E3D71B956AF100A1751D /* LocalClassifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3D51B956AF100A1751D /* LocalClassifier.cpp */; };
 		2658E3DA1B95CA5D00A1751D /* GlobalClassifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3D81B95CA5D00A1751D /* GlobalClassifier.cpp */; };
 		2658E3DD1B95D27500A1751D /* ShapePrior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3DB1B95D27500A1751D /* ShapePrior.cpp */; };
+		2658E3E01B96BA1F00A1751D /* CombinedClassifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3DE1B96BA1F00A1751D /* CombinedClassifier.cpp */; };
+		2658E3E31B96BFD600A1751D /* RegistrationError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2658E3E11B96BFD600A1751D /* RegistrationError.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -165,6 +167,10 @@
 		2658E3D91B95CA5D00A1751D /* GlobalClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalClassifier.h; sourceTree = "<group>"; };
 		2658E3DB1B95D27500A1751D /* ShapePrior.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapePrior.cpp; sourceTree = "<group>"; };
 		2658E3DC1B95D27500A1751D /* ShapePrior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapePrior.h; sourceTree = "<group>"; };
+		2658E3DE1B96BA1F00A1751D /* CombinedClassifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CombinedClassifier.cpp; sourceTree = "<group>"; };
+		2658E3DF1B96BA1F00A1751D /* CombinedClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CombinedClassifier.h; sourceTree = "<group>"; };
+		2658E3E11B96BFD600A1751D /* RegistrationError.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RegistrationError.cpp; sourceTree = "<group>"; };
+		2658E3E21B96BFD600A1751D /* RegistrationError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegistrationError.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,6 +261,10 @@
 			isa = PBXGroup;
 			children = (
 				2658E3D51B956AF100A1751D /* LocalClassifier.cpp */,
+				2658E3DE1B96BA1F00A1751D /* CombinedClassifier.cpp */,
+				2658E3E11B96BFD600A1751D /* RegistrationError.cpp */,
+				2658E3E21B96BFD600A1751D /* RegistrationError.h */,
+				2658E3DF1B96BA1F00A1751D /* CombinedClassifier.h */,
 				2658E3D61B956AF100A1751D /* LocalClassifier.h */,
 				2658E3CB1B91834900A1751D /* UDC.cpp */,
 				2658E3CC1B91834900A1751D /* UDC.h */,
@@ -397,8 +407,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2658E3E01B96BA1F00A1751D /* CombinedClassifier.cpp in Sources */,
 				2658E3CA1B9144BE00A1751D /* common.cpp in Sources */,
 				2658E3481B9038DD00A1751D /* main.cpp in Sources */,
+				2658E3E31B96BFD600A1751D /* RegistrationError.cpp in Sources */,
 				2658E3CD1B91834900A1751D /* UDC.cpp in Sources */,
 				2658E3D41B929FAC00A1751D /* Classifier.cpp in Sources */,
 				2658E3DD1B95D27500A1751D /* ShapePrior.cpp in Sources */,
