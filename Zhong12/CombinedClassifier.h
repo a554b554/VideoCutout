@@ -26,6 +26,7 @@ struct featureVector{
     double e;
     double dist2(const featureVector& vec)const;
     void print();
+    featureVector operator*(double num);
 };
 
 

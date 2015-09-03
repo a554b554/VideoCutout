@@ -31,6 +31,17 @@ featureVector CombinedClassifier::getCorByID(long i){
     return ans;
 }
 
+featureVector featureVector::operator*(double num){
+    featureVector ans;
+    ans.ru = this->ru*num;
+    ans.rl = this->rl*num;
+    ans.rg = this->rg*num;
+    ans.rs = this->rs*num;
+    ans.e = this->e*num;
+    return ans;
+}
+
+
 void featureVector::print(){
     printf("%lf %lf %lf %lf %lf\n",ru,rl,rg,rs,e);
 }
@@ -125,8 +136,14 @@ void CombinedClassifier::exportdata(){
 
 
 void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
+    int rustart = ((int)v.ru*cSize-2)>=0?(int)v.ru*cSize-2:0;
+    int ruend = ((int)v.ru*cSize+2)<=cSize?(int)v.ru*cSize+2:cSize;
+    int rlstart = ((int)v.rl*cSize-2)>=0?(int)v.rl*cSize-2:0;
+    int rlend = ((int)v.rl*cSize+2)<=cSize?(int)v.rl*cSize+2:cSize;
+    
     for (long i = 0; i < interval; i++) {
         featureVector current = getCorByID(i);
+        current.print();
         double val = exp(-(current.dist2(v)/sigmad2));
         if (addtoForeground) {
             fLattice[i] += val;
@@ -136,4 +153,5 @@ void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
         }
         
     }
+    
 }
