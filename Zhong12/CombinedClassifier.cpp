@@ -140,18 +140,43 @@ void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
     int ruend = ((int)v.ru*cSize+2)<=cSize?(int)v.ru*cSize+2:cSize;
     int rlstart = ((int)v.rl*cSize-2)>=0?(int)v.rl*cSize-2:0;
     int rlend = ((int)v.rl*cSize+2)<=cSize?(int)v.rl*cSize+2:cSize;
-    
-    for (long i = 0; i < interval; i++) {
-        featureVector current = getCorByID(i);
-        current.print();
-        double val = exp(-(current.dist2(v)/sigmad2));
-        if (addtoForeground) {
-            fLattice[i] += val;
+    int rgstart = ((int)v.rg*cSize-2)>=0?(int)v.rg*cSize-2:0;
+    int rgend = ((int)v.rg*cSize+2)<=cSize?(int)v.rg*cSize+2:cSize;
+    int rsstart = ((int)v.rl*cSize-2)>=0?(int)v.rl*cSize-2:0;
+    int rsend = ((int)v.rl*cSize+2)<=cSize?(int)v.rl*cSize+2:cSize;
+
+    for (int ru = rustart; ru < ruend; ru++) {
+        for (int rl = rlstart; rl < rlend; rl++) {
+            for (int rg = rgstart; rg < rgend; rg++) {
+                for (int rs = rsstart; rs < rsend; rs++) {
+                    long id = rs*cSize+
+                    rg*cSize*cSize+
+                    rl*cSize*cSize*cSize+
+                    ru*cSize*cSize*cSize*cSize;
+                    featureVector current = getCorByID(id);
+                    //current.print();
+                    double val = exp(-(current.dist2(v)/sigmad2));
+                    if (addtoForeground) {
+                        fLattice[id] += val;
+                    }
+                    else{
+                        bLattice[id] += val;
+                    }
+                }
+            }
         }
-        else{
-            bLattice[i] += val;
-        }
-        
     }
-    
+//    for (long i = 0; i < interval; i++) {
+//        featureVector current = getCorByID(i);
+//        current.print();
+//        double val = exp(-(current.dist2(v)/sigmad2));
+//        if (addtoForeground) {
+//            fLattice[i] += val;
+//        }
+//        else{
+//            bLattice[i] += val;
+//        }
+//        
+//    }
+//    
 }

@@ -1,15 +1,1 @@
 ../../Zhong12-SIGA-dataset/ANIMAL/bear
-../../Zhong12-SIGA-dataset/ANIMAL/gir
-../../Zhong12-SIGA-dataset/ANIMAL/pig
-../../Zhong12-SIGA-dataset/ANIMAL/yy
-../../Zhong12-SIGA-dataset/HUMAN/fm
-../../Zhong12-SIGA-dataset/HUMAN/fq
-../../Zhong12-SIGA-dataset/HUMAN/fz
-../../Zhong12-SIGA-dataset/HUMAN/yja
-../../Zhong12-SIGA-dataset/HUMAN/yjb
-../../Zhong12-SIGA-dataset/HUMAN/yjc
-../../Zhong12-SIGA-dataset/HUMAN/yjd
-../../Zhong12-SIGA-dataset/STATIC/car
-../../Zhong12-SIGA-dataset/STATIC/cup
-../../Zhong12-SIGA-dataset/STATIC/pot
-../../Zhong12-SIGA-dataset/STATIC/toy
