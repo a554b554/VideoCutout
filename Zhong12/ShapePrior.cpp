@@ -8,6 +8,7 @@
 
 #include "ShapePrior.h"
 void processSP(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
+    int64 t0 = getTickCount();
     probmat = matte.clone();
     probmat.convertTo(probmat, CV_64FC1);
     probmat = probmat/255;
@@ -44,5 +45,6 @@ void processSP(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
 //    imshow("probmat", probmat);
 //    imshow("confmat", confmat);
 //    waitKey(0);
-    
+    cout<<"shape prior cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
+
 }

@@ -75,7 +75,8 @@ int main(int argc, const char * argv[]){
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
     string dirname = argv[1];
     //testPath = testPath + argv[1] + "/";
-    App app("app", "filelist.txt");
+    App app("app", testPath, dirname);
+    app.testUDC();
 }
 
 

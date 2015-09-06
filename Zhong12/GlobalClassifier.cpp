@@ -9,6 +9,7 @@
 #include "GlobalClassifier.h"
 
 void processGC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
+    int64 t0 = getTickCount();
     probmat.create(img.rows, img.cols, CV_64FC1);
     confmat.create(img.rows, img.cols, CV_64FC1);
     vector<Vec3d> fSamples,bSamples;
@@ -38,4 +39,6 @@ void processGC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
 //    imshow("confmat", confmat);
 //    imshow("matte", matte);
 //    waitKey(0);
+    cout<<"global classifier cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
+
 }

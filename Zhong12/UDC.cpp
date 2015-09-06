@@ -98,6 +98,7 @@ void getRectangle(const Mat& matte, int direction, vector<Rect>& rects){
 }
 
 void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat, Mat& confmat){
+    int64 t0 = getTickCount();
     int step = RectHeight*2/3;
     Mat lastconf,lastprob;
     //compute bounding box.
@@ -195,9 +196,10 @@ void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat
     
     
     //debug
-//    imshow("finalprob", probmat);
-//    imshow("finalconf", confmat);
-//    waitKey(0);
+    imshow("finalprob", probmat);
+    imshow("finalconf", confmat);
+    waitKey(0);
+    cout<<"UDC cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
 }
 
 

@@ -63,6 +63,8 @@ void CombinedClassifier::init(){
 
 void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& mattes){
     for (int i = 1; i < imgs.size(); i++) {
+        printf("img: %d\n",i);
+        int64 t0 = getTickCount();
         Mat valid(imgs[0].size(),CV_8UC1);
         valid.setTo(1);
         //process UDC
@@ -106,7 +108,7 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
                 if (dist > 30) {
                     continue;
                 }
-                printf("dx:%d dy:%d\n",dx,dy);
+                //printf("dx:%d dy:%d\n",dx,dy);
                 
                 featureVector v;
                 v.ru = 0.5 + UDCconf.at<double>(dx,dy)*(UDCprob.at<double>(dx,dy)-0.5);
@@ -122,6 +124,9 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
                 }
             }
         }
+        
+        cout<<"train image cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
+
     }
 }
 

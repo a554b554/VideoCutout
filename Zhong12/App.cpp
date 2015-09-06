@@ -156,7 +156,10 @@ void App::testUDC(){
     Mat valid(imgs[0].rows, imgs[0].cols,CV_8UC1);
     valid.setTo(255);
     Mat a,b;
-    processUDC(imgs[0], mattes[0], valid, a, b);
+    imshow("src", imgs[0]);
+    imshow("src matte", mattes[0]);
+    imshow("target", imgs[88]);
+    processUDC(imgs[88], mattes[0], valid, a, b);
 }
 
 
