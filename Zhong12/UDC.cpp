@@ -56,28 +56,58 @@ void getbestmap(const vector<Mat>& probs, const vector<Mat>& confs, Mat& bestpro
 
 void rotateBack(const Mat& src, const Mat& valid, Point2f center, Mat& dst, Size dsize, bool is45){
     Mat rot;
-    
     if (is45) {
         rot = getRotationMatrix2D(center, -45, 1);
     }
     else{
         rot = getRotationMatrix2D(center, -135, 1);
     }
-    int rcount = 0;
-    int ccount = 0;
+
     dst.create(dsize, CV_64FC1);
-    for (int i = 0; i < src.rows; i++) {
-        for (int j = 0; j < src.cols; j++) {
-            if (valid.at<uchar>(i,j) != 0) {
-                
-            }
-        }
-    }
+    Mat src_copy = src.clone();
+    Mat valid_copy = valid.clone();
+    warpAffine(src_copy, src_copy, rot, src_copy.size());
+    warpAffine(valid_copy, valid_copy, rot, valid_copy.size());
+    
+   
+
+    Rect roi(src.cols/2-dsize.width/2,src.rows/2-dsize.height/2,dsize.width,dsize.height);
+    src_copy(roi).copyTo(dst);
+    
+    
+    
+    //debug
+//    imshow("src_copy", src_copy);
+//    imshow("dst", dst);
+//    waitKey(0);
+    
 }
 
 
 
 void processUDC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
+
+    
+    //process degree 0
+    Mat valid(img.size(),CV_8UC1),prob0,conf0;
+    vector<Mat> probs,confs;
+    valid.setTo(1);
+    processUDC(img, matte, valid, prob0, conf0);
+    probs.push_back(prob0);
+    confs.push_back(conf0);
+    //process degree 90
+    Mat valid_t = valid.t();
+    Mat img_t = img.t();
+    Mat matte_t = matte.t();
+    Mat prob90,conf90;
+    processUDC(img_t, matte_t, valid_t, prob90, conf90);
+    prob90 = prob90.t();
+    conf90 = conf90.t();
+    probs.push_back(prob90);
+    confs.push_back(conf90);
+    
+    
+    
     //process degree 45
     int length = max(max(img.cols, img.rows), (int)(sqrt(2)*(img.cols+img.rows)/2));
     
@@ -85,7 +115,7 @@ void processUDC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     Mat _img45(length,length,CV_8UC3);
     Mat _valid45(length,length,CV_8UC1);
     Mat _matte45(length,length,CV_8UC1);
-    Mat prob45,conf45;
+    Mat _prob45,_conf45,prob45,conf45;
     
     _img45.setTo(0);
     _valid45.setTo(0);
@@ -106,59 +136,62 @@ void processUDC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     warpAffine(_img45, _img45, rot, _img45.size());
     warpAffine(_valid45, _valid45, rot, _img45.size());
     
-    processUDC(_img45, _matte45, _valid45, prob45, conf45);
+    processUDC(_img45, _matte45, _valid45, _prob45, _conf45);
     
     
+    rotateBack(_prob45, _valid45, center, prob45, img.size(), true);
+    rotateBack(_conf45, _valid45, center, conf45, img.size(), true);
+    probs.push_back(prob45);
+    confs.push_back(conf45);
     
     
+    //process degree 135
+    Mat _img135(length,length,CV_8UC3);
+    Mat _valid135(length,length,CV_8UC1);
+    Mat _matte135(length,length,CV_8UC1);
+    Mat _prob135,_conf135,prob135,conf135;
     
-    //debug
-    imshow("rotated img", _img45);
-    imshow("rotated matte", _matte45);
-    imshow("rotated valid", _valid45);
-    imshow("prob45", prob45);
-    imshow("conf45", conf45);
-    waitKey(0);
+    _img135.setTo(0);
+    _valid135.setTo(0);
+    _matte135.setTo(0);
     
-    
-    
-    
-    
+    offside = offside>0?offside:0;
     
     
+    //warp image 45 degree
+    rot = getRotationMatrix2D(center, 135, 1);
+    img.copyTo(_img135(roi));
+    matte.copyTo(_matte135(roi));
+    _valid135(roi).setTo(255);
+    warpAffine(_matte135, _matte135, rot, _matte135.size());
+    warpAffine(_img135, _img135, rot, _img135.size());
+    warpAffine(_valid135, _valid135, rot, _img135.size());
+    
+    processUDC(_img135, _matte135, _valid135, _prob135, _conf135);
     
     
+    rotateBack(_prob135, _valid135, center, prob135, img.size(), false);
+    rotateBack(_conf135, _valid135, center, conf135, img.size(), false);
+    probs.push_back(prob135);
+    confs.push_back(conf135);
+
     
     
-    
-    //process degree 0
-    Mat valid(img.size(),CV_8UC1),prob0,conf0;
-    vector<Mat> probs,confs;
-    valid.setTo(1);
-    processUDC(img, matte, valid, prob0, conf0);
-    probs.push_back(prob0);
-    confs.push_back(conf0);
-    //process degree 90
-    Mat valid_t = valid.t();
-    Mat img_t = img.t();
-    Mat matte_t = matte.t();
-    Mat prob90,conf90;
-    processUDC(img_t, matte_t, valid_t, prob90, conf90);
-    prob90 = prob90.t();
-    conf90 = conf90.t();
-    probs.push_back(prob90);
-    confs.push_back(conf90);
     getbestmap(probs, confs, probmat, confmat);
     
-    
     //debug
-    imshow("prob0", prob0);
-    imshow("conf0", conf0);
-    imshow("prob90", prob90);
-    imshow("conf90", conf90);
-    imshow("prob", probmat);
-    imshow("conf", confmat);
-    waitKey(0);
+//    imshow("prob0", prob0);
+//    imshow("conf0", conf0);
+//    imshow("prob90", prob90);
+//    imshow("conf90", conf90);
+//    imshow("prob45", prob45);
+//    imshow("conf45", conf45);
+//    imshow("prob135", prob135);
+//    imshow("conf135", conf135);
+//    imshow("prob", probmat);
+//    imshow("conf", confmat);
+//    waitKey(0);
+//    destroyAllWindows();
     
 
 }
@@ -172,7 +205,7 @@ void processUDCRect(const Mat& img_rect, const Mat& matte_rect, Mat& probmat, Ma
     int rows = matte_rect.rows;
     int cols = matte_rect.cols;
     
-    //learning GMM
+//    learning GMM by matte
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -184,6 +217,13 @@ void processUDCRect(const Mat& img_rect, const Mat& matte_rect, Mat& probmat, Ma
             }
         }
     }
+    
+    //learning GMM by kmeans
+//    Mat lab,sample;
+//    img_rect.convertTo(sample, CV_32FC1);
+//    img_rect.reshape(1,img_rect.cols*img_rect.rows);
+//    kmeans(img_rect, 2, lab, TermCriteria( CV_TERMCRIT_ITER, 10, 0.0), 0, KMEANS_PP_CENTERS);
+    
     
 
     //compute confidence map and probability map.
@@ -258,6 +298,7 @@ void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat
                 if (matte.at<uchar>(i,j)!=0) {
                     rectstart = (j-range>0)?(j-range):0;
                     find = true;
+                    //base += step;
                     break;
                 }
             }
@@ -296,19 +337,8 @@ void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat
             //compute probability and confidence
             Mat prob,conf;
             processUDCRect(img(rec), matte(rec), prob, conf);
-           
-//            if (!lastconf.empty()) {
-//                for (int dy = 0; dy < RectHeight/3; dy++) {
-//                    for (int dx = 0; dx < conf.cols; dx++) {
-//                        if (conf.at<double>(dy, dx) < lastconf.at<double>(dy+2*RectHeight/3,dx)) {
-//                            conf.at<double>(dy, dx) = lastconf.at<double>(dy+2*RectHeight/3, dx);
-//                            prob.at<double>(dy, dx) = lastprob.at<double>(dy+2*RectHeight/3, dx);
-//                        }
-//                    }
-//                }
-//            }
-//            probmat(rec).setTo(prob, valid(rec));
-//            confmat(rec).setTo(conf, valid(rec));
+
+            
             prob.copyTo(probmat(rec), valid(rec));
             conf.copyTo(confmat(rec), valid(rec));
             if (base+step<img.rows) {
