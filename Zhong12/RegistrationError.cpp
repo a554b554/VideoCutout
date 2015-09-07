@@ -7,6 +7,6 @@
 //
 
 #include "RegistrationError.h"
-void processRegistraionError(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
+void processRegistraionError(const Mat& img, const Mat& errormatte, Mat& outmat){
     
 }

@@ -44,9 +44,41 @@ void processLC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     probmat.setTo(0);
     confmat.setTo(0);
     int64 t0 = getTickCount();
+    
+    
+    //compute distance
+    vector<vector<Point> > contours; vector<Vec4i> hierarchy;
+    Mat matte_copy = matte.clone();
+    Mat img_copy = img.clone();
+    
+    findContours( matte_copy, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
+    
+    Mat raw_dist( img.size(), CV_32FC1 );
+    
+    int64 t1 = getTickCount();
+    for( int j = 0; j < img.rows; j++ )
+    {
+        for( int i = 0; i < img.cols; i++ )
+        {
+            raw_dist.at<float>(j,i) = pointPolygonTest( contours[0], Point2f(i,j), true );
+        }
+    }
+    //cout<<"cost for dist: "<<(getTickCount()-t1)/getTickFrequency()<<endl;
+  //  cout<<raw_dist<<endl;
+    
     for (int i = 0; i < img.rows; i++) {
         //printf("row: %d\n", i);
         for (int j = 0; j < img.cols; j++) {
+            
+            
+            
+            
+            if (raw_dist.at<float>(i,j) < -20) { //which means outside the contour and distance greater than a threshold.
+                probmat.at<double>(i,j) = 0;
+                confmat.at<double>(i,j) = 1;
+                continue;
+            }
+            
             int startx = (j-W)>=0?(j-W):0;
             int starty = (i-W)>=0?(i-W):0;
             if (j+W>=img.cols) {

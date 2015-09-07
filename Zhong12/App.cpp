@@ -134,7 +134,16 @@ void App::calcOpticalFlows(){
     }
     warped_imgs[imgs.size()-1] = imgs[imgs.size()-1].clone();
     warped_mattes[mattes.size()-1] = mattes[mattes.size()-1].clone();
-
+    
+    remats.resize(imgs.size()-1);
+    for (int i = 0; i < imgs.size()-1; i++) {
+        Mat g = warped_imgs[i] - imgs[i+1];
+        //remats[i].create(g.size(), CV_64FC1);
+        cvtColor(g, g, CV_BGR2GRAY);
+        g.convertTo(remats[i], CV_64FC1);
+        imshow("re", g);
+        waitKey(0);
+    }
     
     printf("calculate finished!\n");
 }

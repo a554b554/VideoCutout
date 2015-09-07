@@ -148,13 +148,15 @@ void OFFeatureMatcher::registration(int idx_i, int idx_j, Mat &registrated_img, 
     //warp image.
     vector<Point2f> i_pts,j_pts;
     for (int i = 0; i < matches.size(); i++) {
+        
         Point i_pt = imgpts[idx_i][matches[i].queryIdx].pt;
         Point j_pt = imgpts[idx_j][matches[i].trainIdx].pt;
-        i_pts.push_back(i_pt);
-        j_pts.push_back(j_pt);
         if (mattes[idx_i].at<uchar>(i_pt)!=0) {
             continue;
         }
+        i_pts.push_back(i_pt);
+        j_pts.push_back(j_pt);
+        
     }
     Mat M = findHomography(i_pts, j_pts, CV_RANSAC);
     Mat warped,warped_mat;
@@ -177,25 +179,25 @@ void OFFeatureMatcher::registration(int idx_i, int idx_j, Mat &registrated_img, 
     Mat M_matte = findHomography(i_pts, j_pts, CV_RANSAC);
     warpPerspective(mattes[idx_i], warped_mat, M_matte, mattes[0].size());
     
-    Mat errormat(imgs[idx_i].size(),CV_64FC1);
-    Mat minus = imgs[idx_j]-warped;
-    for (int i = 0; i < imgs[0].rows; i++) {
-        for (int j = 0; j < imgs[0].cols; j++) {
-            Vec3d color = minus.at<Vec3b>(i,j);
-            double val = color[0]*color[0]+color[1]*color[1]+color[2]*color[2];
-            if (val == 0) {
-                errormat.at<double>(i,j) = val;
-            }
-            else{
-                errormat.at<double>(i,j) = 1;
-            }
-            
-        }
-    }
+//    Mat errormat(imgs[idx_i].size(),CV_64FC1);
+//    Mat minus = imgs[idx_j]-warped;
+//    for (int i = 0; i < imgs[0].rows; i++) {
+//        for (int j = 0; j < imgs[0].cols; j++) {
+//            Vec3d color = minus.at<Vec3b>(i,j);
+//            double val = color[0]*color[0]+color[1]*color[1]+color[2]*color[2];
+//            if (val == 0) {
+//                errormat.at<double>(i,j) = val;
+//            }
+//            else{
+//                errormat.at<double>(i,j) = 1;
+//            }
+//            
+//        }
+//    }
     
     //debug
 //    imshow("err", errormat);
-//    
+//
 //    imshow("after", warped_mat);
 //    imshow("before", mattes[idx_i]);
 //    imshow("align", mattes[idx_j]);

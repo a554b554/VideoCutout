@@ -53,6 +53,7 @@ public:
     void testGlobal();
     void testShape();
     void testlearn();
+    void testre();
     
 private:
     enum showState{
@@ -67,6 +68,7 @@ private:
     vector<Mat> mattes;
     vector<Mat> warped_imgs;
     vector<Mat> warped_mattes;
+    vector<Mat> remats;
 };
 
 

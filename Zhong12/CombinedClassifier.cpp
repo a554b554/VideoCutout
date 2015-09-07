@@ -85,6 +85,7 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         
         
         
+        
         //only distance smaller than 30 are processed.
         vector<vector<Point> > contours; vector<Vec4i> hierarchy;
         Mat matte_copy = mattes[i].clone();
@@ -161,11 +162,14 @@ void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
                     featureVector current = getCorByID(id);
                     //current.print();
                     double val = exp(-(current.dist2(v)/sigmad2));
+                    cout<<val<<endl;
                     if (addtoForeground) {
                         fLattice[id] += val;
+                        //cout<<"f"<<id<<": "<<fLattice[id]<<endl;
                     }
                     else{
                         bLattice[id] += val;
+                        //cout<<"b"<<id<<": "<<bLattice[id]<<endl;
                     }
                 }
             }

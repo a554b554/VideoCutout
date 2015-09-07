@@ -196,9 +196,9 @@ void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat
     
     
     //debug
-    imshow("finalprob", probmat);
-    imshow("finalconf", confmat);
-    waitKey(0);
+//    imshow("finalprob", probmat);
+//    imshow("finalconf", confmat);
+//    waitKey(0);
     cout<<"UDC cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
 }
 
