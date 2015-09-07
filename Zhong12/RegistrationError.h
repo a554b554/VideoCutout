@@ -12,6 +12,6 @@
 #include <stdio.h>
 #include "common.h"
 
-void processRegistraionError(const Mat& img, const Mat& errormatte, Mat& outmat);
+void processRegistraionError(const Mat& errormat, Mat& errordensity);
 
 #endif /* defined(__Zhong12__RegistrationError__) */

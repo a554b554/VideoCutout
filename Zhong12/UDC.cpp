@@ -105,7 +105,7 @@ void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat
     probmat.create(img.rows, img.cols, CV_64FC1);
     confmat.create(img.rows, img.cols, CV_64FC1);
     probmat.setTo(0);
-    confmat.setTo(0);
+    confmat.setTo(1);
     
     for (int base = 0; base < img.rows; base+=step) {
         int start = base;

@@ -16,7 +16,7 @@
 #include "GlobalClassifier.h"
 #include "ShapePrior.h"
 #include <fstream>
-
+#include "RegistrationError.h"
 
 struct featureVector{
     double ru;
@@ -39,11 +39,12 @@ public:
     CombinedClassifier();
     CombinedClassifier(const string filepath);//for loading learned data
     void init();
-    void train(const vector<Mat>& imgs, const vector<Mat>& mattes);
+    void train(const vector<Mat>& imgs, const vector<Mat>& mattes, const vector<Mat>& remats);
     void addSample(featureVector v, bool addtoForeground);
     double prob(featureVector v);
     double conf(featureVector v);
     void exportdata();
+    
 private:
     double fLattice[interval]; //store the foreground trained data.
     double bLattice[interval]; //store the background trained data.

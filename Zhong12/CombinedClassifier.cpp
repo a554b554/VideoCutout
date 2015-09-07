@@ -61,7 +61,7 @@ void CombinedClassifier::init(){
 
 
 
-void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& mattes){
+void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& mattes, const vector<Mat>& remats){
     for (int i = 1; i < imgs.size(); i++) {
         printf("img: %d\n",i);
         int64 t0 = getTickCount();
@@ -83,6 +83,35 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         Mat shapeprob,shapeconf;
         processSP(imgs[i], mattes[i-1], shapeprob, shapeconf);
         
+        Mat errordensity;
+        processRegistraionError(remats[i-1], errordensity);
+        
+        
+        
+        FileStorage fs("tmp.xml", FileStorage::WRITE);
+        fs<<"UDCprob"<<UDCprob;
+        fs<<"UDCconf"<<UDCconf;
+        fs<<"localprob"<<localprob;
+        fs<<"localconf"<<localconf;
+        fs<<"globalprob"<<globalprob;
+        fs<<"globalconf"<<globalconf;
+        fs<<"shapeprob"<<shapeprob;
+        fs<<"shapeconf"<<shapeconf;
+        fs<<"errordensity"<<errordensity;
+        fs.release();
+        
+        
+        //debug show
+        imshow("UDCp", UDCprob);
+        imshow("UDCc", UDCconf);
+        imshow("localp", localprob);
+        imshow("localc", localconf);
+        imshow("globalp", globalprob);
+        imshow("globalc", globalconf);
+        imshow("shapep", shapeprob);
+        imshow("shapec", shapeconf);
+        imshow("rege", errordensity);
+        waitKey(0);
         
         
         
@@ -116,7 +145,8 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
                 v.rl = 0.5 + localconf.at<double>(dx,dy)*(localprob.at<double>(dx,dy)-0.5);
                 v.rg = 0.5 + globalconf.at<double>(dx,dy)*(globalprob.at<double>(dx,dy)-0.5);
                 v.rs = 0.5 + shapeconf.at<double>(dx,dy)*(shapeprob.at<double>(dx,dy)-0.5);
-                v.e = 0;
+                v.e = errordensity.at<double>(dx,dy);
+                
                 if (mattes[i].at<uchar>(dx,dy)==0) {
                     addSample(v, false);
                 }
@@ -150,26 +180,32 @@ void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
     int rgend = ((int)v.rg*cSize+2)<=cSize?(int)v.rg*cSize+2:cSize;
     int rsstart = ((int)v.rl*cSize-2)>=0?(int)v.rl*cSize-2:0;
     int rsend = ((int)v.rl*cSize+2)<=cSize?(int)v.rl*cSize+2:cSize;
+    int estart = ((int)v.e*cSize-2)>=0?(int)v.e*cSize-2:0;
+    int eend = ((int)v.e*cSize+2)<=cSize?(int)v.e*cSize+2:cSize;
 
     for (int ru = rustart; ru < ruend; ru++) {
         for (int rl = rlstart; rl < rlend; rl++) {
             for (int rg = rgstart; rg < rgend; rg++) {
                 for (int rs = rsstart; rs < rsend; rs++) {
-                    long id = rs*cSize+
-                    rg*cSize*cSize+
-                    rl*cSize*cSize*cSize+
-                    ru*cSize*cSize*cSize*cSize;
-                    featureVector current = getCorByID(id);
-                    //current.print();
-                    double val = exp(-(current.dist2(v)/sigmad2));
-                    cout<<val<<endl;
-                    if (addtoForeground) {
-                        fLattice[id] += val;
-                        //cout<<"f"<<id<<": "<<fLattice[id]<<endl;
-                    }
-                    else{
-                        bLattice[id] += val;
-                        //cout<<"b"<<id<<": "<<bLattice[id]<<endl;
+                    for (int e = estart; e < eend; e++) {
+                        
+                        long id = e+
+                        rs*cSize+
+                        rg*cSize*cSize+
+                        rl*cSize*cSize*cSize+
+                        ru*cSize*cSize*cSize*cSize;
+                        featureVector current = getCorByID(id);
+                        //current.print();
+                        double val = exp(-(current.dist2(v)/sigmad2));
+                        // cout<<val<<endl;
+                        if (addtoForeground) {
+                            fLattice[id] += val;
+                            //cout<<"f"<<id<<": "<<fLattice[id]<<endl;
+                        }
+                        else{
+                            bLattice[id] += val;
+                            //cout<<"b"<<id<<": "<<bLattice[id]<<endl;
+                        }
                     }
                 }
             }

@@ -44,7 +44,7 @@ public:
     void showImg();
     void calcOpticalFlows();
     void changeShowState();
-    void startTraining();
+   
     
     
     //unit test
@@ -68,7 +68,9 @@ private:
     vector<Mat> mattes;
     vector<Mat> warped_imgs;
     vector<Mat> warped_mattes;
-    vector<Mat> remats;
+    vector<Mat> remats; //uchar
+    
+    void clear(); //clear all storaged image in App.
 };
 
 

@@ -71,10 +71,14 @@ App::App(string winName, string filelistpath):winName(winName),showIdx(0){
     for (int i = 0; i < dirlist.size(); i++) {
         printf("traning data :%d\n",i);
         int64 t0 = getTickCount();
-        vector<Mat> _imgs,_mattes;
-        loadimage(dirlist[i], _imgs, _mattes);
-        classifier->train(_imgs, _mattes);
+        //vector<Mat> _imgs,_mattes;
+        loadimage(dirlist[i], imgs, mattes);
+        calcOpticalFlows();
+        classifier->train(imgs, mattes, remats);
         printf("traning finished, time cost: %lf", (getTickCount()-t0)/getTickFrequency());
+        imgs.clear();
+        mattes.clear();
+        
     }
     classifier->exportdata();
 }
@@ -119,7 +123,8 @@ void App::prevImg(){
 }
 
 void App::calcOpticalFlows(){
-    printf("calculating optical flow....\n");
+   // printf("calculating optical flow....\n");
+    int64 t0 = getTickCount();
     warped_imgs.resize(imgs.size());
     warped_mattes.resize(mattes.size());
 //    for (int i = 0; i < imgs.size(); i++) {
@@ -137,25 +142,20 @@ void App::calcOpticalFlows(){
     
     remats.resize(imgs.size()-1);
     for (int i = 0; i < imgs.size()-1; i++) {
-        Mat g = warped_imgs[i] - imgs[i+1];
+        remats[i] = warped_imgs[i] - imgs[i+1];
         //remats[i].create(g.size(), CV_64FC1);
-        cvtColor(g, g, CV_BGR2GRAY);
-        g.convertTo(remats[i], CV_64FC1);
-        imshow("re", g);
+ //       cvtColor(remats[i], remats[i], CV_BGR2GRAY);
+        imshow("re", remats[i]);
         waitKey(0);
     }
     
-    printf("calculate finished!\n");
+    printf("calculate optical flow cost: %lf\n", (getTickCount()-t0)/getTickFrequency());
 }
 
 void App::changeShowState(){
     printf("currentstate:%d\n",currentShowState);
     currentShowState = (currentShowState+1) % 4;
     showImg();
-}
-
-void App::startTraining(){
-    
 }
 
 
@@ -197,4 +197,10 @@ void App::testlearn(){
 }
 
 
-
+void App::clear(){
+    imgs.clear();
+    mattes.clear();
+    warped_imgs.clear();
+    warped_mattes.clear();
+    remats.clear();
+}
