@@ -27,7 +27,7 @@ void getRectangle(const Mat& matte, int direction, vector<Rect>& rects);
 
 void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat, Mat& confmat);
 
-
+void getbestmap(const vector<Mat>& probs, const vector<Mat>& confs, Mat& bestprob, Mat& bestconf);
 
 
 class UDC : public Classifier{

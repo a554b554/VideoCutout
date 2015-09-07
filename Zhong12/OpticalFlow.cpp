@@ -152,7 +152,7 @@ void OFFeatureMatcher::registration(int idx_i, int idx_j, Mat &registrated_img, 
         Point i_pt = imgpts[idx_i][matches[i].queryIdx].pt;
         Point j_pt = imgpts[idx_j][matches[i].trainIdx].pt;
         if (mattes[idx_i].at<uchar>(i_pt)!=0) {
-            //continue;
+            continue;
         }
         i_pts.push_back(i_pt);
         j_pts.push_back(j_pt);

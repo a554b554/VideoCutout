@@ -69,7 +69,7 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         valid.setTo(1);
         //process UDC
         Mat UDCprob,UDCconf;
-        processUDC(imgs[i], mattes[i-1], valid, UDCprob, UDCconf);
+        processUDC(imgs[i], mattes[i-1], UDCprob, UDCconf);
         
         //process Local
         Mat localprob,localconf;
@@ -102,16 +102,16 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         
         
         //debug show
-        imshow("UDCp", UDCprob);
-        imshow("UDCc", UDCconf);
-        imshow("localp", localprob);
-        imshow("localc", localconf);
-        imshow("globalp", globalprob);
-        imshow("globalc", globalconf);
-        imshow("shapep", shapeprob);
-        imshow("shapec", shapeconf);
-        imshow("rege", errordensity);
-        waitKey(0);
+//        imshow("UDCp", UDCprob);
+//        imshow("UDCc", UDCconf);
+//        imshow("localp", localprob);
+//        imshow("localc", localconf);
+//        imshow("globalp", globalprob);
+//        imshow("globalc", globalconf);
+//        imshow("shapep", shapeprob);
+//        imshow("shapec", shapeconf);
+//        imshow("rege", errordensity);
+//        waitKey(0);
         
         
         

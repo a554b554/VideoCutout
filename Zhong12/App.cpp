@@ -73,11 +73,10 @@ App::App(string winName, string filelistpath):winName(winName),showIdx(0){
         int64 t0 = getTickCount();
         //vector<Mat> _imgs,_mattes;
         loadimage(dirlist[i], imgs, mattes);
-        calcOpticalFlows();
+        //calcOpticalFlows();
         classifier->train(imgs, mattes, remats);
         printf("traning finished, time cost: %lf", (getTickCount()-t0)/getTickFrequency());
-        imgs.clear();
-        mattes.clear();
+        clear();
         
     }
     classifier->exportdata();
@@ -143,10 +142,9 @@ void App::calcOpticalFlows(){
     remats.resize(imgs.size()-1);
     for (int i = 0; i < imgs.size()-1; i++) {
         remats[i] = warped_imgs[i] - imgs[i+1];
-        //remats[i].create(g.size(), CV_64FC1);
- //       cvtColor(remats[i], remats[i], CV_BGR2GRAY);
-        imshow("re", remats[i]);
-        waitKey(0);
+        cvtColor(remats[i], remats[i], CV_BGR2GRAY);
+//        imshow("re", remats[i]);
+//        waitKey(0);
     }
     
     printf("calculate optical flow cost: %lf\n", (getTickCount()-t0)/getTickFrequency());

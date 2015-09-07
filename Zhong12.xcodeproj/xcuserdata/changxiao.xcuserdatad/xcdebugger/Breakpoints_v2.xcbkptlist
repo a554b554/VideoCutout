@@ -72,11 +72,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/UDC.cpp"
-            timestampString = "462714268.213989"
+            timestampString = "463320403.878148"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
+            startingLineNumber = "174"
+            endingLineNumber = "174"
             landmarkName = "processUDCRect(const Mat&amp; img_rect, const Mat&amp; matte_rect, Mat&amp; probmat, Mat&amp; confmat)"
             landmarkType = "7">
          </BreakpointContent>
@@ -88,11 +88,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/UDC.cpp"
-            timestampString = "463112502.662692"
+            timestampString = "463320403.878148"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
+            startingLineNumber = "259"
+            endingLineNumber = "259"
             landmarkName = "processUDC(const Mat&amp; img, const Mat&amp; matte, const Mat&amp; valid, Mat&amp; probmat, Mat&amp; confmat)"
             landmarkType = "7">
          </BreakpointContent>
@@ -104,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/UDC.cpp"
-            timestampString = "463112502.662692"
+            timestampString = "463320403.878148"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
             landmarkName = "processUDC(const Mat&amp; img, const Mat&amp; matte, const Mat&amp; valid, Mat&amp; probmat, Mat&amp; confmat)"
             landmarkType = "7">
          </BreakpointContent>
@@ -223,6 +223,22 @@
             endingLineNumber = "139"
             landmarkName = "CombinedClassifier::train(const vector&lt;Mat&gt;&amp; imgs, const vector&lt;Mat&gt;&amp; mattes, const vector&lt;Mat&gt;&amp; remats)"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Zhong12/UDC.cpp"
+            timestampString = "463320403.878148"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
+            landmarkName = "processUDC(const Mat&amp; img, const Mat&amp; matte, Mat&amp; probmat, Mat&amp; confmat)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
