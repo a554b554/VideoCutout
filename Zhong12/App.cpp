@@ -73,7 +73,7 @@ App::App(string winName, string filelistpath):winName(winName),showIdx(0){
         int64 t0 = getTickCount();
         //vector<Mat> _imgs,_mattes;
         loadimage(dirlist[i], imgs, mattes);
-        //calcOpticalFlows();
+        calcOpticalFlows();
         classifier->train(imgs, mattes, remats);
         printf("traning finished, time cost: %lf", (getTickCount()-t0)/getTickFrequency());
         clear();

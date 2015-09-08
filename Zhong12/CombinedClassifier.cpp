@@ -88,20 +88,22 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         
         
         
-        FileStorage fs("tmp.xml", FileStorage::WRITE);
-        fs<<"UDCprob"<<UDCprob;
-        fs<<"UDCconf"<<UDCconf;
-        fs<<"localprob"<<localprob;
-        fs<<"localconf"<<localconf;
-        fs<<"globalprob"<<globalprob;
-        fs<<"globalconf"<<globalconf;
-        fs<<"shapeprob"<<shapeprob;
-        fs<<"shapeconf"<<shapeconf;
-        fs<<"errordensity"<<errordensity;
-        fs.release();
+//        FileStorage fs("tmp.xml", FileStorage::WRITE);
+//        fs<<"UDCprob"<<UDCprob;
+//        fs<<"UDCconf"<<UDCconf;
+//        fs<<"localprob"<<localprob;
+//        fs<<"localconf"<<localconf;
+//        fs<<"globalprob"<<globalprob;
+//        fs<<"globalconf"<<globalconf;
+//        fs<<"shapeprob"<<shapeprob;
+//        fs<<"shapeconf"<<shapeconf;
+//        fs<<"errordensity"<<errordensity;
+//        fs.release();
         
         
-        //debug show
+//        debug show
+//        imshow("target", mattes[i]);
+//        imshow("image", imgs[i]);
 //        imshow("UDCp", UDCprob);
 //        imshow("UDCc", UDCconf);
 //        imshow("localp", localprob);
@@ -170,18 +172,20 @@ void CombinedClassifier::exportdata(){
     f.close();
 }
 
+static const int gridsize = 2;
 
 void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
-    int rustart = ((int)v.ru*cSize-2)>=0?(int)v.ru*cSize-2:0;
-    int ruend = ((int)v.ru*cSize+2)<=cSize?(int)v.ru*cSize+2:cSize;
-    int rlstart = ((int)v.rl*cSize-2)>=0?(int)v.rl*cSize-2:0;
-    int rlend = ((int)v.rl*cSize+2)<=cSize?(int)v.rl*cSize+2:cSize;
-    int rgstart = ((int)v.rg*cSize-2)>=0?(int)v.rg*cSize-2:0;
-    int rgend = ((int)v.rg*cSize+2)<=cSize?(int)v.rg*cSize+2:cSize;
-    int rsstart = ((int)v.rl*cSize-2)>=0?(int)v.rl*cSize-2:0;
-    int rsend = ((int)v.rl*cSize+2)<=cSize?(int)v.rl*cSize+2:cSize;
-    int estart = ((int)v.e*cSize-2)>=0?(int)v.e*cSize-2:0;
-    int eend = ((int)v.e*cSize+2)<=cSize?(int)v.e*cSize+2:cSize;
+    int rustart = ((int)(v.ru*cSize)-gridsize)>=0?(int)(v.ru*cSize)-gridsize:0;
+    int ruend = ((int)(v.ru*cSize)+gridsize)<=cSize?(int)(v.ru*cSize)+gridsize:cSize;
+    int rlstart = ((int)(v.rl*cSize)-gridsize)>=0?(int)(v.rl*cSize)-gridsize:0;
+    int rlend = ((int)(v.rl*cSize)+gridsize)<=cSize?(int)(v.rl*cSize)+gridsize:cSize;
+    int rgstart = ((int)(v.rg*cSize)-gridsize)>=0?(int)(v.rg*cSize-gridsize):0;
+
+    int rgend = ((int)(v.rg*cSize)+gridsize)<=cSize?(int)(v.rg*cSize)+gridsize:cSize;
+    int rsstart = ((int)(v.rl*cSize)-gridsize)>=0?(int)(v.rl*cSize)-gridsize:0;
+    int rsend = ((int)(v.rl*cSize)+gridsize)<=cSize?(int)(v.rl*cSize)+gridsize:cSize;
+    int estart = ((int)(v.e*cSize)-gridsize)>=0?(int)(v.e*cSize)-gridsize:0;
+    int eend = ((int)(v.e*cSize)+gridsize)<=cSize?(int)(v.e*cSize)+gridsize:cSize;
 
     for (int ru = rustart; ru < ruend; ru++) {
         for (int rl = rlstart; rl < rlend; rl++) {
@@ -195,8 +199,13 @@ void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
                         rl*cSize*cSize*cSize+
                         ru*cSize*cSize*cSize*cSize;
                         featureVector current = getCorByID(id);
-                        //current.print();
+                        current.print();
+                        v.print();
                         double val = exp(-(current.dist2(v)/sigmad2));
+                        if (isnan(val)) {
+                            printf("nan!");
+                            val = 0;
+                        }
                         // cout<<val<<endl;
                         if (addtoForeground) {
                             fLattice[id] += val;

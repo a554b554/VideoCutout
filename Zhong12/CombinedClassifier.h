@@ -32,7 +32,7 @@ struct featureVector{
 
 class CombinedClassifier{
 public:
-    static constexpr double sigmad2 = 0.1;
+    static constexpr double sigmad2 = 0.01;
     static const int cSize = 20;
     static constexpr long interval = cSize*cSize*cSize*cSize*cSize;
     static featureVector getCorByID(long i);

@@ -30,7 +30,7 @@ void processRegistraionError(const Mat& errormat, Mat& errordensity){
                 }
             }
             
-            errordensity.at<double>(i,j) = 1 - exp((ans/winsize)/sigmae2);
+            errordensity.at<double>(i,j) = 1 - exp(-(ans/winsize)/sigmae2);
         }
     }
     
