@@ -36,6 +36,7 @@ public:
     static const int cSize = 20;
     static constexpr long interval = cSize*cSize*cSize*cSize*cSize;
     static featureVector getCorByID(long i);
+    static int getNearestVectorID(featureVector v);
     CombinedClassifier();
     CombinedClassifier(const string filepath);//for loading learned data
     void init();

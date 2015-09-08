@@ -41,6 +41,13 @@ featureVector featureVector::operator*(double num){
     return ans;
 }
 
+int CombinedClassifier::getNearestVectorID(featureVector v){
+    return (int)(v.ru*cSize+0.5)*cSize*cSize*cSize*cSize+
+    (int)(v.rl*cSize+0.5)*cSize*cSize*cSize+
+    (int)(v.rg*cSize+0.5)*cSize*cSize+
+    (int)(v.rs*cSize+0.5)*cSize+
+    (int)(v.e*cSize+0.5);
+}
 
 void featureVector::print(){
     printf("%lf %lf %lf %lf %lf\n",ru,rl,rg,rs,e);
@@ -206,7 +213,9 @@ void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
                         ru*cSize*cSize*cSize*cSize;
                         featureVector current = getCorByID(id);
                         //current.print();
-                        //v.print();
+                        
+
+                        
                         double val = exp(-(current.dist2(v)/sigmad2));
                         if (isnan(val)) {
                             printf("nan!");
@@ -238,5 +247,41 @@ void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
 //        }
 //        
 //    }
-//    
+//
+    
 }
+
+
+
+double CombinedClassifier::prob(featureVector v){
+    int id = getNearestVectorID(v);
+    return fLattice[id]/(fLattice[id]+bLattice[id]);
+}
+
+static const double ep = 5;
+double CombinedClassifier::conf(featureVector v){
+    int id = getNearestVectorID(v);
+    return fabs(fLattice[id]-bLattice[id])/(fLattice[id]+bLattice[id]+ep);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

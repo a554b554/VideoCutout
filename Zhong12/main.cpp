@@ -72,12 +72,13 @@ int maintest(int argc, const char * argv[]){
 
 int main(int argc, const char * argv[]){
     
-    string testPath = "../../Zhong12-SIGA-dataset/TEST/";
-    string dirname = argv[1];
+    string testPath = "../../Zhong12-SIGA-dataset/ANIMAL/";
+    string dirname = "bear";
     //testPath = testPath + argv[1] + "/";
-    CombinedClassifier* b = new CombinedClassifier("testdata.txt");
-    //App app("app", testPath, dirname);
-    App app("app", "./filelist.txt");
+    App* app = new App("app", testPath, dirname);
+    app->calcOpticalFlows();
+    app->start("data.txt");
+//    App* app = new App("app", "./filelist.txt");
     //app.testUDC();
     //app.calcOpticalFlows();
 }

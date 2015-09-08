@@ -138,7 +138,9 @@ void App::calcOpticalFlows(){
     }
     warped_imgs[imgs.size()-1] = imgs[imgs.size()-1].clone();
     warped_mattes[mattes.size()-1] = mattes[mattes.size()-1].clone();
+
     
+    //calculate remats
     remats.resize(imgs.size()-1);
     for (int i = 0; i < imgs.size()-1; i++) {
         remats[i] = warped_imgs[i] - imgs[i+1];
@@ -156,7 +158,51 @@ void App::changeShowState(){
     showImg();
 }
 
-
+void App::start(string trained){
+    if (remats.empty()) {
+        cerr<<"you need calculate optical flow first!"<<endl;
+        exit(1);
+    }
+    
+    
+    classifier = new CombinedClassifier(trained);
+    for (int i = 1; i < imgs.size(); i++) {
+        Mat UDCprob,UDCconf;
+        processUDC(imgs[i], mattes[i-1], UDCprob, UDCconf);
+        
+        Mat localprob,localconf;
+        processLC(imgs[i], mattes[i-1], localprob, localconf);
+        
+        Mat globalprob,globalconf;
+        processGC(imgs[i], mattes[i-1], globalprob, globalconf);
+        
+        Mat shapeprob,shapeconf;
+        processSP(imgs[i], mattes[i-1], shapeprob, shapeconf);
+        
+        Mat errordensity;
+        processRegistraionError(remats[i-1], errordensity);
+        
+        Mat finalprob(imgs[0].size(),CV_64FC1);
+        Mat finalconf(imgs[0].size(),CV_64FC1);
+        for (int dx = 0; dx < imgs[0].rows; dx++) {
+            for (int dy = 0; dy < imgs[0].cols; dy++) {
+                featureVector v;
+                v.ru = 0.5 + UDCconf.at<double>(dx,dy)*(UDCprob.at<double>(dx,dy)-0.5);
+                v.rl = 0.5 + localconf.at<double>(dx,dy)*(localprob.at<double>(dx,dy)-0.5);
+                v.rg = 0.5 + globalconf.at<double>(dx,dy)*(globalprob.at<double>(dx,dy)-0.5);
+                v.rs = 0.5 + shapeconf.at<double>(dx,dy)*(shapeprob.at<double>(dx,dy)-0.5);
+                v.e = errordensity.at<double>(dx,dy);
+                finalprob.at<double>(dx,dy) = classifier->prob(v);
+                finalconf.at<double>(dx,dy) = classifier->conf(v);
+            }
+        }
+        
+        output_probs.push_back(finalprob);
+        output_confs.push_back(finalconf);
+        
+        
+    }
+}
 
 
 void App::testUDC(){
