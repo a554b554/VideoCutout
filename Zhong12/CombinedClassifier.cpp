@@ -52,6 +52,12 @@ CombinedClassifier::CombinedClassifier(){
 
 CombinedClassifier::CombinedClassifier(const string filepath){
     init();
+    fstream f;
+    f.open(filepath);
+    for (int i = 0; i < interval; i++) {
+        f>>fLattice[i]>>bLattice[i];
+    }
+    f.close();
 }
 
 void CombinedClassifier::init(){
@@ -199,8 +205,8 @@ void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
                         rl*cSize*cSize*cSize+
                         ru*cSize*cSize*cSize*cSize;
                         featureVector current = getCorByID(id);
-                        current.print();
-                        v.print();
+                        //current.print();
+                        //v.print();
                         double val = exp(-(current.dist2(v)/sigmad2));
                         if (isnan(val)) {
                             printf("nan!");

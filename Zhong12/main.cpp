@@ -75,6 +75,7 @@ int main(int argc, const char * argv[]){
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
     string dirname = argv[1];
     //testPath = testPath + argv[1] + "/";
+    CombinedClassifier* b = new CombinedClassifier("testdata.txt");
     //App app("app", testPath, dirname);
     App app("app", "./filelist.txt");
     //app.testUDC();
