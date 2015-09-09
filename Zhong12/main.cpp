@@ -77,7 +77,7 @@ int main(int argc, const char * argv[]){
 //    testPath = testPath + argv[1] + "/";
     App* app = new App("app", testPath, dirname);
     app->calcOpticalFlows();
-    app->maskbypreviousframe();
+
 //    app->calcOpticalFlows();
 //    app->start("./trained/bear.txt");
     
