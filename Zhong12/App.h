@@ -54,6 +54,7 @@ public:
     void testShape();
     void testlearn();
     void testre();
+    void exportimg(const vector<Mat>& imgs);
     
 private:
     enum showState{
@@ -72,6 +73,7 @@ private:
     
     vector<Mat> output_probs;
     vector<Mat> output_confs;
+    vector<Mat> final;
     
     CombinedClassifier* classifier;
     void clear(); //clear all storaged image in App.

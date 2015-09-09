@@ -197,9 +197,26 @@ void App::start(string trained){
             }
         }
         
+        
+        //debug
+//        imshow("UDCprob", UDCprob);
+//        imshow("localprob", localprob);
+//        imshow("globalprob", globalprob);
+//        imshow("shapeprob", shapeprob);
+//        imshow("ground truth", mattes[i]);
+//        imshow("src", imgs[i]);
+//        imshow("finalprob", finalprob);
+//        imshow("finalconf", finalconf);
+        
+        Mat cut;
+        getCutout(imgs[i], finalprob, cut);
+//        imshow("result", cut);
+//        waitKey(0);
+        
+        final.push_back(cut);
         output_probs.push_back(finalprob);
         output_confs.push_back(finalconf);
-        
+        imwrite("../../testdata/"+to_string(i)+".jpg", cut);
         
     }
 }
@@ -209,10 +226,9 @@ void App::testUDC(){
     Mat valid(imgs[0].rows, imgs[0].cols,CV_8UC1);
     valid.setTo(255);
     Mat a,b;
-    imshow("src", imgs[0]);
-    imshow("src matte", mattes[0]);
-    imshow("target", imgs[88]);
-    processUDC(imgs[88], mattes[0], valid, a, b);
+    imshow("src", imgs[1]);
+    imshow("ground truth", mattes[1]);
+    processUDC(imgs[1], mattes[0], a, b);
 }
 
 

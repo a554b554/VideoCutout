@@ -42,11 +42,19 @@ featureVector featureVector::operator*(double num){
 }
 
 int CombinedClassifier::getNearestVectorID(featureVector v){
-    return (int)(v.ru*cSize+0.5)*cSize*cSize*cSize*cSize+
-    (int)(v.rl*cSize+0.5)*cSize*cSize*cSize+
-    (int)(v.rg*cSize+0.5)*cSize*cSize+
-    (int)(v.rs*cSize+0.5)*cSize+
-    (int)(v.e*cSize+0.5);
+    int bound = cSize-1;
+    int ru = (int)(v.ru*cSize+0.5)<=bound?(int)(v.ru*cSize+0.5):bound;
+    int rl = (int)(v.rl*cSize+0.5)<=bound?(int)(v.rl*cSize+0.5):bound;
+    int rg = (int)(v.rg*cSize+0.5)<=bound?(int)(v.rg*cSize+0.5):bound;
+    int rs = (int)(v.rs*cSize+0.5)<=bound?(int)(v.rs*cSize+0.5):bound;
+    int e = (int)(v.e*cSize+0.5)<=bound?(int)(v.e*cSize+0.5):bound;
+    
+    
+    return ru*cSize*cSize*cSize*cSize+
+    rl*cSize*cSize*cSize+
+    rg*cSize*cSize+
+    rs*cSize+
+    e;
 }
 
 void featureVector::print(){

@@ -76,8 +76,9 @@ int main(int argc, const char * argv[]){
     string dirname = "bear";
     //testPath = testPath + argv[1] + "/";
     App* app = new App("app", testPath, dirname);
-    app->calcOpticalFlows();
-    app->start("data.txt");
+    app->testUDC();
+    //app->calcOpticalFlows();
+    //app->start("data.txt");
 //    App* app = new App("app", "./filelist.txt");
     //app.testUDC();
     //app.calcOpticalFlows();

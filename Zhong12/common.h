@@ -29,6 +29,7 @@ void drawArrows(cv::Mat& frame, const std::vector<cv::Point2f>& prevPts, const s
 
 double variance(const vector<int>& data);
 
+void getCutout(const Mat& src, const Mat& prob, Mat& cutout);
 
 
 #endif /* defined(__Zhong12__common__) */

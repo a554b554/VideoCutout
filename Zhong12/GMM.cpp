@@ -95,11 +95,11 @@ void GMM::addSample( int ci, const Vec3d color )
 }
 
 void GMM::learning(const vector<Vec3d>& colors){
-    Mat samples = Mat(colors);
-    samples.convertTo(samples, CV_32FC1);
-    samples.reshape(3);
+    CV_Assert(!colors.empty());
+    Mat samples(colors);
+     samples.convertTo(samples, CV_32FC1);
     Mat lab;
-    kmeans(samples, 3, lab, TermCriteria( CV_TERMCRIT_ITER, 10, 0.0), 0, KMEANS_PP_CENTERS);
+    kmeans(samples, componentsCount, lab, TermCriteria( CV_TERMCRIT_ITER, 10, 0.0), 0, KMEANS_PP_CENTERS);
     initLearning();
     for (int i = 0; i < colors.size(); i++) {
         this->addSample(lab.at<int>(i,0), colors[i]);

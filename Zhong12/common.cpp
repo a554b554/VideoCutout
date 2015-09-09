@@ -78,6 +78,13 @@ double variance(const vector<int>& data){
     return var/(double)data.size();
 }
 
+void getCutout(const Mat& src, const Mat& prob, Mat& cutout){
+    Mat mask, tmpprob;
+    prob.convertTo(tmpprob, CV_32FC1);
+    threshold(tmpprob, mask, 0.1, 1., CV_THRESH_BINARY);
+    mask.convertTo(mask, CV_8UC1);
+    src.copyTo(cutout, mask);
+}
 
 
 
