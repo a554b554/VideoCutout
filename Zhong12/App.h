@@ -54,7 +54,8 @@ public:
     void testShape();
     void testlearn();
     void testre();
-    void exportimg(const vector<Mat>& imgs);
+    void exportimg(const vector<Mat>& imgs, string path);
+    void maskbypreviousframe();
     
 private:
     enum showState{

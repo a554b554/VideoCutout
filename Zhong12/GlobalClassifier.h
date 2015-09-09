@@ -17,4 +17,5 @@
 void processGC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat);
 
 
+
 #endif /* defined(__Zhong12__GlobalClassifier__) */

@@ -74,11 +74,13 @@ int main(int argc, const char * argv[]){
     
     string testPath = "../../Zhong12-SIGA-dataset/ANIMAL/";
     string dirname = "bear";
-    //testPath = testPath + argv[1] + "/";
+//    testPath = testPath + argv[1] + "/";
     App* app = new App("app", testPath, dirname);
-    app->testUDC();
-    //app->calcOpticalFlows();
-    //app->start("data.txt");
+    app->calcOpticalFlows();
+    app->maskbypreviousframe();
+//    app->calcOpticalFlows();
+//    app->start("./trained/bear.txt");
+    
 //    App* app = new App("app", "./filelist.txt");
     //app.testUDC();
     //app.calcOpticalFlows();

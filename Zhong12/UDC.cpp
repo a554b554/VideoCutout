@@ -180,17 +180,17 @@ void processUDC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     getbestmap(probs, confs, probmat, confmat);
     
     //debug
-    imshow("prob0", prob0);
-    imshow("conf0", conf0);
-    imshow("prob90", prob90);
-    imshow("conf90", conf90);
-    imshow("prob45", prob45);
-    imshow("conf45", conf45);
-    imshow("prob135", prob135);
-    imshow("conf135", conf135);
-    imshow("prob", probmat);
-    imshow("conf", confmat);
-    waitKey(0);
+//    imshow("prob0", prob0);
+//    imshow("conf0", conf0);
+//    imshow("prob90", prob90);
+//    imshow("conf90", conf90);
+//    imshow("prob45", prob45);
+//    imshow("conf45", conf45);
+//    imshow("prob135", prob135);
+//    imshow("conf135", conf135);
+//    imshow("prob", probmat);
+//    imshow("conf", confmat);
+//    waitKey(0);
 //    destroyAllWindows();
     
 
@@ -207,32 +207,47 @@ void processUDCRect(const Mat& img_rect, const Mat& matte_rect, Mat& probmat, Ma
     
 //    learning GMM by matte
 
-//    for (int i = 0; i < rows; i++) {
-//        for (int j = 0; j < cols; j++) {
-//            if (matte_rect.at<uchar>(i,j) == 0) {
-//                bSamples.push_back(static_cast<Vec3d>(img_rect.at<Vec3b>(i,j)));
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (matte_rect.at<uchar>(i,j) == 0) {
+                bSamples.push_back(static_cast<Vec3d>(img_rect.at<Vec3b>(i,j)));
+            }
+            else if (matte_rect.at<uchar>(i,j) == 255){
+                fSamples.push_back(static_cast<Vec3d>(img_rect.at<Vec3b>(i,j)));
+            }
+        }
+    }
+    
+    //learning GMM by kmeans
+//    Mat lab;
+//    Mat sample = img_rect.clone();
+//    Mat _matte = matte_rect.clone();
+//    _matte.create(matte_rect.cols*matte_rect.rows, 1, CV_8UC1);
+//    sample.create(img_rect.cols*img_rect.rows, 1, CV_8UC3);
+//    sample.convertTo(sample, CV_32FC1);
+//    kmeans(sample, 2, lab, TermCriteria( CV_TERMCRIT_ITER, 10, 0.0), 0, KMEANS_PP_CENTERS);
+//    
+//    
+//    int count=0;
+//    for (int i = 0; i < lab.rows; i++) {
+//        if (_matte.at<uchar>(i,0) != 0) {
+//            if (lab.at<int>(i,0) == 0) {
+//                count++;
 //            }
-//            else if (matte_rect.at<uchar>(i,j) == 255){
-//                fSamples.push_back(static_cast<Vec3d>(img_rect.at<Vec3b>(i,j)));
+//            else{
+//                count--;
 //            }
 //        }
 //    }
-    
-    //learning GMM by kmeans
-    Mat lab;
-    Mat sample = img_rect.clone();
-    sample.create(img_rect.cols*img_rect.rows, 1, CV_8UC3);
-    sample.convertTo(sample, CV_32FC1);
-    kmeans(sample, 2, lab, TermCriteria( CV_TERMCRIT_ITER, 10, 0.0), 0, KMEANS_PP_CENTERS);
-    int bl = lab.at<int>(lab.rows-1                  ,0);
-    for (int i = 0; i < sample.rows; i++) {
-        if (lab.at<int>(i,0) == bl) {
-            bSamples.push_back(sample.at<Vec3f>(i,0));
-        }
-        else{
-            fSamples.push_back(sample.at<Vec3f>(i,0));
-        }
-    }
+//    int bl = count>0?1:0;
+//    for (int i = 0; i < sample.rows; i++) {
+//        if (lab.at<int>(i,0) == bl) {
+//            bSamples.push_back(sample.at<Vec3f>(i,0));
+//        }
+//        else{
+//            fSamples.push_back(sample.at<Vec3f>(i,0));
+//        }
+//    }
     
 
     //compute confidence map and probability map.

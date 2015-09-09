@@ -199,28 +199,32 @@ void App::start(string trained){
         
         
         //debug
-//        imshow("UDCprob", UDCprob);
-//        imshow("localprob", localprob);
-//        imshow("globalprob", globalprob);
-//        imshow("shapeprob", shapeprob);
-//        imshow("ground truth", mattes[i]);
-//        imshow("src", imgs[i]);
-//        imshow("finalprob", finalprob);
-//        imshow("finalconf", finalconf);
+        imshow("UDCprob", UDCprob);
+        imshow("localprob", localprob);
+        imshow("globalprob", globalprob);
+        imshow("shapeprob", shapeprob);
+        imshow("ground truth", mattes[i]);
+        imshow("src", imgs[i]);
+        imshow("finalprob", finalprob);
+        imshow("finalconf", finalconf);
         
         Mat cut;
         getCutout(imgs[i], finalprob, cut);
-//        imshow("result", cut);
-//        waitKey(0);
+        imshow("result", cut);
+        waitKey(0);
         
         final.push_back(cut);
         output_probs.push_back(finalprob);
         output_confs.push_back(finalconf);
         imwrite("../../testdata/"+to_string(i)+".jpg", cut);
-        
     }
 }
 
+void App::exportimg(const vector<cv::Mat> &imgs, string path){
+    for (int i = 0; i < imgs.size(); i++) {
+        imwrite(path+to_string(i)+".jpg", imgs[i]);
+    }
+}
 
 void App::testUDC(){
     Mat valid(imgs[0].rows, imgs[0].cols,CV_8UC1);
@@ -243,7 +247,7 @@ void App::testLocal(){
 
 void App::testGlobal(){
     Mat a,b;
-    processGC(imgs[0], mattes[0], a, b);
+    processGC(imgs[1], mattes[1], a, b);
 }
 
 void App::testShape(){
@@ -255,6 +259,17 @@ void App::testlearn(){
     //string j = "d";
     CombinedClassifier* g = new CombinedClassifier("wtf");
 }
+
+void App::maskbypreviousframe(){
+    vector<Mat> final;
+    for (int i = 1; i < imgs.size(); i++) {
+        Mat cut;
+        getCutout(imgs[i], warped_mattes[i-1], cut);
+        final.push_back(cut);
+    }
+    exportimg(final, "../../result/bear_warp/");
+}
+
 
 
 void App::clear(){

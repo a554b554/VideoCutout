@@ -16,7 +16,7 @@
 
 using namespace std;
 using namespace cv;
-const int RectHeight = 22;
+const int RectHeight = 21;
 const int range = 20;
 
 void processUDC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat);

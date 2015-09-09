@@ -31,5 +31,7 @@ double variance(const vector<int>& data);
 
 void getCutout(const Mat& src, const Mat& prob, Mat& cutout);
 
+void computeRawDist(const Mat& matte, Mat& raw_dist);
+
 
 #endif /* defined(__Zhong12__common__) */

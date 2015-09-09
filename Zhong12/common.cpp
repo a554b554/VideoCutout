@@ -86,7 +86,24 @@ void getCutout(const Mat& src, const Mat& prob, Mat& cutout){
     src.copyTo(cutout, mask);
 }
 
+void computeRawDist(const Mat& matte, Mat& raw_dist){
+    vector<vector<Point> > contours; vector<Vec4i> hierarchy;
+    Mat matte_copy = matte.clone();
+    Mat img_copy = matte.clone();
+    
+    findContours( matte_copy, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
+    
+    raw_dist.create(matte.size(), CV_32FC1 );
+    
+    for( int j = 0; j < matte.rows; j++ )
+    {
+        for( int i = 0; i < matte.cols; i++ )
+        {
+            raw_dist.at<float>(j,i) = pointPolygonTest( contours[0], Point2f(i,j), true );
+        }
+    }
 
+}
 
 
 

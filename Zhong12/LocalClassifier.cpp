@@ -47,22 +47,8 @@ void processLC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     
     
     //compute distance
-    vector<vector<Point> > contours; vector<Vec4i> hierarchy;
-    Mat matte_copy = matte.clone();
-    Mat img_copy = img.clone();
-    
-    findContours( matte_copy, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
-    
-    Mat raw_dist( img.size(), CV_32FC1 );
-    
-    int64 t1 = getTickCount();
-    for( int j = 0; j < img.rows; j++ )
-    {
-        for( int i = 0; i < img.cols; i++ )
-        {
-            raw_dist.at<float>(j,i) = pointPolygonTest( contours[0], Point2f(i,j), true );
-        }
-    }
+    Mat raw_dist;
+    computeRawDist(matte, raw_dist);
     //cout<<"cost for dist: "<<(getTickCount()-t1)/getTickFrequency()<<endl;
   //  cout<<raw_dist<<endl;
     

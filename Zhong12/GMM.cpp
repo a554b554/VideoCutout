@@ -131,13 +131,10 @@ void GMM::learning(const vector<Vec3d>& colors){
 //        cout<<"iter: "<<i<<endl;
         
         updateModel();
-        
         initLearning();
         for (int j = 0; j < colors.size(); j++) {
             this->addSample(comp[j], colors[j]);
         }
-        
-        
         endLearning();
         double adiff = norm(oldmodel, model);
         if (adiff < 1) { //iter threshold.
