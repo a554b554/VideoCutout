@@ -16,11 +16,11 @@ UDC::UDC(const vector<Vec3d>& fgdSamples, const vector<Vec3d>& bgdSamples){
     bGMM->learning(bgdSamples);
 }
 
-double UDC::prob(const Vec3d color)const{
+double UDC::prob(const Vec3d& color)const{
     return (*fGMM)(color)/((*fGMM)(color)+(*bGMM)(color));
 }
 
-double UDC::conf(const Vec3d color)const{
+double UDC::conf(const Vec3d& color)const{
     double term1 = fabs((*fGMM)(color) - (*bGMM)(color))/((*fGMM)(color) + (*bGMM)(color) + epi);
     double qx = prob(color)*(fGMM->quantity(color, true))+(1-prob(color))*(bGMM->quantity(color, false));
     return term1;

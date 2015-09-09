@@ -21,16 +21,16 @@ public:
     static const int componentsCount = 5;
     
     GMM( Mat& _model );
-    double operator()( const Vec3d color ) const;
-    double operator()( int ci, const Vec3d color ) const;
-    int whichComponent( const Vec3d color ) const;
+    double operator()( const Vec3d& color ) const;
+    double operator()( int ci, const Vec3d& color ) const;
+    int whichComponent( const Vec3d& color ) const;
     
     void initLearning();
-    void addSample( int ci, const Vec3d color );
+    void addSample( int ci, const Vec3d& color );
     void learning(const vector<Vec3d>& colors);
     void endLearning();
     void updateModel();
-    double quantity(const Vec3d color, bool isForeground);
+    double quantity(const Vec3d& color, bool isForeground);
     
 private:
     void calcInverseCovAndDeterm( int ci );

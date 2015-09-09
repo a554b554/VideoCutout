@@ -40,7 +40,7 @@ public:
     CombinedClassifier();
     CombinedClassifier(const string filepath);//for loading learned data
     void init();
-    void train(const vector<Mat>& imgs, const vector<Mat>& mattes, const vector<Mat>& remats);
+    void train(const vector<Mat>& imgs, const vector<Mat>& mattes_gt, const vector<Mat>& remats, const vector<Mat>& mattes_warped);
     void addSample(featureVector v, bool addtoForeground);
     double prob(featureVector v);
     double conf(featureVector v);

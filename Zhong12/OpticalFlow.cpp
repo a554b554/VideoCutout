@@ -198,15 +198,15 @@ void OFFeatureMatcher::registration(int idx_i, int idx_j, Mat &registrated_img, 
     //debug
 //    imshow("err", errormat);
 
-    imshow("after", warped_mat);
-    imshow("before", mattes[idx_i]);
-    imshow("align", mattes[idx_j]);
-    imshow("align + after", 0.5*mattes[idx_j]+0.5*warped_mat);
-    imshow("align + before", 0.5*mattes[idx_j]+0.5*mattes[idx_i]);
-    
-    imshow("align + after img", 0.5*imgs[idx_j]+0.5*warped);
-    imshow("align + before img", 0.5*imgs[idx_j]+0.5*imgs[idx_i]);
-    waitKey(0);
+//    imshow("after", warped_mat);
+//    imshow("before", mattes[idx_i]);
+//    imshow("align", mattes[idx_j]);
+//    imshow("align + after", 0.5*mattes[idx_j]+0.5*warped_mat);
+//    imshow("align + before", 0.5*mattes[idx_j]+0.5*mattes[idx_i]);
+//    
+//    imshow("align + after img", 0.5*imgs[idx_j]+0.5*warped);
+//    imshow("align + before img", 0.5*imgs[idx_j]+0.5*imgs[idx_i]);
+//    waitKey(0);
     warped.copyTo(registrated_img);
     warped_mat.copyTo(registrated_matte);
     

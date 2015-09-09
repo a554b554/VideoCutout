@@ -29,20 +29,6 @@
             timestampString = "462870371.198173"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Zhong12/main.cpp"
-            timestampString = "462870371.198173"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
             startingLineNumber = "33"
             endingLineNumber = "33"
             landmarkName = "main1(int argc, const char * argv[])"
@@ -200,12 +186,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463407021.553285"
+            timestampString = "463496171.453022"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
-            landmarkName = "CombinedClassifier::train(const vector&lt;Mat&gt;&amp; imgs, const vector&lt;Mat&gt;&amp; mattes, const vector&lt;Mat&gt;&amp; remats)"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
+            landmarkName = "CombinedClassifier::train(const vector&lt;Mat&gt;&amp; imgs, const vector&lt;Mat&gt;&amp; mattes_gt, const vector&lt;Mat&gt;&amp; remats, const vector&lt;Mat&gt;&amp; mattes_warped)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -248,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463407021.553285"
+            timestampString = "463496171.453022"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "229"
-            endingLineNumber = "229"
+            startingLineNumber = "219"
+            endingLineNumber = "219"
             landmarkName = "CombinedClassifier::addSample(featureVector v, bool addtoForeground)"
             landmarkType = "5">
          </BreakpointContent>
@@ -264,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463407021.553285"
+            timestampString = "463496171.453022"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "227"
-            endingLineNumber = "227"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
             landmarkName = "CombinedClassifier::addSample(featureVector v, bool addtoForeground)"
             landmarkType = "5">
          </BreakpointContent>
@@ -280,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463407021.553285"
+            timestampString = "463496171.453022"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "205"
-            endingLineNumber = "205"
+            startingLineNumber = "195"
+            endingLineNumber = "195"
             landmarkName = "CombinedClassifier::addSample(featureVector v, bool addtoForeground)"
             landmarkType = "5">
          </BreakpointContent>
@@ -296,11 +282,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463407021.553285"
+            timestampString = "463496171.453022"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "208"
-            endingLineNumber = "208"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
             landmarkName = "CombinedClassifier::addSample(featureVector v, bool addtoForeground)"
             landmarkType = "5">
          </BreakpointContent>
@@ -312,11 +298,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/main.cpp"
-            timestampString = "463480046.142627"
+            timestampString = "463496339.749506"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
             landmarkName = "main(int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -328,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463407021.553285"
+            timestampString = "463496171.453022"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "210"
-            endingLineNumber = "210"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
             landmarkName = "CombinedClassifier::addSample(featureVector v, bool addtoForeground)"
             landmarkType = "5">
          </BreakpointContent>

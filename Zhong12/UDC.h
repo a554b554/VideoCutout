@@ -30,7 +30,7 @@ void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat
 void getbestmap(const vector<Mat>& probs, const vector<Mat>& confs, Mat& bestprob, Mat& bestconf);
 
 
-class UDC : public Classifier{
+class UDC{
 private:
     GMM* fGMM;
     GMM* bGMM;
@@ -39,8 +39,8 @@ private:
 public:
     static constexpr double epi = 0.001;
     UDC(const vector<Vec3d>& fgdSamples, const vector<Vec3d>& bgdSamples);
-    double prob(const Vec3d color) const;
-    double conf(const Vec3d color) const;
+    double prob(const Vec3d& color) const;
+    double conf(const Vec3d& color) const;
     ~UDC();
 };
 

@@ -74,7 +74,7 @@ App::App(string winName, string filelistpath):winName(winName),showIdx(0){
         //vector<Mat> _imgs,_mattes;
         loadimage(dirlist[i], imgs, mattes);
         calcOpticalFlows();
-        classifier->train(imgs, mattes, remats);
+        classifier->train(imgs, mattes, remats, warped_mattes);
         printf("traning finished, time cost: %lf", (getTickCount()-t0)/getTickFrequency());
         clear();
         

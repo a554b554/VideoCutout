@@ -82,7 +82,7 @@ void CombinedClassifier::init(){
 
 
 
-void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& mattes, const vector<Mat>& remats){
+void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& mattes_gt, const vector<Mat>& remats, const vector<Mat>& mattes_warped){
     for (int i = 1; i < imgs.size(); i++) {
         printf("img: %d\n",i);
         int64 t0 = getTickCount();
@@ -90,19 +90,19 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         valid.setTo(1);
         //process UDC
         Mat UDCprob,UDCconf;
-        processUDC(imgs[i], mattes[i-1], UDCprob, UDCconf);
+        processUDC(imgs[i], mattes_warped[i-1], UDCprob, UDCconf);
         
         //process Local
         Mat localprob,localconf;
-        processLC(imgs[i], mattes[i-1], localprob, localconf);
+        processLC(imgs[i], mattes_warped[i-1], localprob, localconf);
         
         //process Global
         Mat globalprob,globalconf;
-        processGC(imgs[i], mattes[i-1], globalprob, globalconf);
+        processGC(imgs[i], mattes_warped[i-1], globalprob, globalconf);
         
         //process Shape
         Mat shapeprob,shapeconf;
-        processSP(imgs[i], mattes[i-1], shapeprob, shapeconf);
+        processSP(imgs[i], mattes_warped[i-1], shapeprob, shapeconf);
         
         Mat errordensity;
         processRegistraionError(remats[i-1], errordensity);
@@ -123,7 +123,8 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         
         
 //        debug show
-//        imshow("target", mattes[i]);
+//        imshow("target", mattes_gt[i]);
+//        imshow("warp", mattes_warped[i-1]);
 //        imshow("image", imgs[i]);
 //        imshow("UDCp", UDCprob);
 //        imshow("UDCc", UDCconf);
@@ -139,18 +140,8 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         
         
         //only distance smaller than 30 are processed.
-        vector<vector<Point> > contours; vector<Vec4i> hierarchy;
-        Mat matte_copy = mattes[i].clone();
-        Mat img_copy = imgs[i].clone();
-        findContours( matte_copy, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
-        Mat raw_dist( imgs[0].size(), CV_32FC1 );
-        for( int _j = 0; _j < imgs[0].rows; _j++ )
-        {
-            for( int _i = 0; _i < imgs[0].cols; _i++ )
-            {
-                raw_dist.at<float>(_j,_i) = pointPolygonTest( contours[0], Point2f(_i,_j), true );
-            }
-        }
+        Mat raw_dist;
+        computeRawDist(mattes_gt[i], raw_dist);
         
         
         //set up feature vector
@@ -170,7 +161,7 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
                 v.rs = 0.5 + shapeconf.at<double>(dx,dy)*(shapeprob.at<double>(dx,dy)-0.5);
                 v.e = errordensity.at<double>(dx,dy);
                 
-                if (mattes[i].at<uchar>(dx,dy)==0) {
+                if (mattes_gt[i].at<uchar>(dx,dy)==0) {
                     addSample(v, false);
                 }
                 else{
@@ -180,7 +171,6 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         }
         
         cout<<"train image cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
-
     }
 }
 
