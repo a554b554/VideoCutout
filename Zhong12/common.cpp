@@ -106,6 +106,26 @@ void computeRawDist(const Mat& matte, Mat& raw_dist){
 }
 
 
+void drawContour(const Mat& src, const Mat& prob, Mat& dst){
+    vector<vector<Point> > contours; vector<Vec4i> hierarchy;
+    Mat prob_copy = prob.clone();
+    dst = src.clone();
+    prob_copy = prob_copy*255;
+    prob_copy.convertTo(prob_copy, CV_8UC1);
+    findContours( prob_copy, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
+    drawContours(dst, contours, 0, Scalar(255,255,0));
+//    imshow("d", dst);
+//    imshow("p", prob_copy);
+//    waitKey(0);
+}
 
-
-
+void refineProb(Mat& prob){
+    for (int i = 0; i < prob.rows; i++) {
+        for (int j = 0; j < prob.cols; j++) {
+            if (isnan(prob.at<double>(i,j))) {
+               // printf("nan!");
+                prob.at<double>(i,j)=1;
+            }
+        }
+    }
+}

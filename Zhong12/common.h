@@ -33,5 +33,10 @@ void getCutout(const Mat& src, const Mat& prob, Mat& cutout);
 
 void computeRawDist(const Mat& matte, Mat& raw_dist);
 
+void drawContour(const Mat& src, const Mat& prob, Mat& dst);
+
+void refineProb(Mat& prob);
+
+
 
 #endif /* defined(__Zhong12__common__) */

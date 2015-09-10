@@ -168,16 +168,16 @@ void App::start(string trained){
     classifier = new CombinedClassifier(trained);
     for (int i = 1; i < imgs.size(); i++) {
         Mat UDCprob,UDCconf;
-        processUDC(imgs[i], mattes[i-1], UDCprob, UDCconf);
+        processUDC(imgs[i], warped_mattes[i-1], UDCprob, UDCconf);
         
         Mat localprob,localconf;
-        processLC(imgs[i], mattes[i-1], localprob, localconf);
+        processLC(imgs[i], warped_mattes[i-1], localprob, localconf);
         
         Mat globalprob,globalconf;
-        processGC(imgs[i], mattes[i-1], globalprob, globalconf);
+        processGC(imgs[i], warped_mattes[i-1], globalprob, globalconf);
         
         Mat shapeprob,shapeconf;
-        processSP(imgs[i], mattes[i-1], shapeprob, shapeconf);
+        processSP(imgs[i], warped_mattes[i-1], shapeprob, shapeconf);
         
         Mat errordensity;
         processRegistraionError(remats[i-1], errordensity);
@@ -204,19 +204,23 @@ void App::start(string trained){
         imshow("globalprob", globalprob);
         imshow("shapeprob", shapeprob);
         imshow("ground truth", mattes[i]);
+        
+        //refineProb(finalprob);
         imshow("src", imgs[i]);
         imshow("finalprob", finalprob);
         imshow("finalconf", finalconf);
         
         Mat cut;
         getCutout(imgs[i], finalprob, cut);
+        
+        
         imshow("result", cut);
         waitKey(0);
         
         final.push_back(cut);
         output_probs.push_back(finalprob);
         output_confs.push_back(finalconf);
-        imwrite("../../testdata/"+to_string(i)+".jpg", cut);
+        imwrite("../../result/"+to_string(i)+".jpg", cut);
     }
 }
 

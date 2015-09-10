@@ -25,7 +25,7 @@ void processLC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat);
 // label 1:=foreground 2:=background
 class LocalClassifier{
 public:
-    LocalClassifier(const Vec3d _color, const Mat& _traindata, const vector<int>& _label);
+    LocalClassifier(const Vec3d& _color, const Mat& _traindata, const vector<int>& _label);
     double prob();
     double conf();
     static constexpr double sigma2 = 400.0;

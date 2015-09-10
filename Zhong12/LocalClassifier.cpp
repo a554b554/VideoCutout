@@ -8,7 +8,7 @@
 
 #include "LocalClassifier.h"
 
-LocalClassifier::LocalClassifier(const Vec3d _color, const Mat& _traindata, const vector<int>& _label):color(_color),traindata(_traindata),label(_label){
+LocalClassifier::LocalClassifier(const Vec3d& _color, const Mat& _traindata, const vector<int>& _label):color(_color),traindata(_traindata),label(_label){
     Vec3f __color = color;
     Mat sample(1, 3, CV_32FC1, (double*)&__color);
     //cout<<sample;

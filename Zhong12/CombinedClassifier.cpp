@@ -176,7 +176,7 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
 
 void CombinedClassifier::exportdata(){
     fstream f;
-    f.open("data.txt");
+    f.open("../data.txt");
     for (int i = 0; i < interval; i++) {
         f<<fLattice[i]<<" "<<bLattice[i]<<endl;
     }
@@ -185,7 +185,12 @@ void CombinedClassifier::exportdata(){
 
 static const int gridsize = 2;
 
-void CombinedClassifier::addSample(featureVector v, bool addtoForeground){
+void CombinedClassifier::addSample(featureVector _v, bool addtoForeground){
+    long id = getNearestVectorID(_v);
+    featureVector v = this->getCorByID(id);
+//    _v.print();
+//    v.print();
+    
     int rustart = ((int)(v.ru*cSize)-gridsize)>=0?(int)(v.ru*cSize)-gridsize:0;
     int ruend = ((int)(v.ru*cSize)+gridsize)<=cSize?(int)(v.ru*cSize)+gridsize:cSize;
     int rlstart = ((int)(v.rl*cSize)-gridsize)>=0?(int)(v.rl*cSize)-gridsize:0;
