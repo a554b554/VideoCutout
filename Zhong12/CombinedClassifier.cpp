@@ -75,6 +75,29 @@ CombinedClassifier::CombinedClassifier(const string filepath){
     f.close();
 }
 
+CombinedClassifier::CombinedClassifier(const vector<string>& filepath){
+    init();
+    
+    for (int i = 0; i < filepath.size(); i++) {
+        fstream f;
+        f.open(filepath[i]);
+        if (!f.is_open()) {
+            cerr<<"no such file exist: "<<filepath[i]<<"!"<<endl;
+            exit(1);
+        }
+      //  printf(filepath[i].c_str());
+        for (int j = 0; j < interval; j++) {
+            double fl,bl;
+            f>>fl>>bl;
+        //    printf("%lf %lf\n",fl,bl);
+            fLattice[j]+=fl;
+            bLattice[j]+=bl;
+        }
+        f.close();
+    }
+    
+}
+
 void CombinedClassifier::init(){
     memset(fLattice, 0, interval*sizeof(double));
     memset(bLattice, 0, interval*sizeof(double));

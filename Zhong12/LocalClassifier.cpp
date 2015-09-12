@@ -115,17 +115,17 @@ void processLC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     cout<<"local classify cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
     
     //debug
-//    imshow("prob", probmat);
-//    imshow("conf", confmat);
-//    imshow("img", img);
-//    imshow("matte", matte);
+    imshow("prob", probmat);
+    imshow("conf", confmat);
+    imshow("img", img);
+    imshow("matte", matte);
 //    probmat=probmat*255;
 //    probmat.convertTo(probmat, CV_8UC1);
 //    threshold(probmat, probmat, 10, 255, CV_THRESH_BINARY);
 //    Mat show;
 //    img.copyTo(show, probmat);
 //    imshow("final", show);
-//    waitKey(0);
+    waitKey(0);
     
 }
 

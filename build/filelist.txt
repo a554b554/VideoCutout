@@ -1,1 +1,4 @@
-../../Zhong12-SIGA-dataset/TEST/CJ
+../../Zhong12-SIGA-dataset/HUMAN/fm
+../../Zhong12-SIGA-dataset/HUMAN/fq
+../../Zhong12-SIGA-dataset/HUMAN/fz
+../../Zhong12-SIGA-dataset/ANIMAL/bear

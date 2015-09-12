@@ -39,12 +39,14 @@ public:
     static int getNearestVectorID(featureVector v);
     CombinedClassifier();
     CombinedClassifier(const string filepath);//for loading learned data
+    CombinedClassifier(const vector<string>& filepath);
     void init();
     void train(const vector<Mat>& imgs, const vector<Mat>& mattes_gt, const vector<Mat>& remats, const vector<Mat>& mattes_warped);
     void addSample(featureVector v, bool addtoForeground);
     double prob(featureVector v);
     double conf(featureVector v);
     void exportdata();
+    void load(string path);
     
 private:
     double fLattice[interval]; //store the foreground trained data.

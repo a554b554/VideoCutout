@@ -33,6 +33,8 @@ using namespace std;
 using namespace cv;
 
 void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes);
+void parse(string filepath, vector<string>& content);
+
 
 class App{
 public:
@@ -44,7 +46,7 @@ public:
     void showImg();
     void calcOpticalFlows();
     void changeShowState();
-    void start(string trained);
+    void start(const vector<string>& trained);
     
     
     //unit test

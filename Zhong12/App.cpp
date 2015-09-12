@@ -51,20 +51,24 @@ void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes){
     
 }
 
-
-App::App(string winName, string filelistpath):winName(winName),showIdx(0){
-    vector<string> dirlist;
+void parse(string filepath, vector<string>& content){
     ifstream f;
-    f.open(filelistpath);
+    f.open(filepath);
     if(!f.is_open()){
-        cerr<<filelistpath+" not found!"<<endl;
+        cerr<<filepath+" not found!"<<endl;
         exit(1);
     }
     char buffer[256];
     while (!f.eof()) {
         f.getline(buffer, 200);
-        dirlist.push_back(buffer);
+        content.push_back(buffer);
     }
+}
+
+
+App::App(string winName, string filelistpath):winName(winName),showIdx(0){
+    vector<string> dirlist;
+    parse(filelistpath, dirlist);
     
     //training
     CombinedClassifier* classifier = new CombinedClassifier();
@@ -158,7 +162,7 @@ void App::changeShowState(){
     showImg();
 }
 
-void App::start(string trained){
+void App::start(const vector<string>& trained){
     if (remats.empty()) {
         cerr<<"you need calculate optical flow first!"<<endl;
         exit(1);
@@ -199,23 +203,22 @@ void App::start(string trained){
         
         
         //debug
-        imshow("UDCprob", UDCprob);
-        imshow("localprob", localprob);
-        imshow("globalprob", globalprob);
-        imshow("shapeprob", shapeprob);
-        imshow("ground truth", mattes[i]);
-        
-        //refineProb(finalprob);
-        imshow("src", imgs[i]);
-        imshow("finalprob", finalprob);
-        imshow("finalconf", finalconf);
-        
+//        imshow("UDCprob", UDCprob);
+//        imshow("localprob", localprob);
+//        imshow("globalprob", globalprob);
+//        imshow("shapeprob", shapeprob);
+//        imshow("ground truth", mattes[i]);
+//        
+//        imshow("src", imgs[i]);
+//        imshow("finalprob", finalprob);
+//        imshow("finalconf", finalconf);
+//        
         Mat cut;
         getCutout(imgs[i], finalprob, cut);
-        
-        
-        imshow("result", cut);
-        waitKey(0);
+//
+//        
+//        imshow("result", cut);
+//        waitKey(0);
         
         final.push_back(cut);
         output_probs.push_back(finalprob);

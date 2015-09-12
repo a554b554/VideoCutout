@@ -83,6 +83,23 @@ void getCutout(const Mat& src, const Mat& prob, Mat& cutout){
     prob.convertTo(tmpprob, CV_32FC1);
     threshold(tmpprob, mask, 0.1, 1., CV_THRESH_BINARY);
     mask.convertTo(mask, CV_8UC1);
+   // cout<<mask;
+    //imshow("mask", mask);
+    //debug
+//    Mat show = src.clone();
+//    vector<vector<Point> > contours; vector<Vec4i> hierarchy;
+//    findContours(mask, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
+//    
+//    for( int i = 0; i< contours.size(); i++ )
+//    {
+//        Scalar color = Scalar(255,255,0);
+//        drawContours(show, contours, i, color, 2, 8, hierarchy, 0, Point());
+//        imshow("show", show);
+//        printf("%d",i);
+//        waitKey(0);
+//    }
+    
+    
     src.copyTo(cutout, mask);
 }
 

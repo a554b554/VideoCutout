@@ -71,7 +71,7 @@ int maintest(int argc, const char * argv[]){
 }
 
 
-int mainax(int argc, const char * argv[]){
+int main(int argc, const char * argv[]){
 
     
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
@@ -80,7 +80,10 @@ int mainax(int argc, const char * argv[]){
     App* app = new App("app", testPath, dirname);
 
     app->calcOpticalFlows();
-    app->start("../../trained/CJ.txt");
+    vector<string> list;
+    parse("../../config/datalist.cfg", list);
+    
+    app->start(list);
     
     //App* app = new App("app", "./filelist.txt");
     //app.testUDC();
@@ -88,8 +91,9 @@ int mainax(int argc, const char * argv[]){
     return 0;
 }
 
-int main(int argc, const char * argv[]){
-    App* app = new App("app", "../filelist.txt");
+int maintrain(int argc, const char * argv[]){
+    App* app = new App("app", "../../config/train.cfg");
+    return 0;
 }
 
 
