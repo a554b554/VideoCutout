@@ -37,6 +37,6 @@ void drawContour(const Mat& src, const Mat& prob, Mat& dst);
 
 void refineProb(Mat& prob);
 
-
+void getBinaryProbabilityMap(const Mat& prob, Mat& binary, double low, double high);
 
 #endif /* defined(__Zhong12__common__) */

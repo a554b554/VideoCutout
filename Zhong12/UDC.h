@@ -19,13 +19,13 @@ using namespace cv;
 const int RectHeight = 21;
 const int range = 20;
 
-void processUDC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat);
+void processUDC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probmat, Mat& confmat);
 
-void processUDCRect(const Mat& img_rect, const Mat& matte_rect, Mat& probmat, Mat& confmat);
+void processUDCRect(const Mat& img_rect, const Mat& matte_rect, const Mat& raw_dist_rect, Mat& probmat, Mat& confmat);
 
 void getRectangle(const Mat& matte, int direction, vector<Rect>& rects);
 
-void processUDC(const Mat& img, const Mat& matte, const Mat& valid, Mat& probmat, Mat& confmat);
+void processUDC(const Mat& img, const Mat& matte, const Mat& valid,const Mat& raw_dist, Mat& probmat, Mat& confmat);
 
 void getbestmap(const vector<Mat>& probs, const vector<Mat>& confs, Mat& bestprob, Mat& bestconf);
 

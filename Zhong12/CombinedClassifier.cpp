@@ -111,21 +111,23 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         int64 t0 = getTickCount();
         Mat valid(imgs[0].size(),CV_8UC1);
         valid.setTo(1);
+        Mat raw_dist;
+        computeRawDist(mattes_warped[i-1], raw_dist);
         //process UDC
         Mat UDCprob,UDCconf;
-        processUDC(imgs[i], mattes_warped[i-1], UDCprob, UDCconf);
+        processUDC(imgs[i], mattes_warped[i-1], raw_dist, UDCprob, UDCconf);
         
         //process Local
         Mat localprob,localconf;
-        processLC(imgs[i], mattes_warped[i-1], localprob, localconf);
+        processLC(imgs[i], mattes_warped[i-1], raw_dist, localprob, localconf);
         
         //process Global
         Mat globalprob,globalconf;
-        processGC(imgs[i], mattes_warped[i-1], globalprob, globalconf);
+        processGC(imgs[i], mattes_warped[i-1], raw_dist, globalprob, globalconf);
         
         //process Shape
         Mat shapeprob,shapeconf;
-        processSP(imgs[i], mattes_warped[i-1], shapeprob, shapeconf);
+        processSP(imgs[i], mattes_warped[i-1], raw_dist, shapeprob, shapeconf);
         
         Mat errordensity;
         processRegistraionError(remats[i-1], errordensity);
@@ -163,15 +165,15 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         
         
         //only distance smaller than 30 are processed.
-        Mat raw_dist;
-        computeRawDist(mattes_gt[i], raw_dist);
+        Mat raw_dist_gt;
+        computeRawDist(mattes_gt[i], raw_dist_gt);
         
         
         //set up feature vector
         for (int dx = 0; dx < imgs[0].rows; dx++) {
             for (int dy = 0; dy < imgs[0].cols; dy++) {
                 
-                float dist = fabs(raw_dist.at<float>(dx,dy));
+                float dist = fabs(raw_dist_gt.at<float>(dx,dy));
                 if (dist > 30) {
                     continue;
                 }

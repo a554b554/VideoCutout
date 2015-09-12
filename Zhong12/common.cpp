@@ -103,23 +103,124 @@ void getCutout(const Mat& src, const Mat& prob, Mat& cutout){
     src.copyTo(cutout, mask);
 }
 
+
+void getBinaryProbabilityMap(const Mat& prob, Mat& binary, double low, double high){
+    binary = prob.clone();
+    binary = binary*255;
+    binary.convertTo(binary, CV_8UC1);
+    threshold(binary, binary, low, high, CV_THRESH_BINARY);
+    imshow("binary", binary);
+    waitKey(0);
+}
+
 void computeRawDist(const Mat& matte, Mat& raw_dist){
     vector<vector<Point> > contours; vector<Vec4i> hierarchy;
     Mat matte_copy = matte.clone();
     Mat img_copy = matte.clone();
     
+    //hierarchy: [Next, Previous, Child, Parent]
+    
     findContours( matte_copy, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
     
-    raw_dist.create(matte.size(), CV_32FC1 );
+    //debug show
+    cvtColor(matte_copy, matte_copy, CV_GRAY2BGR);
+    vector<int> good;
+    for (int i = 0; i < contours.size(); i++) {
+        if (contourArea(contours[i])<30) {
+            good.push_back(0);
+            continue;
+        }
+        good.push_back(1);
+        drawContours(matte_copy, contours, i, Scalar(255,255,0));
+
+    }
+    imshow("contour", matte_copy);
+    waitKey(0);
+    
+    
+    raw_dist.create(matte.size(), CV_64FC1 );
     
     for( int j = 0; j < matte.rows; j++ )
     {
         for( int i = 0; i < matte.cols; i++ )
         {
-            raw_dist.at<float>(j,i) = pointPolygonTest( contours[0], Point2f(i,j), true );
+            double dist = pointPolygonTest(contours[0], Point2f(i,j), true);
+            int cid = 0;
+            for (;cid != -1;cid = hierarchy[cid][0]) {
+                
+                //show current progress
+//                Mat current(matte.size(),CV_8UC3);
+//                current.setTo(0);
+//                circle(current, Point2f(i,j), 1, Scalar(0,0,255));
+//                drawContours(current, contours, cid, Scalar(255,255,0));
+//                imshow("progress", current);
+//                waitKey(0);
+                
+                
+                
+                
+                if (good[cid] == 0) { // if is not good, do next iteration
+                    continue;
+                }
+                double tmp = pointPolygonTest(contours[cid], Point2f(i,j), true);
+                if (tmp <= 0) { // if point is outside a contour
+                    dist = max(tmp, dist);
+                }
+                else{// if point is inside a contour
+                    dist = tmp;
+                    int kid = hierarchy[cid][2];//child contour
+                    for (;kid != -1;kid = hierarchy[kid][0]) {
+                        
+                        if (good[kid] == 0) {// bad contour
+                            continue;
+                        }
+
+                        
+                        double tmp2 = pointPolygonTest(contours[kid], Point2f(i,j), true);
+                        if (tmp2 >= 0) { // inside the child contour
+                            dist = -tmp2;//which means out of a contour
+                            break;
+                        }
+                        else{
+                            dist = min(-tmp2,dist);
+                        }
+                    }
+                    break;
+                }
+            }
+            raw_dist.at<double>(j,i) = dist;
+            
         }
     }
 
+    
+    //debug show
+//    double minVal; double maxVal;
+//    minMaxLoc( raw_dist, &minVal, &maxVal, 0, 0, Mat() );
+//    minVal = abs(minVal); maxVal = abs(maxVal);
+//    Mat drawing = Mat::zeros( matte.size(), CV_8UC3 );
+//    
+//    for( int j = 0; j < matte.rows; j++ )
+//    {
+//        for( int i = 0; i < matte.cols; i++ )
+//        {
+//            
+//            if( raw_dist.at<double>(j,i) < -5 ){
+//                drawing.at<Vec3b>(j,i)[0] = 255;//- (int) abs(raw_dist.at<float>(j,i))*255/minVal;
+//            }
+//            else if( raw_dist.at<double>(j,i) > 5 )
+//            {
+//
+//                drawing.at<Vec3b>(j,i)[2] = 255; //- (int) raw_dist.at<float>(j,i)*255/maxVal;
+//            }
+//            else
+//            {
+//                drawing.at<Vec3b>(j,i)[0] = 255; drawing.at<Vec3b>(j,i)[1] = 255; drawing.at<Vec3b>(j,i)[2] = 255;
+//            }
+//        }
+//    }
+//    imshow("draw", drawing);
+//    waitKey(0);
 }
 
 

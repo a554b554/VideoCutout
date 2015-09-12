@@ -9,7 +9,7 @@
 #include "App.h"
 
 
-void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes){
+void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes, int code){
     string path = dirname + "/";
     string alpha = dirname + "_alpha/";
     
@@ -28,7 +28,15 @@ void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes){
         if((strcmp(dirp->d_name,".")==0)||(strcmp(dirp->d_name,"..")==0))
             continue;
         string fname = path+dirp->d_name;
-        imgs.push_back(imread(fname));
+        Mat img = imread(fname);
+        if (img.empty()) {
+            cerr<<"load image failed!"<<endl;
+            exit(1);
+        }
+        if (code != MAGIC_NUMBER_BGR) {
+            cvtColor(img, img, code);
+        }
+        imgs.push_back(img);
     }
     closedir(dp);
     
@@ -171,17 +179,18 @@ void App::start(const vector<string>& trained){
     
     classifier = new CombinedClassifier(trained);
     for (int i = 1; i < imgs.size(); i++) {
-        Mat UDCprob,UDCconf;
-        processUDC(imgs[i], warped_mattes[i-1], UDCprob, UDCconf);
+        Mat UDCprob,UDCconf,raw_dist;
+        computeRawDist(warped_mattes[i-1], raw_dist);
+        processUDC(imgs[i], warped_mattes[i-1], raw_dist, UDCprob, UDCconf);
         
         Mat localprob,localconf;
-        processLC(imgs[i], warped_mattes[i-1], localprob, localconf);
+        processLC(imgs[i], warped_mattes[i-1], raw_dist, localprob, localconf);
         
         Mat globalprob,globalconf;
-        processGC(imgs[i], warped_mattes[i-1], globalprob, globalconf);
+        processGC(imgs[i], warped_mattes[i-1], raw_dist,globalprob, globalconf);
         
         Mat shapeprob,shapeconf;
-        processSP(imgs[i], warped_mattes[i-1], shapeprob, shapeconf);
+        processSP(imgs[i], warped_mattes[i-1], raw_dist, shapeprob, shapeconf);
         
         Mat errordensity;
         processRegistraionError(remats[i-1], errordensity);
@@ -236,10 +245,11 @@ void App::exportimg(const vector<cv::Mat> &imgs, string path){
 void App::testUDC(){
     Mat valid(imgs[0].rows, imgs[0].cols,CV_8UC1);
     valid.setTo(255);
-    Mat a,b;
+    Mat a,b,dist;
     imshow("src", imgs[1]);
     imshow("ground truth", mattes[1]);
-    processUDC(imgs[1], mattes[0], a, b);
+    computeRawDist(mattes[0], dist);
+    processUDC(imgs[1], mattes[0], dist, a, b);
 }
 
 
@@ -248,18 +258,21 @@ void App::testLocal(){
     Mat train(15,3,CV_32FC1);
     train.setTo(1.5);
     //LocalClassifier k(Vec3d(12,0,0), train, a);
-    Mat b,c;
-    processLC(imgs[2], mattes[0], b, c);
+    Mat b,c,dist;
+    computeRawDist(warped_mattes[1], dist);
+    processLC(imgs[2], warped_mattes[1], dist, b, c);
 }
 
 void App::testGlobal(){
-    Mat a,b;
-    processGC(imgs[1], mattes[1], a, b);
+    Mat a,b,dist;
+    computeRawDist(mattes[1], dist);
+    processGC(imgs[1], mattes[1], dist, a, b);
 }
 
 void App::testShape(){
-    Mat a,b;
-    processSP(imgs[0], mattes[0], a, b);
+    Mat a,b,dist;
+    computeRawDist(mattes[0], dist);
+    processSP(imgs[0], mattes[0], dist, a, b);
 }
 
 void App::testlearn(){

@@ -14,7 +14,7 @@
 #include "UDC.h"
 
 // matte may contains user input
-void processGC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat);
+void processGC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probmat, Mat& confmat);
 
 
 

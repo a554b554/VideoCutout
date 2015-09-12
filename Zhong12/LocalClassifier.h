@@ -19,7 +19,7 @@ using namespace cv;
 static const int K = 9;
 static const int W = 10; //window size.
 
-void processLC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat);
+void processLC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probmat, Mat& confmat);
 
 
 // label 1:=foreground 2:=background

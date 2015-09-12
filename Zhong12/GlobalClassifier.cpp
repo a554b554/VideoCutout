@@ -8,18 +8,15 @@
 
 #include "GlobalClassifier.h"
 
-void processGC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
+void processGC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probmat, Mat& confmat){
     int64 t0 = getTickCount();
-    Mat raw_dist;
-    computeRawDist(matte, raw_dist);
-    
-    
-    
+
     
     
     probmat.create(img.rows, img.cols, CV_64FC1);
     confmat.create(img.rows, img.cols, CV_64FC1);
     vector<Vec3d> fSamples,bSamples;
+    //create sample set.
     for (int i = 0; i < img.rows; i++) {
         for (int j = 0; j < img.cols; j++) {
             if (fabs(raw_dist.at<float>(i,j))>30) {

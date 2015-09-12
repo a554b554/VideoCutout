@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/UDC.cpp"
-            timestampString = "463472710.986011"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
+            startingLineNumber = "278"
+            endingLineNumber = "278"
             landmarkName = "processUDCRect(const Mat&amp; img_rect, const Mat&amp; matte_rect, Mat&amp; probmat, Mat&amp; confmat)"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/UDC.cpp"
-            timestampString = "463472710.986011"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "352"
-            endingLineNumber = "352"
+            startingLineNumber = "364"
+            endingLineNumber = "364"
             landmarkName = "processUDC(const Mat&amp; img, const Mat&amp; matte, const Mat&amp; valid, Mat&amp; probmat, Mat&amp; confmat)"
             landmarkType = "7">
          </BreakpointContent>
@@ -122,12 +122,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/LocalClassifier.cpp"
-            timestampString = "463475320.682655"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
-            landmarkName = "processLC(const Mat&amp; img, const Mat&amp; matte, Mat&amp; probmat, Mat&amp; confmat)"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "processLC(const Mat&amp; img, const Mat&amp; matte, const Mat&amp; raw_dist, Mat&amp; probmat, Mat&amp; confmat)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -159,7 +159,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "21"
             endingLineNumber = "21"
-            landmarkName = "loadimage(string dirname, vector&lt;Mat&gt;&amp; imgs, vector&lt;Mat&gt;&amp; mattes)"
+            landmarkName = "loadimage(string dirname, vector&lt;Mat&gt;&amp; imgs, vector&lt;Mat&gt;&amp; mattes, int code)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -175,7 +175,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "19"
             endingLineNumber = "19"
-            landmarkName = "loadimage(string dirname, vector&lt;Mat&gt;&amp; imgs, vector&lt;Mat&gt;&amp; mattes)"
+            landmarkName = "loadimage(string dirname, vector&lt;Mat&gt;&amp; imgs, vector&lt;Mat&gt;&amp; mattes, int code)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -186,11 +186,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463719393.567328"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "176"
-            endingLineNumber = "176"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
             landmarkName = "CombinedClassifier::train(const vector&lt;Mat&gt;&amp; imgs, const vector&lt;Mat&gt;&amp; mattes_gt, const vector&lt;Mat&gt;&amp; remats, const vector&lt;Mat&gt;&amp; mattes_warped)"
             landmarkType = "5">
          </BreakpointContent>
@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/UDC.cpp"
-            timestampString = "463323161.731694"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
             landmarkName = "processUDC(const Mat&amp; img, const Mat&amp; matte, Mat&amp; probmat, Mat&amp; confmat)"
             landmarkType = "7">
          </BreakpointContent>
@@ -218,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/UDC.cpp"
-            timestampString = "463472710.986011"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "251"
-            endingLineNumber = "251"
+            startingLineNumber = "263"
+            endingLineNumber = "263"
             landmarkName = "processUDCRect(const Mat&amp; img_rect, const Mat&amp; matte_rect, Mat&amp; probmat, Mat&amp; confmat)"
             landmarkType = "7">
          </BreakpointContent>
@@ -234,7 +234,23 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463719393.567328"
+            timestampString = "463737449.811929"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "249"
+            endingLineNumber = "249"
+            landmarkName = "CombinedClassifier::addSample(featureVector _v, bool addtoForeground)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Zhong12/CombinedClassifier.cpp"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "247"
@@ -250,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463719393.567328"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "245"
-            endingLineNumber = "245"
+            startingLineNumber = "225"
+            endingLineNumber = "225"
             landmarkName = "CombinedClassifier::addSample(featureVector _v, bool addtoForeground)"
             landmarkType = "5">
          </BreakpointContent>
@@ -266,27 +282,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463719393.567328"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
-            landmarkName = "CombinedClassifier::addSample(featureVector _v, bool addtoForeground)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463719393.567328"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
+            startingLineNumber = "228"
+            endingLineNumber = "228"
             landmarkName = "CombinedClassifier::addSample(featureVector _v, bool addtoForeground)"
             landmarkType = "5">
          </BreakpointContent>
@@ -298,11 +298,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/main.cpp"
-            timestampString = "463717189.197584"
+            timestampString = "463730771.391242"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
             landmarkName = "main(int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -314,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463719393.567328"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "228"
-            endingLineNumber = "228"
+            startingLineNumber = "230"
+            endingLineNumber = "230"
             landmarkName = "CombinedClassifier::addSample(featureVector _v, bool addtoForeground)"
             landmarkType = "5">
          </BreakpointContent>
@@ -362,11 +362,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/UDC.cpp"
-            timestampString = "463472794.658558"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "179"
-            endingLineNumber = "179"
+            startingLineNumber = "188"
+            endingLineNumber = "188"
             landmarkName = "processUDC(const Mat&amp; img, const Mat&amp; matte, Mat&amp; probmat, Mat&amp; confmat)"
             landmarkType = "7">
          </BreakpointContent>
@@ -378,11 +378,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/App.cpp"
-            timestampString = "463718056.899333"
+            timestampString = "463738235.698687"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "274"
-            endingLineNumber = "274"
+            startingLineNumber = "287"
+            endingLineNumber = "287"
             landmarkName = "App::maskbypreviousframe()"
             landmarkType = "5">
          </BreakpointContent>
@@ -394,11 +394,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/CombinedClassifier.cpp"
-            timestampString = "463719393.567328"
+            timestampString = "463737449.811929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
+            startingLineNumber = "219"
+            endingLineNumber = "219"
             landmarkName = "CombinedClassifier::addSample(featureVector _v, bool addtoForeground)"
             landmarkType = "5">
          </BreakpointContent>
@@ -410,11 +410,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/main.cpp"
-            timestampString = "463717189.197584"
+            timestampString = "463730771.391242"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
             landmarkName = "main(int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -426,11 +426,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/main.cpp"
-            timestampString = "463717943.08854"
+            timestampString = "463730771.391242"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
             landmarkName = "main(int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -442,11 +442,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/App.cpp"
-            timestampString = "463718416.524351"
+            timestampString = "463738235.698687"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
+            startingLineNumber = "180"
+            endingLineNumber = "180"
             landmarkName = "App::start(const vector&lt;string&gt;&amp; trained)"
             landmarkType = "5">
          </BreakpointContent>
@@ -481,6 +481,54 @@
             endingLineNumber = "90"
             landmarkName = "CombinedClassifier::CombinedClassifier(const vector&lt;string&gt;&amp; filepath)"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Zhong12/App.cpp"
+            timestampString = "463738168.083496"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "loadimage(string dirname, vector&lt;Mat&gt;&amp; imgs, vector&lt;Mat&gt;&amp; mattes, int code)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Zhong12/common.cpp"
+            timestampString = "463750165.333057"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
+            landmarkName = "computeRawDist(const Mat&amp; matte, Mat&amp; raw_dist)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Zhong12/common.cpp"
+            timestampString = "463751472.549668"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "172"
+            endingLineNumber = "172"
+            landmarkName = "computeRawDist(const Mat&amp; matte, Mat&amp; raw_dist)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

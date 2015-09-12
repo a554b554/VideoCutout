@@ -79,11 +79,14 @@ int main(int argc, const char * argv[]){
 //    testPath = testPath + argv[1] + "/";
     App* app = new App("app", testPath, dirname);
 
-    app->calcOpticalFlows();
-    vector<string> list;
-    parse("../../config/datalist.cfg", list);
     
-    app->start(list);
+    app->calcOpticalFlows();
+    app->testLocal();
+    
+    //vector<string> list;
+    //parse("../../config/datalist.cfg", list);
+    
+    //app->start(list);
     
     //App* app = new App("app", "./filelist.txt");
     //app.testUDC();

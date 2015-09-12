@@ -29,10 +29,13 @@
 #include "CombinedClassifier.h"
 #include "common.h"
 
+#define MAGIC_NUMBER_BGR 2568
+
+
 using namespace std;
 using namespace cv;
 
-void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes);
+void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes, int code = MAGIC_NUMBER_BGR);
 void parse(string filepath, vector<string>& content);
 
 

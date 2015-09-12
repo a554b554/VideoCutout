@@ -38,7 +38,7 @@ double LocalClassifier::conf(){
     return ans;
 }
 
-void processLC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
+void processLC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probmat, Mat& confmat){
     probmat.create(img.rows, img.cols, CV_64FC1);
     confmat.create(img.rows, img.cols, CV_64FC1);
     probmat.setTo(0);
@@ -46,9 +46,7 @@ void processLC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     int64 t0 = getTickCount();
     
     
-    //compute distance
-    Mat raw_dist;
-    computeRawDist(matte, raw_dist);
+    
     //cout<<"cost for dist: "<<(getTickCount()-t1)/getTickFrequency()<<endl;
   //  cout<<raw_dist<<endl;
     
@@ -115,6 +113,8 @@ void processLC(const Mat& img, const Mat& matte, Mat& probmat, Mat& confmat){
     cout<<"local classify cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
     
     //debug
+    Mat bi;
+    getBinaryProbabilityMap(probmat, bi, 100, 255);
     imshow("prob", probmat);
     imshow("conf", confmat);
     imshow("img", img);
