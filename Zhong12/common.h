@@ -18,6 +18,7 @@
 #include <set>
 #include <stdio.h>
 #include <string>
+#include <fstream>
 using namespace std;
 using namespace cv;
 
@@ -31,7 +32,7 @@ double variance(const vector<int>& data);
 
 void getCutout(const Mat& src, const Mat& prob, Mat& cutout);
 
-void computeRawDist(const Mat& matte, Mat& raw_dist);
+void computeRawDist(const Mat& matte, Mat& raw_dist, double minArea = 30);
 
 void drawContour(const Mat& src, const Mat& prob, Mat& dst);
 

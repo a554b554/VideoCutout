@@ -45,11 +45,6 @@ void processLC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probm
     confmat.setTo(0);
     int64 t0 = getTickCount();
     
-    
-    
-    //cout<<"cost for dist: "<<(getTickCount()-t1)/getTickFrequency()<<endl;
-  //  cout<<raw_dist<<endl;
-    
     for (int i = 0; i < img.rows; i++) {
         //printf("row: %d\n", i);
         for (int j = 0; j < img.cols; j++) {
@@ -57,8 +52,13 @@ void processLC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probm
             
             
             
-            if (raw_dist.at<float>(i,j) < -20) { //which means outside the contour and distance greater than a threshold.
+            if (raw_dist.at<double>(i,j) < -20) { //which means outside the contour and distance greater than a threshold.
                 probmat.at<double>(i,j) = 0;
+                confmat.at<double>(i,j) = 1;
+                continue;
+            }
+            else if (raw_dist.at<double>(i,j) > 20){
+                probmat.at<double>(i,j) = 1;
                 confmat.at<double>(i,j) = 1;
                 continue;
             }
@@ -113,19 +113,15 @@ void processLC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probm
     cout<<"local classify cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
     
     //debug
-    Mat bi;
-    getBinaryProbabilityMap(probmat, bi, 100, 255);
-    imshow("prob", probmat);
-    imshow("conf", confmat);
-    imshow("img", img);
-    imshow("matte", matte);
-//    probmat=probmat*255;
-//    probmat.convertTo(probmat, CV_8UC1);
-//    threshold(probmat, probmat, 10, 255, CV_THRESH_BINARY);
-//    Mat show;
-//    img.copyTo(show, probmat);
-//    imshow("final", show);
-    waitKey(0);
+//    Mat bi;
+//    getBinaryProbabilityMap(probmat, bi, 100, 255);
+//    imshow("prob", probmat);
+//    imshow("conf", confmat);
+//    imshow("img", img);
+//    imshow("matte", matte);
+//    imshow("binary", bi);
+
+//    waitKey(0);
     
 }
 

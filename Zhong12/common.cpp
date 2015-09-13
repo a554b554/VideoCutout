@@ -109,11 +109,11 @@ void getBinaryProbabilityMap(const Mat& prob, Mat& binary, double low, double hi
     binary = binary*255;
     binary.convertTo(binary, CV_8UC1);
     threshold(binary, binary, low, high, CV_THRESH_BINARY);
-    imshow("binary", binary);
-    waitKey(0);
+//    imshow("binary", binary);
+//    waitKey(0);
 }
 
-void computeRawDist(const Mat& matte, Mat& raw_dist){
+void computeRawDist(const Mat& matte, Mat& raw_dist, double minArea){
     vector<vector<Point> > contours; vector<Vec4i> hierarchy;
     Mat matte_copy = matte.clone();
     Mat img_copy = matte.clone();
@@ -126,7 +126,7 @@ void computeRawDist(const Mat& matte, Mat& raw_dist){
     cvtColor(matte_copy, matte_copy, CV_GRAY2BGR);
     vector<int> good;
     for (int i = 0; i < contours.size(); i++) {
-        if (contourArea(contours[i])<30) {
+        if (contourArea(contours[i]) < minArea) {
             good.push_back(0);
             continue;
         }
@@ -134,8 +134,8 @@ void computeRawDist(const Mat& matte, Mat& raw_dist){
         drawContours(matte_copy, contours, i, Scalar(255,255,0));
 
     }
-    imshow("contour", matte_copy);
-    waitKey(0);
+//    imshow("contour", matte_copy);
+//    waitKey(0);
     
     
     raw_dist.create(matte.size(), CV_64FC1 );
@@ -238,11 +238,15 @@ void drawContour(const Mat& src, const Mat& prob, Mat& dst){
 }
 
 void refineProb(Mat& prob){
+    Mat binary,dist;
+    getBinaryProbabilityMap(prob, binary, 100, 255);
+    imshow("binaryprob", binary);
+    
+    computeRawDist(binary, dist,300);
     for (int i = 0; i < prob.rows; i++) {
         for (int j = 0; j < prob.cols; j++) {
-            if (isnan(prob.at<double>(i,j))) {
-               // printf("nan!");
-                prob.at<double>(i,j)=1;
+            if (dist.at<double>(i,j) > 0) {
+                prob.at<double>(i,j) = 1;
             }
         }
     }

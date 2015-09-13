@@ -16,7 +16,7 @@ void processSP(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probm
     
     for (int i = 0; i < img.rows; i++) {
         for (int j = 0; j < img.cols; j++) {
-            double dist = raw_dist.at<float>(i,j);
+            double dist = raw_dist.at<double>(i,j);
             confmat.at<double>(i,j) = 1 - exp(-(dist*dist)/sigmas2);
         }
     }

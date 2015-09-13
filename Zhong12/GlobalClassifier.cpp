@@ -23,10 +23,10 @@ void processGC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probm
                 continue;
             }
             Vec3d color = img.at<Vec3b>(i,j);
-            if (matte.at<uchar>(i,j) == 0) {
+            if (raw_dist.at<double>(i,j) < -5) { //prevent sampling error
                 bSamples.push_back(color);
             }
-            else{
+            else if(raw_dist.at<double>(i,j) > 5){
                 fSamples.push_back(color);
             }
         }
@@ -36,6 +36,7 @@ void processGC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probm
     for (int i = 0; i < img.rows; i++) {
         for (int j = 0; j < img.cols; j++) {
             Vec3d color = img.at<Vec3b>(i,j);
+
             probmat.at<double>(i,j) = udc.prob(color);
             confmat.at<double>(i,j) = udc.conf(color);
         }
@@ -61,7 +62,7 @@ void processGC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probm
 //    imwrite("confmat.jpg", confmat);
 //    imshow("matte", matte);
 //    waitKey(0);
-
+//    cout<<"glob: "<<probmat.at<double>(10, 371)<<endl;
 }
 
 

@@ -218,17 +218,40 @@ void processUDCRect(const Mat& img_rect, const Mat& matte_rect, const Mat& raw_d
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            if (fabs(raw_dist_rect.at<double>(i,j)) < 5) { //prevent sampling error
-                continue;
-            }
-            if (matte_rect.at<uchar>(i,j) == 0) {
+            
+            if (raw_dist_rect.at<double>(i,j) < -5) {
                 bSamples.push_back(static_cast<Vec3d>(img_rect.at<Vec3b>(i,j)));
             }
-            else if (matte_rect.at<uchar>(i,j) == 255){
+            else if (matte_rect.at<uchar>(i,j) > 5){
                 fSamples.push_back(static_cast<Vec3d>(img_rect.at<Vec3b>(i,j)));
             }
         }
     }
+    
+    //debug
+    CV_Assert(raw_dist_rect.size().width == img_rect.size().width);
+//    Mat showdist(img_rect.size(),CV_8UC3);
+//    showdist.setTo(0);
+//    for (int i = 0; i < img_rect.rows; i++) {
+//        for (int j = 0; j < img_rect.cols; j++) {
+//            if (raw_dist_rect.at<double>(i,j)<-5) {
+//                showdist.at<Vec3b>(i,j)[0] = 255;
+//            }
+//            else if (raw_dist_rect.at<double>(i,j)>5){
+//                showdist.at<Vec3b>(i,j)[2] = 255;
+//            }
+//            else{
+//                showdist.at<Vec3b>(i,j)[1] = 255;
+//            }
+//        }
+//    }
+//    imshow("showdist", showdist);
+//    imshow("img", img_rect);
+//    imshow("matte", matte_rect);
+//    waitKey(0);
+    
+    
+    
     
     //learning GMM by kmeans
 //    Mat lab;
@@ -266,7 +289,7 @@ void processUDCRect(const Mat& img_rect, const Mat& matte_rect, const Mat& raw_d
     probmat.create(rows, cols, CV_64FC1);
     confmat.create(rows, cols, CV_64FC1);
     if (fSamples.size()<10||bSamples.size()<10) {
-        probmat.setTo(0);
+        probmat.setTo(1);
         confmat.setTo(0);
         return;
     }
@@ -372,6 +395,9 @@ void processUDC(const Mat& img, const Mat& matte, const Mat& valid,const Mat& ra
             
             //compute probability and confidence
             Mat prob,conf;
+            
+            
+            
             processUDCRect(img(rec), matte(rec), raw_dist(rec), prob, conf);
 //            imshow("prob", probmat);
 //            imshow("conf", confmat);

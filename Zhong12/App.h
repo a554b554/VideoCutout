@@ -50,7 +50,7 @@ public:
     void calcOpticalFlows();
     void changeShowState();
     void start(const vector<string>& trained);
-    
+    void creategroundtruth();
     
     //unit test
     void testUDC();

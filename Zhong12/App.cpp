@@ -189,12 +189,20 @@ void App::start(const vector<string>& trained){
         Mat globalprob,globalconf;
         processGC(imgs[i], warped_mattes[i-1], raw_dist,globalprob, globalconf);
         
+
         Mat shapeprob,shapeconf;
         processSP(imgs[i], warped_mattes[i-1], raw_dist, shapeprob, shapeconf);
         
         Mat errordensity;
         processRegistraionError(remats[i-1], errordensity);
         
+        
+        //debug
+        
+
+//        cout<<globalconf.at<double>(10,371)<<endl;
+//        cout<<0.5 + globalconf.at<double>(10,371)*(globalprob.at<double>(10,371)-0.5)<<endl;
+//        waitKey(0);
         Mat finalprob(imgs[0].size(),CV_64FC1);
         Mat finalconf(imgs[0].size(),CV_64FC1);
         for (int dx = 0; dx < imgs[0].rows; dx++) {
@@ -212,22 +220,33 @@ void App::start(const vector<string>& trained){
         
         
         //debug
-//        imshow("UDCprob", UDCprob);
-//        imshow("localprob", localprob);
-//        imshow("globalprob", globalprob);
-//        imshow("shapeprob", shapeprob);
-//        imshow("ground truth", mattes[i]);
-//        
-//        imshow("src", imgs[i]);
-//        imshow("finalprob", finalprob);
-//        imshow("finalconf", finalconf);
-//        
+        imshow("UDCprob", UDCprob);
+        imshow("localprob", localprob);
+        imshow("globalprob", globalprob);
+        imshow("shapeprob", shapeprob);
+        imshow("errorden", errordensity);
+        imshow("ground truth", mattes[i]);
+        imshow("src", imgs[i]);
+        imshow("finalprob", finalprob);
+        imshow("finalconf", finalconf);
+        
+        Mat median,mean,gau;
+        finalprob.convertTo(finalprob, CV_32FC1);
+        medianBlur(finalprob, median, 5);
+        blur(finalprob, mean, Size(5,5),Point(-1,-1));
+        GaussianBlur(finalprob, gau, Size(5,5), 0,0);
+        imshow("median", median);
+        imshow("mean", mean);
+        imshow("gaussian", gau);
+        
+//        refineProb(finalprob);
+//        imshow("refinde_prob", finalprob);
+        
         Mat cut;
         getCutout(imgs[i], finalprob, cut);
-//
-//        
-//        imshow("result", cut);
-//        waitKey(0);
+    
+        imshow("result", cut);
+        waitKey(0);
         
         final.push_back(cut);
         output_probs.push_back(finalprob);
@@ -247,9 +266,9 @@ void App::testUDC(){
     valid.setTo(255);
     Mat a,b,dist;
     imshow("src", imgs[1]);
-    imshow("ground truth", mattes[1]);
-    computeRawDist(mattes[0], dist);
-    processUDC(imgs[1], mattes[0], dist, a, b);
+    imshow("ground truth", warped_mattes[1]);
+    computeRawDist(warped_mattes[0], dist);
+    processUDC(imgs[1], warped_mattes[0], dist, a, b);
 }
 
 
@@ -265,14 +284,14 @@ void App::testLocal(){
 
 void App::testGlobal(){
     Mat a,b,dist;
-    computeRawDist(mattes[1], dist);
-    processGC(imgs[1], mattes[1], dist, a, b);
+    computeRawDist(warped_mattes[0], dist);
+    processGC(imgs[1], warped_mattes[0], dist, a, b);
 }
 
 void App::testShape(){
     Mat a,b,dist;
-    computeRawDist(mattes[0], dist);
-    processSP(imgs[0], mattes[0], dist, a, b);
+    computeRawDist(warped_mattes[0], dist);
+    processSP(imgs[1], warped_mattes[0], dist, a, b);
 }
 
 void App::testlearn(){
@@ -299,3 +318,20 @@ void App::clear(){
     warped_mattes.clear();
     remats.clear();
 }
+
+void App::creategroundtruth(){
+    for (int i = 0; i < imgs.size(); i++) {
+        Mat gt;
+        Mat prob = mattes[i].clone();
+        prob.convertTo(prob, CV_64FC1);
+        prob = prob/255;
+        getCutout(imgs[i], prob, gt);
+        imwrite("../../result/"+to_string(i)+".jpg", gt);
+    }
+}
+
+
+
+
+
+

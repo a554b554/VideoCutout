@@ -200,8 +200,7 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
 }
 
 void CombinedClassifier::exportdata(){
-    fstream f;
-    f.open("../data.txt");
+    ofstream f("../../trained/"+to_string(time(0))+".txt");
     for (int i = 0; i < interval; i++) {
         f<<fLattice[i]<<" "<<bLattice[i]<<endl;
     }

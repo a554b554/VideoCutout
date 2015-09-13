@@ -147,8 +147,12 @@ void GMM::learning(const vector<Vec3d>& colors){
     }
     //compute error and correct.
     for (int i = 0; i < colors.size(); i++) {
-        error[comp[i]]+=(*this)(comp[i],colors[i]) * (1-(*this)(colors[i]));
-        correct[comp[i]]+=(*this)(comp[i],colors[i]) * (*this)(colors[i]);
+        for (int j = 0; j < componentsCount; j++) {
+            error[j] += (*this)(j,colors[i]) * (1-(*this)(colors[i]));
+            correct[j] += (*this)(j,colors[i]) * (*this)(colors[i]);
+        }
+//        error[comp[i]]+=(*this)(comp[i],colors[i]) * (1-(*this)(colors[i]));
+//        correct[comp[i]]+=(*this)(comp[i],colors[i]) * (*this)(colors[i]);
     }
 }
 
