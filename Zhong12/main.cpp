@@ -71,11 +71,11 @@ int maintest(int argc, const char * argv[]){
 }
 
 
-int main(int argc, const char * argv[]){
+int main13(int argc, const char * argv[]){
 
     
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
-    string dirname = "CJ";
+    string dirname = "DEBUG";
 //    testPath = testPath + argv[1] + "/";
     App* app = new App("app", testPath, dirname);
   
@@ -92,7 +92,7 @@ int main(int argc, const char * argv[]){
     return 0;
 }
 
-int maintrain(int argc, const char * argv[]){
+int main(int argc, const char * argv[]){
     App* app = new App("app", "../../config/train.cfg");
     return 0;
 }

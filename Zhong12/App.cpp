@@ -30,8 +30,7 @@ void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes, int code)
         string fname = path+dirp->d_name;
         Mat img = imread(fname);
         if (img.empty()) {
-            cerr<<"load image failed!"<<endl;
-            exit(1);
+            continue;
         }
         if (code != MAGIC_NUMBER_BGR) {
             cvtColor(img, img, code);
@@ -213,6 +212,9 @@ void App::start(const vector<string>& trained){
                 v.rg = 0.5 + globalconf.at<double>(dx,dy)*(globalprob.at<double>(dx,dy)-0.5);
                 v.rs = 0.5 + shapeconf.at<double>(dx,dy)*(shapeprob.at<double>(dx,dy)-0.5);
                 v.e = errordensity.at<double>(dx,dy);
+                if (isnan(classifier->prob(v))) {
+                    cout<<classifier->prob(v);
+                }
                 finalprob.at<double>(dx,dy) = classifier->prob(v);
                 finalconf.at<double>(dx,dy) = classifier->conf(v);
             }
@@ -230,14 +232,14 @@ void App::start(const vector<string>& trained){
         imshow("finalprob", finalprob);
         imshow("finalconf", finalconf);
         
-        Mat median,mean,gau;
-        finalprob.convertTo(finalprob, CV_32FC1);
-        medianBlur(finalprob, median, 5);
-        blur(finalprob, mean, Size(5,5),Point(-1,-1));
-        GaussianBlur(finalprob, gau, Size(5,5), 0,0);
-        imshow("median", median);
-        imshow("mean", mean);
-        imshow("gaussian", gau);
+//        Mat median,mean,gau;
+//        finalprob.convertTo(finalprob, CV_32FC1);
+//        medianBlur(finalprob, median, 5);
+//        blur(finalprob, mean, Size(5,5),Point(-1,-1));
+//        GaussianBlur(finalprob, gau, Size(5,5), 0,0);
+//        imshow("median", median);
+//        imshow("mean", mean);
+//        imshow("gaussian", gau);
         
 //        refineProb(finalprob);
 //        imshow("refinde_prob", finalprob);

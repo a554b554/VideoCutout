@@ -148,35 +148,31 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
         
         
 //        debug show
-//        imshow("target", mattes_gt[i]);
-//        imshow("warp", mattes_warped[i-1]);
-//        imshow("image", imgs[i]);
-//        imshow("UDCp", UDCprob);
-//        imshow("UDCc", UDCconf);
-//        imshow("localp", localprob);
-//        imshow("localc", localconf);
-//        imshow("globalp", globalprob);
-//        imshow("globalc", globalconf);
-//        imshow("shapep", shapeprob);
-//        imshow("shapec", shapeconf);
-//        imshow("rege", errordensity);
+//        imshow("UDCprob", UDCprob);
+//        imshow("localprob", localprob);
+//        imshow("globalprob", globalprob);
+//        imshow("shapeprob", shapeprob);
+//        imshow("errorden", errordensity);
+//        imshow("ground truth", mattes_gt[i]);
+//        imshow("src", imgs[i]);
+//     
 //        waitKey(0);
         
         
         
-        //only distance smaller than 30 are processed.
-        Mat raw_dist_gt;
-        computeRawDist(mattes_gt[i], raw_dist_gt);
+        //only distance smaller than 30 are processed. (deprecated in 13/9/2015)
+//        Mat raw_dist_gt;
+//        computeRawDist(mattes_gt[i], raw_dist_gt);
         
         
         //set up feature vector
         for (int dx = 0; dx < imgs[0].rows; dx++) {
             for (int dy = 0; dy < imgs[0].cols; dy++) {
                 
-                float dist = fabs(raw_dist_gt.at<float>(dx,dy));
-                if (dist > 30) {
-                    continue;
-                }
+//                float dist = fabs(raw_dist_gt.at<double>(dx,dy));
+//                if (dist > 30) {
+//                    continue;
+//                }
                 //printf("dx:%d dy:%d\n",dx,dy);
                 
                 featureVector v;
@@ -185,7 +181,9 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
                 v.rg = 0.5 + globalconf.at<double>(dx,dy)*(globalprob.at<double>(dx,dy)-0.5);
                 v.rs = 0.5 + shapeconf.at<double>(dx,dy)*(shapeprob.at<double>(dx,dy)-0.5);
                 v.e = errordensity.at<double>(dx,dy);
-                
+                if (dx == 16&&dy==161) {
+                    v.print();
+                }
                 if (mattes_gt[i].at<uchar>(dx,dy)==0) {
                     addSample(v, false);
                 }
@@ -222,8 +220,8 @@ void CombinedClassifier::addSample(featureVector _v, bool addtoForeground){
     int rgstart = ((int)(v.rg*cSize)-gridsize)>=0?(int)(v.rg*cSize-gridsize):0;
 
     int rgend = ((int)(v.rg*cSize)+gridsize)<=cSize?(int)(v.rg*cSize)+gridsize:cSize;
-    int rsstart = ((int)(v.rl*cSize)-gridsize)>=0?(int)(v.rl*cSize)-gridsize:0;
-    int rsend = ((int)(v.rl*cSize)+gridsize)<=cSize?(int)(v.rl*cSize)+gridsize:cSize;
+    int rsstart = ((int)(v.rs*cSize)-gridsize)>=0?(int)(v.rs*cSize)-gridsize:0;
+    int rsend = ((int)(v.rs*cSize)+gridsize)<=cSize?(int)(v.rs*cSize)+gridsize:cSize;
     int estart = ((int)(v.e*cSize)-gridsize)>=0?(int)(v.e*cSize)-gridsize:0;
     int eend = ((int)(v.e*cSize)+gridsize)<=cSize?(int)(v.e*cSize)+gridsize:cSize;
 
@@ -233,12 +231,12 @@ void CombinedClassifier::addSample(featureVector _v, bool addtoForeground){
                 for (int rs = rsstart; rs < rsend; rs++) {
                     for (int e = estart; e < eend; e++) {
                         
-                        long id = e+
+                        long _id = e+
                         rs*cSize+
                         rg*cSize*cSize+
                         rl*cSize*cSize*cSize+
                         ru*cSize*cSize*cSize*cSize;
-                        featureVector current = getCorByID(id);
+                        featureVector current = getCorByID(_id);
                         //current.print();
                         
 
@@ -250,13 +248,20 @@ void CombinedClassifier::addSample(featureVector _v, bool addtoForeground){
                         }
                         // cout<<val<<endl;
                         if (addtoForeground) {
-                            fLattice[id] += val;
+                            fLattice[_id] += val;
                             //cout<<"f"<<id<<": "<<fLattice[id]<<endl;
                         }
                         else{
-                            bLattice[id] += val;
+                            bLattice[_id] += val;
                             //cout<<"b"<<id<<": "<<bLattice[id]<<endl;
                         }
+//                        printf("current: ");
+//                        current.print();
+//                        printf("v: ");
+//                        v.print();
+//                        printf("_v: ");
+//                        _v.print();
+//                        printf("val: %lf\n",val);
                     }
                 }
             }
@@ -282,7 +287,9 @@ void CombinedClassifier::addSample(featureVector _v, bool addtoForeground){
 
 double CombinedClassifier::prob(featureVector v){
     int id = getNearestVectorID(v);
-    return fLattice[id]/(fLattice[id]+bLattice[id]);
+    double f = fLattice[id];
+    double b = bLattice[id];
+    return f/(f+b);
 }
 
 static const double ep = 5;
