@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string>
 #include <fstream>
+
 using namespace std;
 using namespace cv;
 
@@ -30,7 +31,7 @@ void drawArrows(cv::Mat& frame, const std::vector<cv::Point2f>& prevPts, const s
 
 double variance(const vector<int>& data);
 
-void getCutout(const Mat& src, const Mat& prob, Mat& cutout);
+void getCutout(const Mat& src, const Mat& prob, double low, Mat& cutout);
 
 void computeRawDist(const Mat& matte, Mat& raw_dist, double minArea = 30);
 
@@ -39,5 +40,16 @@ void drawContour(const Mat& src, const Mat& prob, Mat& dst);
 void refineProb(Mat& prob);
 
 void getBinaryProbabilityMap(const Mat& prob, Mat& binary, double low, double high);
+
+void minmaxFilter(const Mat& src, Mat& dst, int flag);//flag = 0:=minfilter
+
+void combinedConfidenceMap(const Mat& prob, const Mat& conf, Mat& dst);
+
+void binary2pt(const Mat& src, vector<Point2f>& pts);
+
+void solveMatte(const Mat& src, const vector<Point2f>& unknow_pts, Mat& dst);
+
+//term is defined in the formula 12.
+void getL(const Mat& src, const vector<Point2f>& unknow_pts, Mat& laplacian);
 
 #endif /* defined(__Zhong12__common__) */

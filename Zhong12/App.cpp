@@ -175,7 +175,8 @@ void App::start(const vector<string>& trained){
         exit(1);
     }
     
-    
+//    FileStorage p("prob.xml", FileStorage::WRITE);
+//    FileStorage c("conf.xml", FileStorage::WRITE);
     classifier = new CombinedClassifier(trained);
     for (int i = 1; i < imgs.size(); i++) {
         Mat UDCprob,UDCconf,raw_dist;
@@ -212,9 +213,9 @@ void App::start(const vector<string>& trained){
                 v.rg = 0.5 + globalconf.at<double>(dx,dy)*(globalprob.at<double>(dx,dy)-0.5);
                 v.rs = 0.5 + shapeconf.at<double>(dx,dy)*(shapeprob.at<double>(dx,dy)-0.5);
                 v.e = errordensity.at<double>(dx,dy);
-                if (isnan(classifier->prob(v))) {
-                    cout<<classifier->prob(v);
-                }
+//                if (isnan(classifier->prob(v))) {
+//                    cout<<classifier->prob(v);
+//                }
                 finalprob.at<double>(dx,dy) = classifier->prob(v);
                 finalconf.at<double>(dx,dy) = classifier->conf(v);
             }
@@ -222,15 +223,15 @@ void App::start(const vector<string>& trained){
         
         
         //debug
-        imshow("UDCprob", UDCprob);
-        imshow("localprob", localprob);
-        imshow("globalprob", globalprob);
-        imshow("shapeprob", shapeprob);
-        imshow("errorden", errordensity);
-        imshow("ground truth", mattes[i]);
-        imshow("src", imgs[i]);
-        imshow("finalprob", finalprob);
-        imshow("finalconf", finalconf);
+//        imshow("UDCprob", UDCprob);
+//        imshow("localprob", localprob);
+//        imshow("globalprob", globalprob);
+//        imshow("shapeprob", shapeprob);
+//        imshow("errorden", errordensity);
+//        imshow("ground truth", mattes[i]);
+//        imshow("src", imgs[i]);
+//        imshow("finalprob", finalprob);
+//        imshow("finalconf", finalconf);
         
 //        Mat median,mean,gau;
 //        finalprob.convertTo(finalprob, CV_32FC1);
@@ -243,18 +244,37 @@ void App::start(const vector<string>& trained){
         
 //        refineProb(finalprob);
 //        imshow("refinde_prob", finalprob);
-        
-        Mat cut;
-        getCutout(imgs[i], finalprob, cut);
-    
-        imshow("result", cut);
+        imshow("prob", finalprob);
+        Mat dst;
+        combinedConfidenceMap(finalprob, finalconf, dst);
+        imshow("combined", dst);
+        imshow("conf", finalconf);
+        dst.convertTo(dst, CV_32FC1);
+        Mat ur;
+        threshold(dst, ur, 0.5, 1.0, CV_THRESH_BINARY);
+        ur = ur*255;
+        imshow("unknow region", ur);
         waitKey(0);
+        Mat cut;
+        getCutout(imgs[i], finalprob, 0.6, cut);
+        
+//        imshow("result", cut);
+//        waitKey(0);
         
         final.push_back(cut);
         output_probs.push_back(finalprob);
         output_confs.push_back(finalconf);
         imwrite("../../result/"+to_string(i)+".jpg", cut);
+//        p<<"prob"+to_string(i)<<finalprob;
+//        c<<"conf"+to_string(i)<<finalconf;
     }
+    
+//    for (int i = 0; i < output_probs.size(); i++) {
+//        p<<"prob"+to_string(i)<<output_probs[i];
+//        c<<"conf"+to_string(i)<<output_confs[i];
+//    }
+//    p.release();
+//    c.release();
 }
 
 void App::exportimg(const vector<cv::Mat> &imgs, string path){
@@ -305,7 +325,7 @@ void App::maskbypreviousframe(){
     vector<Mat> final;
     for (int i = 1; i < imgs.size(); i++) {
         Mat cut;
-        getCutout(imgs[i], warped_mattes[i-1], cut);
+        getCutout(imgs[i], warped_mattes[i-1],0.1, cut);
         final.push_back(cut);
     }
     exportimg(final, "../../result/bear_warp/");
@@ -327,7 +347,7 @@ void App::creategroundtruth(){
         Mat prob = mattes[i].clone();
         prob.convertTo(prob, CV_64FC1);
         prob = prob/255;
-        getCutout(imgs[i], prob, gt);
+        getCutout(imgs[i], prob, 0.1, gt);
         imwrite("../../result/"+to_string(i)+".jpg", gt);
     }
 }

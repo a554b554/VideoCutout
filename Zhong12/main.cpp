@@ -71,7 +71,7 @@ int maintest(int argc, const char * argv[]){
 }
 
 
-int main13(int argc, const char * argv[]){
+int main(int argc, const char * argv[]){
 
     
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
@@ -92,7 +92,7 @@ int main13(int argc, const char * argv[]){
     return 0;
 }
 
-int main(int argc, const char * argv[]){
+int main231(int argc, const char * argv[]){
     App* app = new App("app", "../../config/train.cfg");
     return 0;
 }

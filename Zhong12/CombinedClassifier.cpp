@@ -181,9 +181,9 @@ void CombinedClassifier::train(const vector<Mat>& imgs, const vector<Mat>& matte
                 v.rg = 0.5 + globalconf.at<double>(dx,dy)*(globalprob.at<double>(dx,dy)-0.5);
                 v.rs = 0.5 + shapeconf.at<double>(dx,dy)*(shapeprob.at<double>(dx,dy)-0.5);
                 v.e = errordensity.at<double>(dx,dy);
-                if (dx == 16&&dy==161) {
-                    v.print();
-                }
+//                if (dx == 16&&dy==161) {
+//                    v.print();
+//                }
                 if (mattes_gt[i].at<uchar>(dx,dy)==0) {
                     addSample(v, false);
                 }
@@ -287,9 +287,7 @@ void CombinedClassifier::addSample(featureVector _v, bool addtoForeground){
 
 double CombinedClassifier::prob(featureVector v){
     int id = getNearestVectorID(v);
-    double f = fLattice[id];
-    double b = bLattice[id];
-    return f/(f+b);
+    return fLattice[id]/(fLattice[id]+bLattice[id]);
 }
 
 static const double ep = 5;

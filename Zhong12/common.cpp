@@ -78,10 +78,10 @@ double variance(const vector<int>& data){
     return var/(double)data.size();
 }
 
-void getCutout(const Mat& src, const Mat& prob, Mat& cutout){
+void getCutout(const Mat& src, const Mat& prob, double low, Mat& cutout){
     Mat mask, tmpprob;
     prob.convertTo(tmpprob, CV_32FC1);
-    threshold(tmpprob, mask, 0.1, 1., CV_THRESH_BINARY);
+    threshold(tmpprob, mask, low, 1., CV_THRESH_BINARY);
     mask.convertTo(mask, CV_8UC1);
    // cout<<mask;
     //imshow("mask", mask);
@@ -251,3 +251,75 @@ void refineProb(Mat& prob){
         }
     }
 }
+
+//flag=0 := minfilter
+//flag=1 := maxfilter
+const int winSize = 3;
+void minmaxFilter(const Mat& src, Mat& dst, int flag){
+    dst = src.clone();
+    for (int i = winSize; i < src.rows-winSize-1; i++) {
+        for (int j = winSize; j < src.cols-winSize-1; j++) {
+            int length = 2*winSize-1;
+            Rect roi(j,i,length,length);
+            double minval,maxval;
+            minMaxIdx(src(roi), &minval, &maxval);
+            if (flag==0) { //use minfilter
+                dst.at<double>(i,j) = minval;
+            }
+            else if (flag==1) {
+                dst.at<double>(i,j) = maxval;
+            }
+        }
+    }
+}
+
+
+
+void combinedConfidenceMap(const Mat& prob, const Mat& conf, Mat& dst){
+    Mat minp,maxp;
+    minmaxFilter(prob, minp, 0);
+    minmaxFilter(prob, maxp, 1);
+    dst = conf.clone();
+    for (int i = 0; i < prob.rows; i++) {
+        for (int j = 0; j < prob.cols; j++) {
+            dst.at<double>(i,j) = (1-fabs(minp.at<double>(i,j)-
+                                          maxp.at<double>(i,j)))*
+            fabs(prob.at<double>(i,j)-0.5)*conf.at<double>(i,j)*2.0;
+        }
+    }
+}
+
+//unknow = 0 := known 1:= unknow region
+void binary2pt(const Mat& src, vector<Point2f>& pts){
+    for (int i = 1; i < src.rows-1; i++) {
+        for (int j = 1; j < src.cols-1; j++) {
+            if (src.at<double>(i,j) == 1) {
+                pts.push_back(Point2f(j,i));
+            }
+        }
+    }
+}
+
+void solveMatte(const Mat& src, const vector<Point2f>& unknow_pts, Mat& dst){
+    int64 t0 = getTickCount();
+    cout<<"solve matte cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
+}
+
+void getL(const Mat& src, const vector<Point2f>& unknow_pts, Mat& laplacian){
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
