@@ -47,7 +47,7 @@ void minmaxFilter(const Mat& src, Mat& dst, int flag);//flag = 0:=minfilter
 
 void combinedConfidenceMap(const Mat& prob, const Mat& conf, Mat& dst);
 
-void solveMatte(const Mat& src, const Mat& trimap, Mat& dst);
+void solveMatte(const Mat& src, const Mat& trimap, const Mat& prob, const Mat& conf, Mat& dst);
 
 //term is defined in the formula 12.
 void getL(const Mat& src, const Mat& trimap, SpMat& laplacian);

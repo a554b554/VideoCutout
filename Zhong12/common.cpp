@@ -292,10 +292,54 @@ void combinedConfidenceMap(const Mat& prob, const Mat& conf, Mat& dst){
 }
 
 
-
-void solveMatte(const Mat& src, const Mat& trimap, Mat& dst){
+//trimap = 0 means unknown 1 = foreground 2 = background
+void solveMatte(const Mat& src, const Mat& trimap, const Mat& prob, const Mat& conf, Mat& dst){
     int64 t0 = getTickCount();
     dst.create(src.size(), CV_64FC1);
+    int matsize = src.rows*src.cols;
+    
+    SpMat lap(matsize, matsize);
+    getL(src, trimap, lap);
+    
+    SpMat term(matsize, matsize);
+    Eigen::VectorXd b(matsize);
+    vector<Td> vals;
+    int imgid = 0;
+    for (int i = 0; i < src.rows; i++) {
+        for (int j = 0; j < src.cols; j++) {
+            double lamdaT,lamdaC;
+            lamdaT = conf.at<double>(i,j);
+            if (trimap.at<int>(i,j) != 0) {
+                lamdaC = INFINITY;
+            }
+            else{
+                lamdaC = 0;
+            }
+            double ac=0;
+            if (trimap.at<double>(i,j) == 1) { //foreground
+                ac = 1;
+            }
+            else if(trimap.at<double>(i,j) == 2){
+                ac = 0;
+            }
+            
+            
+            b[imgid] = lamdaT*(1.0/(1.0+exp(-prob.at<double>(i,j))))+
+            lamdaC*ac;
+            Td _tmp(imgid,imgid,lamdaC+lamdaT);
+            vals.push_back(_tmp);
+            imgid++;
+        }
+    }
+    term.setFromTriplets(vals.begin(), vals.end());
+    
+    term = term + lap;
+    Eigen::SimplicialCholesky<SpMat> chol(term);  // performs a Cholesky factorization of A
+    Eigen::VectorXd x = chol.solve(b);
+    
+    
+    
+    
     cout<<"solve matte cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
 }
 
@@ -304,16 +348,18 @@ constexpr int winLenth = 2*winStep+1;
 const double epsilon = 0.1;
 constexpr int neb_size = winLenth*winLenth;
 
-//trimap = 1 means unknown region
+//trimap = 0 means unknown region
 void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     
-    //assert(laplacian.rows()==laplacian.cols()==(src.cols*src.rows));
+    //cout<<INT_MAX<<endl;
+    assert((laplacian.rows()==laplacian.cols())&&(laplacian.cols()==(src.cols*src.rows)));
     
     Mat imgidx(src.size(),CV_32SC1);
     int count = 0;
     for (int i = 0; i < imgidx.rows; i++) {
         for (int j = 0; j <imgidx.cols; j++) {
             imgidx.at<int>(i,j)=count;
+            //printf("%d\n",imgidx.at<int>(i,j));
             count++;
         }
     }
@@ -321,21 +367,24 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     vector<Td> coeffs;
     for (int i = winStep; i < src.rows-winStep; i++) {
         for (int j = winStep; j < src.cols-winStep; j++) {
-            if (trimap.at<uchar>(i,j)==0) {
+            if (trimap.at<uchar>(i,j)!=0) {
                 continue;
             }
             
             Rect wk(j-winStep, i-winStep, winLenth, winLenth);
             Mat winI = src(wk).clone();
             Mat winIdx = imgidx(wk).clone();
+            
             winI = winI.reshape(1, winLenth*winLenth);
             Mat covMat,meanMat;
             calcCovarMatrix(winI, covMat, meanMat, CV_COVAR_ROWS|CV_COVAR_NORMAL);
-            cout<<"sample: "<<winI<<endl;
-            cout<<"cov: "<<covMat<<endl;
-            cout<<"mean: "<<meanMat<<endl;
+//            cout<<"sample: "<<winI<<endl;
+//            cout<<"cov: "<<covMat<<endl;
+//            cout<<"mean: "<<meanMat<<endl;
             Mat win_var = (covMat+epsilon/neb_size*Mat::eye(3, 3, CV_64FC1)).inv();
-
+            
+            
+            
             
             winI.convertTo(winI, CV_64FC1);
             for (int cc = 0; cc < winI.rows; cc++) {
@@ -343,14 +392,72 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
             }
             
             Mat vals = (1+winI*win_var*winI.t())/(double)neb_size;
-            for (int dx = i-winStep; dx <= i+winStep ; dx++) {
-                for (int dy = j-winStep; dy <= j+winStep; dy++) {
-                    
-                }
+            
+           
+            winIdx = winIdx.reshape(1,1);
+            Mat colid,rowid;
+            repeat(winIdx, 1, neb_size, colid);
+            repeat(winIdx, neb_size, 1, rowid);
+            rowid = rowid.t();
+            rowid = rowid.reshape(1, 1);
+            
+            //build coeffs
+           // cout<<vals<<endl;
+            vals = vals.reshape(1, 1);
+            for (int cc = 0; cc < neb_size*neb_size; cc++) {
+                Td _tmp(rowid.at<int>(cc),colid.at<int>(cc),vals.at<double>(cc));
+//                cout<<_tmp.row()<<" "<< _tmp.value()<<" "<<endl;
+                coeffs.push_back(_tmp);
             }
+            
         }
     }
+//    coeffs.push_back(Td(0,1,3));
+//    coeffs.push_back(Td(0,2,5));
+//    coeffs.push_back(Td(2,3,1.1));
+    laplacian.setFromTriplets(coeffs.begin(), coeffs.end());
+    vector<Td> sumL;
+
     
+    
+    // aaaaaaaaa!!!
+    for (int i = 0; i < imgidx.rows; i++) {
+        for (int j = 0; j < imgidx.cols; j++) {
+            double val;
+            int idx = imgidx.at<int>(i,j);
+            if (j>=2&&j<=imgidx.cols-3&&i>=2&&i<=imgidx.rows-3) {
+                val = 9;
+            }
+            else if(j>=1&&j<=imgidx.cols-2&&i>=1&&i<=imgidx.rows-2){
+                if ((i+j==2) || (i+j==imgidx.rows-1) ||(i+j==imgidx.cols-1) || (i+j==imgidx.rows+imgidx.cols-4) ) {
+                    val = 4;
+                }
+                else{
+                    val = 6;
+                }
+            }
+            else{
+                if ((i+j==0) || (i+j==imgidx.rows-1)||(i+j==imgidx.cols-1) || (i+j==imgidx.rows+imgidx.cols-2)) {
+                    val = 1;
+                }
+                else if((i==0&&j>=2&&j<=imgidx.cols-3) ||
+                         (i==imgidx.rows-1&&(j>=2&&j<=imgidx.cols-3))||
+                          (j==0&&(i>=2&&i<=imgidx.rows-3)) ||
+                          (j==imgidx.cols-1&&(i>=2&&i<=imgidx.rows-3))){
+                    val = 3;
+                }
+                else{
+                    val = 2;
+                }
+            }
+            Td tmp(idx,idx,val);
+            //printf("%d %lf\n",idx,val);
+        }
+    }
+    SpMat diag(laplacian.rows(),laplacian.cols());
+    diag.setFromTriplets(sumL.begin(), sumL.end());
+    laplacian = diag - laplacian;
+
 }
 
 

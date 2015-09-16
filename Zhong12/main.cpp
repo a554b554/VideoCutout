@@ -104,9 +104,14 @@ int main(int argc, const char* argv[])
      4.0, 5.0, 6.0,
      7.0, 8.0, 9.0);*/
     Mat samples;
-    SpMat b;
+    
+
     samples = imread("../../Zhong12-SIGA-dataset/TEST/DEBUG/001.jpg");
-    getL(samples, samples, b);
+    Mat trimap(samples.size(),CV_8UC1);
+    trimap.setTo(1);
+    SpMat bb(samples.cols*samples.rows,samples.cols*samples.rows);
+    //SpMat b(4,4);
+    getL(samples, trimap, bb);
     
     return 0;
 }
