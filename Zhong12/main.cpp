@@ -12,6 +12,7 @@
 #include "App.h"
 #include "GMM.h"
 #include <string>
+#include "Eigen/Sparse"
 
 
 using namespace std;
@@ -71,7 +72,7 @@ int maintest(int argc, const char * argv[]){
 }
 
 
-int main(int argc, const char * argv[]){
+int mainq(int argc, const char * argv[]){
 
     
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
@@ -97,6 +98,18 @@ int main231(int argc, const char * argv[]){
     return 0;
 }
 
+int main(int argc, const char* argv[])
+{
+    /*Mat_<double> samples = (Mat_<double>(3, 3) << 1.0, 2.0, 3.0,
+     4.0, 5.0, 6.0,
+     7.0, 8.0, 9.0);*/
+    Mat samples;
+    SpMat b;
+    samples = imread("../../Zhong12-SIGA-dataset/TEST/DEBUG/001.jpg");
+    getL(samples, samples, b);
+    
+    return 0;
+}
 
 
 

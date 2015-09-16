@@ -7,6 +7,8 @@
 //
 
 #include "common.h"
+#include "Eigen/Sparse"
+
 void KeyPointsToPoints(const vector<KeyPoint>& kps, vector<Point2f>& ps) {
     ps.clear();
     for (unsigned int i=0; i<kps.size(); i++) ps.push_back(kps[i].pt);
@@ -289,23 +291,65 @@ void combinedConfidenceMap(const Mat& prob, const Mat& conf, Mat& dst){
     }
 }
 
-//unknow = 0 := known 1:= unknow region
-void binary2pt(const Mat& src, vector<Point2f>& pts){
-    for (int i = 1; i < src.rows-1; i++) {
-        for (int j = 1; j < src.cols-1; j++) {
-            if (src.at<double>(i,j) == 1) {
-                pts.push_back(Point2f(j,i));
-            }
-        }
-    }
-}
 
-void solveMatte(const Mat& src, const vector<Point2f>& unknow_pts, Mat& dst){
+
+void solveMatte(const Mat& src, const Mat& trimap, Mat& dst){
     int64 t0 = getTickCount();
+    dst.create(src.size(), CV_64FC1);
     cout<<"solve matte cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
 }
 
-void getL(const Mat& src, const vector<Point2f>& unknow_pts, Mat& laplacian){
+const int winStep = 1;
+constexpr int winLenth = 2*winStep+1;
+const double epsilon = 0.1;
+constexpr int neb_size = winLenth*winLenth;
+
+//trimap = 1 means unknown region
+void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
+    
+    //assert(laplacian.rows()==laplacian.cols()==(src.cols*src.rows));
+    
+    Mat imgidx(src.size(),CV_32SC1);
+    int count = 0;
+    for (int i = 0; i < imgidx.rows; i++) {
+        for (int j = 0; j <imgidx.cols; j++) {
+            imgidx.at<int>(i,j)=count;
+            count++;
+        }
+    }
+
+    vector<Td> coeffs;
+    for (int i = winStep; i < src.rows-winStep; i++) {
+        for (int j = winStep; j < src.cols-winStep; j++) {
+            if (trimap.at<uchar>(i,j)==0) {
+                continue;
+            }
+            
+            Rect wk(j-winStep, i-winStep, winLenth, winLenth);
+            Mat winI = src(wk).clone();
+            Mat winIdx = imgidx(wk).clone();
+            winI = winI.reshape(1, winLenth*winLenth);
+            Mat covMat,meanMat;
+            calcCovarMatrix(winI, covMat, meanMat, CV_COVAR_ROWS|CV_COVAR_NORMAL);
+            cout<<"sample: "<<winI<<endl;
+            cout<<"cov: "<<covMat<<endl;
+            cout<<"mean: "<<meanMat<<endl;
+            Mat win_var = (covMat+epsilon/neb_size*Mat::eye(3, 3, CV_64FC1)).inv();
+
+            
+            winI.convertTo(winI, CV_64FC1);
+            for (int cc = 0; cc < winI.rows; cc++) {
+                winI.row(cc) = winI.row(cc)-meanMat;
+            }
+            
+            Mat vals = (1+winI*win_var*winI.t())/(double)neb_size;
+            for (int dx = i-winStep; dx <= i+winStep ; dx++) {
+                for (int dy = j-winStep; dy <= j+winStep; dy++) {
+                    
+                }
+            }
+        }
+    }
     
 }
 

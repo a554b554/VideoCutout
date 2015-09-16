@@ -19,10 +19,12 @@
 #include <stdio.h>
 #include <string>
 #include <fstream>
+#include "Eigen/Sparse"
 
 using namespace std;
 using namespace cv;
-
+typedef Eigen::SparseMatrix<double> SpMat;
+typedef Eigen::Triplet<double> Td;
 
 void KeyPointsToPoints(const std::vector<cv::KeyPoint>& kps, std::vector<cv::Point2f>& ps);
 void PointsToKeyPoints(const std::vector<cv::Point2f>& ps, std::vector<cv::KeyPoint>& kps);
@@ -45,11 +47,9 @@ void minmaxFilter(const Mat& src, Mat& dst, int flag);//flag = 0:=minfilter
 
 void combinedConfidenceMap(const Mat& prob, const Mat& conf, Mat& dst);
 
-void binary2pt(const Mat& src, vector<Point2f>& pts);
-
-void solveMatte(const Mat& src, const vector<Point2f>& unknow_pts, Mat& dst);
+void solveMatte(const Mat& src, const Mat& trimap, Mat& dst);
 
 //term is defined in the formula 12.
-void getL(const Mat& src, const vector<Point2f>& unknow_pts, Mat& laplacian);
+void getL(const Mat& src, const Mat& trimap, SpMat& laplacian);
 
 #endif /* defined(__Zhong12__common__) */
