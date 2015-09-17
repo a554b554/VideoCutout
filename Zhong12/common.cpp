@@ -346,7 +346,7 @@ void solveMatte(const Mat& src, const Mat& trimap, const Mat& prob, const Mat& c
 
 const int winStep = 1;
 constexpr int winLenth = 2*winStep+1;
-const double epsilon = 0.1;
+const double epsilon = 0.0000001;
 constexpr int neb_size = winLenth*winLenth;
 
 //trimap = 0 means unknown region
@@ -357,9 +357,9 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     
     Mat imgidx(src.size(),CV_32SC1);
     int count = 0;
-    for (int i = 0; i < imgidx.rows; i++) {
-        for (int j = 0; j <imgidx.cols; j++) {
-            imgidx.at<int>(i,j)=count;
+    for (int i = 0; i < imgidx.cols; i++) {
+        for (int j = 0; j <imgidx.rows; j++) {
+            imgidx.at<int>(j,i)=count;
             //printf("%d\n",imgidx.at<int>(i,j));
             count++;
         }
@@ -378,50 +378,59 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
             Rect wk(j-winStep, i-winStep, winLenth, winLenth);
             Mat winI = src(wk).clone();
             Mat winIdx = imgidx(wk).clone();
-            
+            winI = winI.t();
             winI = winI.reshape(1, winLenth*winLenth);
-            cout<<winIdx<<endl;
-            cout<<winI;
+//            cout<<winIdx<<endl;
+//            cout<<winI;
             
             Mat covMat,meanMat;
             calcCovarMatrix(winI, covMat, meanMat, CV_COVAR_ROWS|CV_COVAR_NORMAL);
 //            cout<<"sample: "<<winI<<endl;
 //            cout<<"cov: "<<covMat<<endl;
 //            cout<<"mean: "<<meanMat<<endl;
-            Mat win_var = (covMat+epsilon/neb_size*Mat::eye(3, 3, CV_64FC1)).inv();
+//            cout<<"winI*winI: "<<winI.t()*winI<<endl;
+//            cout<<"winmu: "<<meanMat.t()*meanMat<<endl;
+//            cout<<"3term: "<<epsilon/neb_size*Mat::eye(3, 3, CV_32FC1)<<endl;
+            meanMat.convertTo(meanMat, CV_32F);
+            Mat win_var = (winI.t()*winI/neb_size-meanMat.t()*meanMat+epsilon/neb_size*Mat::eye(3, 3, CV_32FC1)).inv();
             
             
             
-            
-            winI.convertTo(winI, CV_64FC1);
+
             for (int cc = 0; cc < winI.rows; cc++) {
                 winI.row(cc) = winI.row(cc)-meanMat;
             }
+
+            Mat vals = (1+winI*win_var*winI.t())/(float)neb_size;
             
-            Mat vals = (1+winI*win_var*winI.t())/(double)neb_size;
-            
-           
+
+            winIdx = winIdx.t();
             winIdx = winIdx.reshape(1,1);
             Mat colid,rowid;
-            repeat(winIdx, 1, neb_size, colid);
-            repeat(winIdx, neb_size, 1, rowid);
-            rowid = rowid.t();
-            rowid = rowid.reshape(1, 1);
+            repeat(winIdx, 1, neb_size, rowid);
+            repeat(winIdx, neb_size, 1, colid);
+            colid = colid.t();
+            colid = colid.reshape(1, 1);
             
+//            cout<<rowid<<endl;
+//            cout<<colid<<endl;
             //build coeffs
            // cout<<vals<<endl;
             vals = vals.reshape(1, 1);
+//            cout<<vals<<endl;
             for (int cc = 0; cc < neb_size*neb_size; cc++) {
-                Td _tmp(rowid.at<int>(cc),colid.at<int>(cc),vals.at<double>(cc));
+                Td _tmp(rowid.at<int>(0,cc),colid.at<int>(0,cc),vals.at<float>(0,cc));
+                
 //                cout<<_tmp.row()<<" "<< _tmp.value()<<" "<<endl;
                 coeffs.push_back(_tmp);
             }
             
         }
     }
-//    coeffs.push_back(Td(0,1,3));
-//    coeffs.push_back(Td(0,2,5));
-//    coeffs.push_back(Td(2,3,1.1));
+    
+    //until now the code is correct.
+    cout<<coeffs[0].value();
+
     laplacian.setFromTriplets(coeffs.begin(), coeffs.end());
     vector<Td> sumL;
 
@@ -458,9 +467,12 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
                 }
             }
             Td tmp(idx,idx,val);
+            sumL.push_back(tmp);
             //printf("%d %lf\n",idx,val);
         }
     }
+
+    
     SpMat diag(laplacian.rows(),laplacian.cols());
     diag.setFromTriplets(sumL.begin(), sumL.end());
     laplacian = diag - laplacian;
