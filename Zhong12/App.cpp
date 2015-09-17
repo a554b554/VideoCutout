@@ -252,8 +252,34 @@ void App::start(const vector<string>& trained){
         dst.convertTo(dst, CV_32FC1);
         Mat ur;
         threshold(dst, ur, 0.5, 1.0, CV_THRESH_BINARY);
-        ur = ur*255;
-        imshow("unknow region", ur);
+//        cout<<ur<<endl;
+//        cout<<(int)ur.at<uchar>(2,4);
+//        imshow("unknow region", ur*255);
+//        waitKey(0);
+        Mat trimap(ur.size(),CV_32SC1);
+        //construct trimap
+        for (int dx = 0; dx < ur.rows; dx++) {
+            for (int dy = 0; dy < ur.cols; dy++) {
+                if (ur.at<float>(dx,dy)==1) { //known region
+                    if (finalprob.at<double>(dx,dy)<0.4) {//background
+                        trimap.at<int>(dx,dy)=2;
+                    }
+                    else{//foreground
+                        trimap.at<int>(dx,dy)=1;
+                    }
+                }
+                else{ //unknow region
+                    trimap.at<int>(dx,dy)=0;
+                }
+            }
+        }
+        cout<<trimap;
+        trimap.convertTo(trimap, CV_8UC1);
+        imshow("tri", trimap*100);
+        waitKey(0);
+        Mat solvedMatte;
+        solveMatte(imgs[i], trimap, finalprob, finalconf, solvedMatte);
+        
         waitKey(0);
         Mat cut;
         getCutout(imgs[i], finalprob, 0.6, cut);

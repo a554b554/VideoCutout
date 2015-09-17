@@ -293,6 +293,7 @@ void combinedConfidenceMap(const Mat& prob, const Mat& conf, Mat& dst){
 
 
 //trimap = 0 means unknown 1 = foreground 2 = background
+const double lambdaS = 20;
 void solveMatte(const Mat& src, const Mat& trimap, const Mat& prob, const Mat& conf, Mat& dst){
     int64 t0 = getTickCount();
     dst.create(src.size(), CV_64FC1);
@@ -310,7 +311,7 @@ void solveMatte(const Mat& src, const Mat& trimap, const Mat& prob, const Mat& c
             double lamdaT,lamdaC;
             lamdaT = conf.at<double>(i,j);
             if (trimap.at<int>(i,j) != 0) {
-                lamdaC = INFINITY;
+                lamdaC = 1000;
             }
             else{
                 lamdaC = 0;
@@ -333,11 +334,11 @@ void solveMatte(const Mat& src, const Mat& trimap, const Mat& prob, const Mat& c
     }
     term.setFromTriplets(vals.begin(), vals.end());
     
-    term = term + lap;
-    Eigen::SimplicialCholesky<SpMat> chol(term);  // performs a Cholesky factorization of A
+    lap = term + lambdaS * lap;
+    Eigen::SimplicialCholesky<SpMat> chol(lap);  // performs a Cholesky factorization of A
     Eigen::VectorXd x = chol.solve(b);
     
-    
+    cout<<x<<endl;
     
     
     cout<<"solve matte cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
@@ -363,6 +364,9 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
             count++;
         }
     }
+    Mat constm;
+    erode(trimap, constm, Mat());
+    
 
     vector<Td> coeffs;
     for (int i = winStep; i < src.rows-winStep; i++) {
@@ -376,6 +380,9 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
             Mat winIdx = imgidx(wk).clone();
             
             winI = winI.reshape(1, winLenth*winLenth);
+            cout<<winIdx<<endl;
+            cout<<winI;
+            
             Mat covMat,meanMat;
             calcCovarMatrix(winI, covMat, meanMat, CV_COVAR_ROWS|CV_COVAR_NORMAL);
 //            cout<<"sample: "<<winI<<endl;

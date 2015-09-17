@@ -72,7 +72,7 @@ int maintest(int argc, const char * argv[]){
 }
 
 
-int mainq(int argc, const char * argv[]){
+int mainx(int argc, const char * argv[]){
 
     
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
@@ -98,7 +98,7 @@ int main231(int argc, const char * argv[]){
     return 0;
 }
 
-int main(int argc, const char* argv[])
+int mainvvv(int argc, const char* argv[])
 {
     /*Mat_<double> samples = (Mat_<double>(3, 3) << 1.0, 2.0, 3.0,
      4.0, 5.0, 6.0,
@@ -116,5 +116,37 @@ int main(int argc, const char* argv[])
     return 0;
 }
 
+
+//this is test for matting.
+int main(int argc, const char * argv[]){
+    string base = "../../matting/";
+    string file = "dandelion";
+    Mat img = imread(base+file+"_clipped.bmp");
+    Mat scribs = imread(base+file+"_clipped_m.bmp");
+    
+    img.convertTo(img, CV_32F);
+    img = img/255;
+    scribs.convertTo(scribs, CV_32F);
+    scribs = scribs/255;
+    
+    Mat constval = abs(img-scribs);
+    cvtColor(constval, constval, CV_BGR2GRAY);
+    Mat constmap;
+    threshold(constval, constmap, 0.1, 1, CV_THRESH_BINARY);
+    
+    SpMat laplacian(img.rows*img.cols,img.rows*img.cols);
+    getL(img, constmap, laplacian);
+    
+    ofstream ff("../../tmp.txt");
+    ff<<laplacian<<endl;
+    
+//    cout<<constval;
+    imshow("constmap", constmap);
+    imshow("img", img);
+    imshow("scr", scribs);
+    imshow("const", constval);
+    waitKey(0);
+    return 0;
+}
 
 
