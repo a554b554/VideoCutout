@@ -119,6 +119,26 @@ int mainvvv(int argc, const char* argv[])
 
 //this is test for matting.
 int main(int argc, const char * argv[]){
+    
+    
+//    SpMat AA(3,3);
+//    vector<Td>data;
+//    data.push_back(Td(0,0,1));
+//    data.push_back(Td(1,1,2));
+//    data.push_back(Td(2,2,1));
+//    data.push_back(Td(2,2,1));
+//    AA.setFromTriplets(data.begin(), data.end());
+//    Eigen::VectorXd d(3);
+//    d[0]=0;d[1]=100;d[0]=0;
+//    
+//    Eigen::SimplicialCholesky<SpMat> chol(AA);
+//    Eigen::VectorXd ans = chol.solve(d);
+//    cout<<ans;
+    
+    
+    
+    
+    
     string base = "../../matting/";
     string file = "dandelion";
     Mat img = imread(base+file+"_clipped.bmp");
@@ -128,24 +148,97 @@ int main(int argc, const char * argv[]){
     img = img/255;
     scribs.convertTo(scribs, CV_32F);
     scribs = scribs/255;
+
+    //img.create(50, 100, CV_32FC3);
+    //scribs.create(50, 100, CV_32FC3);
+    
     
     Mat constval = abs(img-scribs);
     cvtColor(constval, constval, CV_BGR2GRAY);
+    cvtColor(scribs, scribs, CV_BGR2GRAY);
     Mat constmap;
     threshold(constval, constmap, 0.1, 1, CV_THRESH_BINARY);
     
     SpMat laplacian(img.rows*img.cols,img.rows*img.cols);
+    
+    constval = scribs.mul(constmap);
+    
+    
     getL(img, constmap, laplacian);
+    SpMat D(laplacian.rows(), laplacian.cols());
+
+    vector<Td> vals;
+    int len = laplacian.rows();
+    int count = -1;
+    for (int i = 0; i < constmap.cols; i++) {
+        for (int j = 0; j < constmap.rows; j++) {
+            count++;
+            if (constmap.at<float>(j,i)==0) {
+                continue;
+            }
+            Td t(count,count,1);
+            
+            vals.push_back(t);
+        }
+    }
+    D.setFromTriplets(vals.begin(), vals.end());
+
+    double lambda = 100;
+    Eigen::VectorXd b(len);
     
-    ofstream ff("../../tmp.txt");
-    ff<<laplacian<<endl;
+//    constmap = constmap.reshape(1,len);
+//    constval = constval.reshape(1,len);
+//    for (int i = 0; i < len; i++) {
+//        b[i] = (double)constmap.at<float>(i,0)*lambda*constval.at<float>(i,0);
+//    }
     
-//    cout<<constval;
-    imshow("constmap", constmap);
-    imshow("img", img);
-    imshow("scr", scribs);
-    imshow("const", constval);
+    count = 0;
+    for (int i = 0; i < constmap.cols; i++) {
+        for (int j = 0; j < constmap.rows; j++) {
+            b[count] = (double)constmap.at<float>(j,i)*lambda*constval.at<float>(j,i);
+            count++;
+        }
+    }
+    
+    
+    SpMat A = laplacian+lambda*D;
+    
+
+
+    
+    Eigen::SimplicialCholesky<SpMat> sol;  // performs a Cholesky factorization of A
+
+    sol.compute(A);
+    cout<<sol.info()<<endl;
+    Eigen::VectorXd x = sol.solve(b);
+
+    
+
+    cout<<x<<endl;
+
+  
+    
+    
+    Mat alpha(img.size(),CV_32F);
+    count = 0;
+    for (int i = 0; i < alpha.cols; i++) {
+        for (int j = 0; j < alpha.rows; j++) {
+            if(x[count]<0){
+                x[count]=0;
+            }
+            if (x[count]>1) {
+                x[count]=1;
+            }
+            alpha.at<float>(j,i) = x[count];
+            count++;
+        }
+    }
+    
+    
+    imshow("alp", alpha);
+    imwrite("../../result1.png", alpha);
     waitKey(0);
+    
     return 0;
 }
 

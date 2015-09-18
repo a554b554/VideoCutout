@@ -356,6 +356,7 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     assert((laplacian.rows()==laplacian.cols())&&(laplacian.cols()==(src.cols*src.rows)));
     
     Mat imgidx(src.size(),CV_32SC1);
+    
     int count = 0;
     for (int i = 0; i < imgidx.cols; i++) {
         for (int j = 0; j <imgidx.rows; j++) {
@@ -367,11 +368,11 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     Mat constm;
     erode(trimap, constm, Mat());
     
-
+    
     vector<Td> coeffs;
     for (int i = winStep; i < src.rows-winStep; i++) {
         for (int j = winStep; j < src.cols-winStep; j++) {
-            if (trimap.at<uchar>(i,j)!=0) {
+            if (constm.at<uchar>(i,j)!=0) {
                 continue;
             }
             
@@ -429,53 +430,81 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     }
     
     //until now the code is correct.
-    cout<<coeffs[0].value();
+//    cout<<coeffs[0].value();
 
     laplacian.setFromTriplets(coeffs.begin(), coeffs.end());
-    vector<Td> sumL;
-
     
+    vector<Td> sumL,sumT;
+
+    //cout<<src;
+   // cout<<imgidx;
     
     // aaaaaaaaa!!!
-    for (int i = 0; i < imgidx.rows; i++) {
-        for (int j = 0; j < imgidx.cols; j++) {
-            double val;
-            int idx = imgidx.at<int>(i,j);
-            if (j>=2&&j<=imgidx.cols-3&&i>=2&&i<=imgidx.rows-3) {
-                val = 9;
-            }
-            else if(j>=1&&j<=imgidx.cols-2&&i>=1&&i<=imgidx.rows-2){
-                if ((i+j==2) || (i+j==imgidx.rows-1) ||(i+j==imgidx.cols-1) || (i+j==imgidx.rows+imgidx.cols-4) ) {
-                    val = 4;
-                }
-                else{
-                    val = 6;
-                }
-            }
-            else{
-                if ((i+j==0) || (i+j==imgidx.rows-1)||(i+j==imgidx.cols-1) || (i+j==imgidx.rows+imgidx.cols-2)) {
-                    val = 1;
-                }
-                else if((i==0&&j>=2&&j<=imgidx.cols-3) ||
-                         (i==imgidx.rows-1&&(j>=2&&j<=imgidx.cols-3))||
-                          (j==0&&(i>=2&&i<=imgidx.rows-3)) ||
-                          (j==imgidx.cols-1&&(i>=2&&i<=imgidx.rows-3))){
-                    val = 3;
-                }
-                else{
-                    val = 2;
-                }
-            }
-            Td tmp(idx,idx,val);
-            sumL.push_back(tmp);
-            //printf("%d %lf\n",idx,val);
-        }
-    }
+    
+//    for (int i = 0; i < imgidx.rows; i++) {
+//        for (int j = 0; j < imgidx.cols; j++) {
+//            double val;
+//            int idx = imgidx.at<int>(i,j);
+//            if (j>=2&&j<=imgidx.cols-3&&i>=2&&i<=imgidx.rows-3) {
+//                val = 9;
+//            }
+//            else if(j>=1&&j<=imgidx.cols-2&&i>=1&&i<=imgidx.rows-2){
+//                if ((i+j==2) || (i+j==imgidx.rows-1) ||(i+j==imgidx.cols-1) || (i+j==imgidx.rows+imgidx.cols-4) ) {
+//                    val = 4;
+//                }
+//                else{
+//                    val = 6;
+//                }
+//            }
+//            else{
+//                if ((i+j==0) || (i+j==imgidx.rows-1)||(i+j==imgidx.cols-1) || (i+j==imgidx.rows+imgidx.cols-2)) {
+//                    val = 1;
+//                }
+//                else if((i==0&&j>=2&&j<=imgidx.cols-3) ||
+//                         (i==imgidx.rows-1&&(j>=2&&j<=imgidx.cols-3))||
+//                          (j==0&&(i>=2&&i<=imgidx.rows-3)) ||
+//                          (j==imgidx.cols-1&&(i>=2&&i<=imgidx.rows-3))){
+//                    val = 3;
+//                }
+//                else{
+//                    val = 2;
+//                }
+//            }
+//            Td tmp(idx,idx,val);
+//            sumT.push_back(tmp);
+//            printf("%d %lf\n",idx,val);
+//        }
+//    }
 
+    int64 t0 = getTickCount();
+    int row = laplacian.rows();
+    SpMat tmp = laplacian.transpose();
+    for (int i = 0; i < row; i++) {
+        double sum = tmp.col(i).sum();
+        
+        Td tmp(i,i,sum);
+        sumL.push_back(tmp);
+        //printf("%d %lf\n",i,sum);
+    }
+    cout<<"cost of sum: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
+    
+    
+    
     
     SpMat diag(laplacian.rows(),laplacian.cols());
     diag.setFromTriplets(sumL.begin(), sumL.end());
     laplacian = diag - laplacian;
+    //cout<<diag;
+    
+    
+//    for (int i = 0; i < laplacian.rows(); i++) {
+//        double sum = laplacian.row(i).sum();
+//        if (sum>1) {
+//            cout<<"i: "<<i<<" "<<sum<<endl;
+//        }
+//    }
+    
+    return;
 
 }
 
