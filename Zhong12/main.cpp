@@ -121,22 +121,9 @@ int mainvvv(int argc, const char* argv[])
 int main(int argc, const char * argv[]){
     
     
-//    SpMat AA(3,3);
-//    vector<Td>data;
-//    data.push_back(Td(0,0,1));
-//    data.push_back(Td(1,1,2));
-//    data.push_back(Td(2,2,1));
-//    data.push_back(Td(2,2,1));
-//    AA.setFromTriplets(data.begin(), data.end());
-//    Eigen::VectorXd d(3);
-//    d[0]=0;d[1]=100;d[0]=0;
-//    
-//    Eigen::SimplicialCholesky<SpMat> chol(AA);
-//    Eigen::VectorXd ans = chol.solve(d);
-//    cout<<ans;
-    
-    
-    
+
+  
+  
     
     
     string base = "../../matting/";
@@ -186,12 +173,6 @@ int main(int argc, const char * argv[]){
     double lambda = 100;
     Eigen::VectorXd b(len);
     
-//    constmap = constmap.reshape(1,len);
-//    constval = constval.reshape(1,len);
-//    for (int i = 0; i < len; i++) {
-//        b[i] = (double)constmap.at<float>(i,0)*lambda*constval.at<float>(i,0);
-//    }
-    
     count = 0;
     for (int i = 0; i < constmap.cols; i++) {
         for (int j = 0; j < constmap.rows; j++) {
@@ -203,8 +184,24 @@ int main(int argc, const char * argv[]){
     
     SpMat A = laplacian+lambda*D;
     
-
-
+    
+    
+//    SpMat _A(A.rows(),A.cols());
+//    loadSPmat("../../term.txt", _A);
+//    compareMat(A, _A);
+    
+    SpMat _lap(laplacian.rows(),laplacian.cols());
+    //compareMat(laplacian, _lap);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     Eigen::SimplicialCholesky<SpMat> sol;  // performs a Cholesky factorization of A
 
@@ -213,8 +210,8 @@ int main(int argc, const char * argv[]){
     Eigen::VectorXd x = sol.solve(b);
 
     
-
-    cout<<x<<endl;
+    
+//    cout<<x<<endl;
 
   
     

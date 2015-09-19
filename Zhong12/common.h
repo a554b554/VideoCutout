@@ -52,4 +52,7 @@ void solveMatte(const Mat& src, const Mat& trimap, const Mat& prob, const Mat& c
 //term is defined in the formula 12.
 void getL(const Mat& src, const Mat& trimap, SpMat& laplacian);
 
+void loadSPmat(string filename, SpMat& sp);
+void compareMat(SpMat& mat1, SpMat& mat2);
+
 #endif /* defined(__Zhong12__common__) */

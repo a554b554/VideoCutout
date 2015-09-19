@@ -352,10 +352,15 @@ constexpr int neb_size = winLenth*winLenth;
 //trimap = 0 means unknown region
 void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     
+    cvtColor(src, src, CV_BGR2RGB);
     //cout<<INT_MAX<<endl;
     assert((laplacian.rows()==laplacian.cols())&&(laplacian.cols()==(src.cols*src.rows)));
     
     Mat imgidx(src.size(),CV_32SC1);
+    
+    if (src.type()!=CV_32F) {
+        src.convertTo(src, CV_32F);
+    }
     
     int count = 0;
     for (int i = 0; i < imgidx.cols; i++) {
@@ -367,12 +372,13 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     }
     Mat constm;
     erode(trimap, constm, Mat());
-    
+
     
     vector<Td> coeffs;
-    for (int i = winStep; i < src.rows-winStep; i++) {
-        for (int j = winStep; j < src.cols-winStep; j++) {
-            if (constm.at<uchar>(i,j)!=0) {
+    
+    for (int j = winStep; j < src.cols-winStep; j++) {
+        for (int i = winStep; i < src.rows-winStep; i++) {
+            if (constm.at<float>(i,j)!=0) {
                 continue;
             }
             
@@ -382,26 +388,33 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
             winI = winI.t();
             winI = winI.reshape(1, winLenth*winLenth);
 //            cout<<winIdx<<endl;
-//            cout<<winI;
+           // cout<<"winI: "<<winI<<endl;
             
             Mat covMat,meanMat;
             calcCovarMatrix(winI, covMat, meanMat, CV_COVAR_ROWS|CV_COVAR_NORMAL);
 //            cout<<"sample: "<<winI<<endl;
 //            cout<<"cov: "<<covMat<<endl;
-//            cout<<"mean: "<<meanMat<<endl;
+            
 //            cout<<"winI*winI: "<<winI.t()*winI<<endl;
 //            cout<<"winmu: "<<meanMat.t()*meanMat<<endl;
 //            cout<<"3term: "<<epsilon/neb_size*Mat::eye(3, 3, CV_32FC1)<<endl;
-            meanMat.convertTo(meanMat, CV_32F);
-            Mat win_var = (winI.t()*winI/neb_size-meanMat.t()*meanMat+epsilon/neb_size*Mat::eye(3, 3, CV_32FC1)).inv();
+            meanMat.convertTo(meanMat, CV_64F);
+            winI.convertTo(winI, CV_64F);
             
-            
+//            cout<<"mean: "<<meanMat<<endl;
+
+            Mat cc = winI.t()*winI/neb_size-meanMat.t()*meanMat+epsilon/neb_size*Mat::eye(3, 3, CV_64FC1);
+            Mat win_var = cc.inv();
+//            cout<<"winvar: "<<win_var<<endl;
+//            cout<<"beforeinv: "<<cc<<endl;
+//            cout<<win_var*cc<<endl;
             
 
             for (int cc = 0; cc < winI.rows; cc++) {
                 winI.row(cc) = winI.row(cc)-meanMat;
             }
-
+            
+            //cout<<"winI2: "<<winI<<endl;
             Mat vals = (1+winI*win_var*winI.t())/(float)neb_size;
             
 
@@ -413,14 +426,16 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
             colid = colid.t();
             colid = colid.reshape(1, 1);
             
-//            cout<<rowid<<endl;
-//            cout<<colid<<endl;
-            //build coeffs
-           // cout<<vals<<endl;
+            vals = vals.t();
             vals = vals.reshape(1, 1);
+           // cout<<rowid<<endl;
+            //cout<<colid<<endl;
+            //build coeffs
+            //cout<<vals<<endl;
+            
 //            cout<<vals<<endl;
             for (int cc = 0; cc < neb_size*neb_size; cc++) {
-                Td _tmp(rowid.at<int>(0,cc),colid.at<int>(0,cc),vals.at<float>(0,cc));
+                Td _tmp(rowid.at<int>(0,cc),colid.at<int>(0,cc),vals.at<double>(0,cc));
                 
 //                cout<<_tmp.row()<<" "<< _tmp.value()<<" "<<endl;
                 coeffs.push_back(_tmp);
@@ -429,9 +444,13 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
         }
     }
     
-    //until now the code is correct.
+
 //    cout<<coeffs[0].value();
 
+//    for (int i = 0; i < coeffs.size(); i++) {
+//        cout<<coeffs[i].col()<<" "<<coeffs[i].row()<<" "<<coeffs[i].value()<<endl;
+//    }
+    
     laplacian.setFromTriplets(coeffs.begin(), coeffs.end());
     
     vector<Td> sumL,sumT;
@@ -439,42 +458,6 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     //cout<<src;
    // cout<<imgidx;
     
-    // aaaaaaaaa!!!
-    
-//    for (int i = 0; i < imgidx.rows; i++) {
-//        for (int j = 0; j < imgidx.cols; j++) {
-//            double val;
-//            int idx = imgidx.at<int>(i,j);
-//            if (j>=2&&j<=imgidx.cols-3&&i>=2&&i<=imgidx.rows-3) {
-//                val = 9;
-//            }
-//            else if(j>=1&&j<=imgidx.cols-2&&i>=1&&i<=imgidx.rows-2){
-//                if ((i+j==2) || (i+j==imgidx.rows-1) ||(i+j==imgidx.cols-1) || (i+j==imgidx.rows+imgidx.cols-4) ) {
-//                    val = 4;
-//                }
-//                else{
-//                    val = 6;
-//                }
-//            }
-//            else{
-//                if ((i+j==0) || (i+j==imgidx.rows-1)||(i+j==imgidx.cols-1) || (i+j==imgidx.rows+imgidx.cols-2)) {
-//                    val = 1;
-//                }
-//                else if((i==0&&j>=2&&j<=imgidx.cols-3) ||
-//                         (i==imgidx.rows-1&&(j>=2&&j<=imgidx.cols-3))||
-//                          (j==0&&(i>=2&&i<=imgidx.rows-3)) ||
-//                          (j==imgidx.cols-1&&(i>=2&&i<=imgidx.rows-3))){
-//                    val = 3;
-//                }
-//                else{
-//                    val = 2;
-//                }
-//            }
-//            Td tmp(idx,idx,val);
-//            sumT.push_back(tmp);
-//            printf("%d %lf\n",idx,val);
-//        }
-//    }
 
     int64 t0 = getTickCount();
     int row = laplacian.rows();
@@ -494,31 +477,44 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     SpMat diag(laplacian.rows(),laplacian.cols());
     diag.setFromTriplets(sumL.begin(), sumL.end());
     laplacian = diag - laplacian;
-    //cout<<diag;
-    
-    
-//    for (int i = 0; i < laplacian.rows(); i++) {
-//        double sum = laplacian.row(i).sum();
-//        if (sum>1) {
-//            cout<<"i: "<<i<<" "<<sum<<endl;
-//        }
-//    }
+
     
     return;
 
 }
 
+void loadSPmat(string filename, SpMat& sp){
+    FILE* stream;
+    stream = fopen(filename.c_str(), "r");
+    if (stream==NULL) {
+        cerr<<"no file: "<<filename<<endl;
+        exit(0);
+    }
+    vector<Td> data;
+    while (!feof(stream)) {
+        int a,b;
+        double val;
+        fscanf(stream, "         (%d,%d)             %lf\n",&a,&b,&val);
+        Td tmp(a-1,b-1,val);
+        data.push_back(tmp);
+        //printf("%d %d %lf\n",a,b,val);
+    }
+    fclose(stream);
+    sp.setFromTriplets(data.begin(), data.end());
+}
 
 
-
-
-
-
-
-
-
-
-
+        
+void compareMat(SpMat& mat1, SpMat& mat2){
+    SpMat minus = mat1 - mat2;
+    for (int k=0; k<minus.outerSize(); ++k)
+        for (Eigen::SparseMatrix<double>::InnerIterator it(minus,k); it; ++it)
+        {
+            if (fabs(it.value())>1) {
+                cout<<"row: "<<it.row()<<" col: "<<it.col()<<" val: "<<it.value()<<endl;
+            }
+        }
+}
 
 
 

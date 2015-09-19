@@ -1,4 +1,5 @@
 Zhong12-SIGA-dataset
 testdata
 result
-tmp.txt
+*.txt
+*.png
