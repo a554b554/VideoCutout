@@ -244,11 +244,11 @@ void App::start(const vector<string>& trained){
         
 //        refineProb(finalprob);
 //        imshow("refinde_prob", finalprob);
-        imshow("prob", finalprob);
+//        imshow("prob", finalprob);
         Mat dst;
         combinedConfidenceMap(finalprob, finalconf, dst);
-        imshow("combined", dst);
-        imshow("conf", finalconf);
+//        imshow("combined", dst);
+//        imshow("conf", finalconf);
         dst.convertTo(dst, CV_32FC1);
         Mat ur;
         threshold(dst, ur, 0.5, 1.0, CV_THRESH_BINARY);
@@ -256,41 +256,61 @@ void App::start(const vector<string>& trained){
 //        cout<<(int)ur.at<uchar>(2,4);
 //        imshow("unknow region", ur*255);
 //        waitKey(0);
-        Mat trimap(ur.size(),CV_32SC1);
+        //Mat trimap(ur.size(),CV_32SC1);
+        Mat constmap(ur.size(),CV_32FC1);
+        Mat constval(ur.size(),CV_32FC1);
         //construct trimap
+        constmap.setTo(0);
+        constval.setTo(0);
+        
+        
         for (int dx = 0; dx < ur.rows; dx++) {
             for (int dy = 0; dy < ur.cols; dy++) {
                 if (ur.at<float>(dx,dy)==1) { //known region
                     if (finalprob.at<double>(dx,dy)<0.4) {//background
-                        trimap.at<int>(dx,dy)=2;
+                        constmap.at<float>(dx,dy)=1;
                     }
                     else{//foreground
-                        trimap.at<int>(dx,dy)=1;
+                        constmap.at<float>(dx,dy)=1;
+                        constval.at<float>(dx,dy)=1;
                     }
                 }
-                else{ //unknow region
-                    trimap.at<int>(dx,dy)=0;
-                }
+
             }
         }
-        cout<<trimap;
-        trimap.convertTo(trimap, CV_8UC1);
-        imshow("tri", trimap*100);
-        waitKey(0);
-        Mat solvedMatte;
-        solveMatte(imgs[i], trimap, finalprob, finalconf, solvedMatte);
         
-        waitKey(0);
-        Mat cut;
-        getCutout(imgs[i], finalprob, 0.6, cut);
+       
+//        imshow("constmap", constmap);
+//        imshow("constval", constval);
+        Mat constval_cut,known;
+        getCutout2(imgs[i], constval, constval_cut);
+        getCutout2(imgs[i], constmap, known);
+//        imshow("constval_cut", constval_cut);
+//        imshow("known", known);
+        //waitKey(0);
+        Mat solvedMatte;
+        solveMatte(imgs[i], constmap, constval, finalprob, finalconf, solvedMatte);
+        
+//        imshow("matte", solvedMatte);
+        
+        Mat cut,probcut;
+        getCutout2(imgs[i], solvedMatte, cut);
+        getCutout2(imgs[i], finalprob, probcut);
         
 //        imshow("result", cut);
+//        imshow("probcut", probcut);
 //        waitKey(0);
-        
         final.push_back(cut);
         output_probs.push_back(finalprob);
         output_confs.push_back(finalconf);
-        imwrite("../../result/"+to_string(i)+".jpg", cut);
+        imwrite("../../result/"+to_string(i)+".png", cut);
+        solvedMatte=solvedMatte*255;
+        solvedMatte.convertTo(solvedMatte, CV_8U);
+        imwrite("../../result/"+to_string(i)+"_alpha.png", solvedMatte);
+        imwrite("../../result/"+to_string(i)+"_alpha_p.png", probcut);
+        
+        
+        warped_mattes[i] = solvedMatte.clone();
 //        p<<"prob"+to_string(i)<<finalprob;
 //        c<<"conf"+to_string(i)<<finalconf;
     }

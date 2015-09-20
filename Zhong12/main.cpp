@@ -72,11 +72,11 @@ int maintest(int argc, const char * argv[]){
 }
 
 
-int mainx(int argc, const char * argv[]){
+int main(int argc, const char * argv[]){
 
     
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
-    string dirname = "DEBUG";
+    string dirname = "BB";
 //    testPath = testPath + argv[1] + "/";
     App* app = new App("app", testPath, dirname);
   
@@ -118,18 +118,14 @@ int mainvvv(int argc, const char* argv[])
 
 
 //this is test for matting.
-int main(int argc, const char * argv[]){
+int mainmatting(int argc, const char * argv[]){
     
-    
-
-  
-  
     
     
     string base = "../../matting/";
-    string file = "dandelion";
-    Mat img = imread(base+file+"_clipped.bmp");
-    Mat scribs = imread(base+file+"_clipped_m.bmp");
+    string file = "kid1";
+    Mat img = imread(base+file+".bmp");
+    Mat scribs = imread(base+file+"_m.bmp");
     
     img.convertTo(img, CV_32F);
     img = img/255;
@@ -185,30 +181,13 @@ int main(int argc, const char * argv[]){
     SpMat A = laplacian+lambda*D;
     
     
-    
-//    SpMat _A(A.rows(),A.cols());
-//    loadSPmat("../../term.txt", _A);
-//    compareMat(A, _A);
-    
-    SpMat _lap(laplacian.rows(),laplacian.cols());
-    //compareMat(laplacian, _lap);
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     Eigen::SimplicialCholesky<SpMat> sol;  // performs a Cholesky factorization of A
 
+    int64 t = getTickCount();
     sol.compute(A);
     cout<<sol.info()<<endl;
     Eigen::VectorXd x = sol.solve(b);
-
+    cout<<"solving cost: "<<(getTickCount()-t)/getTickFrequency()<<endl;
     
     
 //    cout<<x<<endl;
@@ -233,7 +212,9 @@ int main(int argc, const char * argv[]){
     
     
     imshow("alp", alpha);
-    imwrite("../../result1.png", alpha);
+    alpha = alpha*255;
+    alpha.convertTo(alpha, CV_8UC1);
+    imwrite("../../"+file+".png", alpha);
     waitKey(0);
     
     return 0;

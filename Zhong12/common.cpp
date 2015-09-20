@@ -81,30 +81,28 @@ double variance(const vector<int>& data){
 }
 
 void getCutout(const Mat& src, const Mat& prob, double low, Mat& cutout){
-    Mat mask, tmpprob;
-    prob.convertTo(tmpprob, CV_32FC1);
-    threshold(tmpprob, mask, low, 1., CV_THRESH_BINARY);
-    mask.convertTo(mask, CV_8UC1);
-   // cout<<mask;
-    //imshow("mask", mask);
-    //debug
-//    Mat show = src.clone();
-//    vector<vector<Point> > contours; vector<Vec4i> hierarchy;
-//    findContours(mask, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
-//    
-//    for( int i = 0; i< contours.size(); i++ )
-//    {
-//        Scalar color = Scalar(255,255,0);
-//        drawContours(show, contours, i, color, 2, 8, hierarchy, 0, Point());
-//        imshow("show", show);
-//        printf("%d",i);
-//        waitKey(0);
-//    }
-    
-    
-    src.copyTo(cutout, mask);
+    cutout.create(src.size(), CV_8UC4);
+    Mat c[3];
+    split(src, c);
+    vector<Mat> r;
+    r.push_back(c[0]);
+    r.push_back(c[1]);
+    r.push_back(c[2]);
+    r.push_back(prob);
+    merge(r, cutout);
+ 
 }
 
+void getCutout2(const Mat& src, const Mat& prob, Mat& cutout){
+    cutout = src.clone();
+    Mat p;
+    prob.convertTo(p, CV_64F);
+    for (int i = 0; i < src.rows; i++) {
+        for (int j = 0; j < src.cols; j++) {
+            cutout.at<Vec3b>(i,j)=p.at<double>(i,j)*cutout.at<Vec3b>(i,j);
+        }
+    }
+}
 
 void getBinaryProbabilityMap(const Mat& prob, Mat& binary, double low, double high){
     binary = prob.clone();
@@ -291,57 +289,158 @@ void combinedConfidenceMap(const Mat& prob, const Mat& conf, Mat& dst){
     }
 }
 
+double sigmoid(double v){
+    return 1.0/(1+exp(-v));
+}
+
+
+bool isboundary(const Mat& constmap, int row, int col){
+    assert(constmap.type()==CV_32F);
+    if (constmap.at<float>(row,col)==1) {
+        
+        
+        if (row-1>=0) {
+            if (constmap.at<float>(row-1,col)==0) {
+                return true;
+            }
+        }
+        if (row+1<=constmap.rows-1) {
+            if (constmap.at<float>(row+1,col)==0) {
+                return true;
+            }
+        }
+        if (col-1>=0) {
+            if (constmap.at<float>(row,col-1)==0) {
+                return true;
+            }
+        }
+        if (col+1<=constmap.cols) {
+            if (constmap.at<float>(row,col+1)==0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
 
 //trimap = 0 means unknown 1 = foreground 2 = background
 const double lambdaS = 20;
-void solveMatte(const Mat& src, const Mat& trimap, const Mat& prob, const Mat& conf, Mat& dst){
+void solveMatte(const Mat& src, const Mat& constmap, const Mat& constval, const Mat& prob, const Mat& conf, Mat& dst){
     int64 t0 = getTickCount();
-    dst.create(src.size(), CV_64FC1);
+
     int matsize = src.rows*src.cols;
     
-    SpMat lap(matsize, matsize);
-    getL(src, trimap, lap);
+    SpMat laplacian(matsize, matsize);
+    Mat img = src.clone();
+    img.convertTo(img, CV_32F);
     
-    SpMat term(matsize, matsize);
-    Eigen::VectorXd b(matsize);
-    vector<Td> vals;
-    int imgid = 0;
-    for (int i = 0; i < src.rows; i++) {
-        for (int j = 0; j < src.cols; j++) {
-            double lamdaT,lamdaC;
-            lamdaT = conf.at<double>(i,j);
-            if (trimap.at<int>(i,j) != 0) {
-                lamdaC = 1000;
+    
+    SpMat D(laplacian.rows(), laplacian.cols());
+    
+    Mat boundary(constmap.size(),CV_32F);
+    boundary.setTo(0);
+    for (int i = 0; i < boundary.rows; i++) {
+        for (int j = 0; j < boundary.cols; j++) {
+            if (isboundary(constmap, i, j)) {
+                boundary.at<float>(i,j) = 1;
             }
-            else{
-                lamdaC = 0;
-            }
-            double ac=0;
-            if (trimap.at<double>(i,j) == 1) { //foreground
-                ac = 1;
-            }
-            else if(trimap.at<double>(i,j) == 2){
-                ac = 0;
-            }
-            
-            
-            b[imgid] = lamdaT*(1.0/(1.0+exp(-prob.at<double>(i,j))))+
-            lamdaC*ac;
-            Td _tmp(imgid,imgid,lamdaC+lamdaT);
-            vals.push_back(_tmp);
-            imgid++;
         }
     }
-    term.setFromTriplets(vals.begin(), vals.end());
+    imshow("boundary", boundary);
+    Mat foreboundary = boundary.mul(constval);
+
+    getL(img, boundary, laplacian);
     
-    lap = term + lambdaS * lap;
-    Eigen::SimplicialCholesky<SpMat> chol(lap);  // performs a Cholesky factorization of A
-    Eigen::VectorXd x = chol.solve(b);
+    //by Zhong's method
+//    vector<Td> vals;
+//    int len = laplacian.rows();
+//    
+//    Eigen::VectorXd b(len);
+//    int count = 0;
+//    for (int i = 0; i < constmap.cols; i++) {
+//        for (int j = 0; j < constmap.rows; j++) {
+//            double lambdaT = conf.at<double>(j,i);
+//            double lambdaC = isboundary(constmap, j, i)?100:0;
+//            
+//            
+//            double val = lambdaC+lambdaT;
+//            b[count] = lambdaT*sigmoid(prob.at<double>(j,i))+lambdaC*foreboundary.at<float>(j,i);
+//            Td t(count,count,val);
+//            vals.push_back(t);
+//            count++;
+//        }
+//    }
+//    D.setFromTriplets(vals.begin(), vals.end());
+//    SpMat A = lambdaS*laplacian + D;
     
-    cout<<x<<endl;
+    //by original matting method
+    vector<Td> vals;
+    int len = laplacian.rows();
+    int count = -1;
+    for (int i = 0; i < constmap.cols; i++) {
+        for (int j = 0; j < constmap.rows; j++) {
+            count++;
+            if (boundary.at<float>(j,i)==0) {
+                continue;
+            }
+            Td t(count,count,1);
+            
+            vals.push_back(t);
+        }
+    }
+    D.setFromTriplets(vals.begin(), vals.end());
     
+    double lambda = 100;
+    Eigen::VectorXd b(len);
     
+    count = 0;
+    for (int i = 0; i < constmap.cols; i++) {
+        for (int j = 0; j < constmap.rows; j++) {
+            b[count] = (double)boundary.at<float>(j,i)*lambda*foreboundary.at<float>(j,i);
+
+            count++;
+        }
+    }
+    SpMat A = laplacian+lambda*D;
+    
+    Eigen::SimplicialCholesky<SpMat> sol;  // performs a Cholesky factorization of A
+    sol.compute(A);
+    Eigen::VectorXd x = sol.solve(b);
+
+    
+    dst.create(src.size(), CV_64FC1);
+    count = 0;
+    for (int i = 0; i < dst.cols; i++) {
+        for (int j = 0; j < dst.rows; j++) {
+            if(x[count]<0){
+                x[count]=0;
+            }
+            if (x[count]>1) {
+                x[count]=1;
+            }
+            dst.at<double>(j,i) = x[count];
+            if (constval.at<float>(j,i)>0) {
+                dst.at<double>(j,i) = 1;
+            }
+            else{
+                if (constmap.at<float>(j,i)>0) {
+                    dst.at<double>(j, i) = 0;
+                }
+            }
+            count++;
+        }
+    }
     cout<<"solve matte cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
+
+    
+    
+    imshow("alp", dst);
+
+//    waitKey(0);
+    
+    
 }
 
 const int winStep = 1;
@@ -379,7 +478,7 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     for (int j = winStep; j < src.cols-winStep; j++) {
         for (int i = winStep; i < src.rows-winStep; i++) {
             if (constm.at<float>(i,j)!=0) {
-                continue;
+                //continue;
             }
             
             Rect wk(j-winStep, i-winStep, winLenth, winLenth);
@@ -401,20 +500,16 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
             meanMat.convertTo(meanMat, CV_64F);
             winI.convertTo(winI, CV_64F);
             
-//            cout<<"mean: "<<meanMat<<endl;
 
             Mat cc = winI.t()*winI/neb_size-meanMat.t()*meanMat+epsilon/neb_size*Mat::eye(3, 3, CV_64FC1);
             Mat win_var = cc.inv();
-//            cout<<"winvar: "<<win_var<<endl;
-//            cout<<"beforeinv: "<<cc<<endl;
-//            cout<<win_var*cc<<endl;
+
             
 
             for (int cc = 0; cc < winI.rows; cc++) {
                 winI.row(cc) = winI.row(cc)-meanMat;
             }
             
-            //cout<<"winI2: "<<winI<<endl;
             Mat vals = (1+winI*win_var*winI.t())/(float)neb_size;
             
 
@@ -428,16 +523,9 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
             
             vals = vals.t();
             vals = vals.reshape(1, 1);
-           // cout<<rowid<<endl;
-            //cout<<colid<<endl;
-            //build coeffs
-            //cout<<vals<<endl;
-            
-//            cout<<vals<<endl;
             for (int cc = 0; cc < neb_size*neb_size; cc++) {
                 Td _tmp(rowid.at<int>(0,cc),colid.at<int>(0,cc),vals.at<double>(0,cc));
                 
-//                cout<<_tmp.row()<<" "<< _tmp.value()<<" "<<endl;
                 coeffs.push_back(_tmp);
             }
             
@@ -445,21 +533,11 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     }
     
 
-//    cout<<coeffs[0].value();
 
-//    for (int i = 0; i < coeffs.size(); i++) {
-//        cout<<coeffs[i].col()<<" "<<coeffs[i].row()<<" "<<coeffs[i].value()<<endl;
-//    }
     
     laplacian.setFromTriplets(coeffs.begin(), coeffs.end());
     
     vector<Td> sumL,sumT;
-
-    //cout<<src;
-   // cout<<imgidx;
-    
-
-    int64 t0 = getTickCount();
     int row = laplacian.rows();
     SpMat tmp = laplacian.transpose();
     for (int i = 0; i < row; i++) {
@@ -469,16 +547,12 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
         sumL.push_back(tmp);
         //printf("%d %lf\n",i,sum);
     }
-    cout<<"cost of sum: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
-    
-    
     
     
     SpMat diag(laplacian.rows(),laplacian.cols());
     diag.setFromTriplets(sumL.begin(), sumL.end());
     laplacian = diag - laplacian;
 
-    
     return;
 
 }
