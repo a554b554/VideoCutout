@@ -142,8 +142,7 @@ void App::calcOpticalFlows(){
 //    }
     vector<vector<KeyPoint>> img_pts;
     OFFeatureMatcher* matcher = new OFFeatureMatcher(true, imgs, img_pts, mattes);
-    vector<vector<DMatch>> matches;
-    matches.resize(imgs.size()-1);
+ 
     for (int i = 0; i < imgs.size()-1; i++) {
         matcher->registration(i, i+1, warped_imgs[i], warped_mattes[i]);
     }
@@ -161,7 +160,31 @@ void App::calcOpticalFlows(){
     }
     
     printf("calculate optical flow cost: %lf\n", (getTickCount()-t0)/getTickFrequency());
+    
 }
+
+void App::computeOpitcalFlow(const Mat& srcimg, const Mat& dstimg, const Mat& srcmatte, Mat& warped_matte, Mat& warped_img){
+    int64 t0 = getTickCount();
+    vector<Mat> _imgs;
+    vector<Mat> _mattes;
+    _imgs.push_back(srcimg);
+    _imgs.push_back(dstimg);
+    _mattes.push_back(srcmatte);
+    _mattes.push_back(srcmatte);
+    vector<vector<KeyPoint>> img_pts;
+    OFFeatureMatcher matcher(true, _imgs, img_pts, _mattes);
+    
+    matcher.registration(0, 1, warped_img, warped_matte);
+    //debug
+    cout<<"compute optical flow cost: "<<(getTickCount()-t0)/getTickFrequency()<<endl;
+
+//    imshow("matte", warped_matte+warped_img);
+//    imshow("align + after img", 0.5*imgs[0]+0.5*warped_img);
+//    imshow("align + before img", 0.5*imgs[0]+0.5*imgs[1]);
+//    waitKey(0);
+    
+}
+
 
 void App::changeShowState(){
     printf("currentstate:%d\n",currentShowState);
@@ -247,15 +270,15 @@ void App::start(const vector<string>& trained){
 //        imshow("prob", finalprob);
         Mat dst;
         combinedConfidenceMap(finalprob, finalconf, dst);
-//        imshow("combined", dst);
+        imshow("combined", dst);
 //        imshow("conf", finalconf);
         dst.convertTo(dst, CV_32FC1);
         Mat ur;
-        threshold(dst, ur, 0.5, 1.0, CV_THRESH_BINARY);
+        threshold(dst, ur, 0.9 , 1.0, CV_THRESH_BINARY);
 //        cout<<ur<<endl;
 //        cout<<(int)ur.at<uchar>(2,4);
 //        imshow("unknow region", ur*255);
-//        waitKey(0);
+        waitKey(0);
         //Mat trimap(ur.size(),CV_32SC1);
         Mat constmap(ur.size(),CV_32FC1);
         Mat constval(ur.size(),CV_32FC1);
@@ -280,13 +303,13 @@ void App::start(const vector<string>& trained){
         }
         
        
-//        imshow("constmap", constmap);
-//        imshow("constval", constval);
+        imshow("constmap", constmap);
+        imshow("constval", constval);
         Mat constval_cut,known;
         getCutout2(imgs[i], constval, constval_cut);
         getCutout2(imgs[i], constmap, known);
-//        imshow("constval_cut", constval_cut);
-//        imshow("known", known);
+        imshow("constval_cut", constval_cut);
+        imshow("known", known);
         //waitKey(0);
         Mat solvedMatte;
         solveMatte(imgs[i], constmap, constval, finalprob, finalconf, solvedMatte);
@@ -297,9 +320,9 @@ void App::start(const vector<string>& trained){
         getCutout2(imgs[i], solvedMatte, cut);
         getCutout2(imgs[i], finalprob, probcut);
         
-//        imshow("result", cut);
-//        imshow("probcut", probcut);
-//        waitKey(0);
+        imshow("result", cut);
+        imshow("probcut", probcut);
+        waitKey(0);
         final.push_back(cut);
         output_probs.push_back(finalprob);
         output_confs.push_back(finalconf);
@@ -322,6 +345,167 @@ void App::start(const vector<string>& trained){
 //    p.release();
 //    c.release();
 }
+
+void App::start2(const vector<string>& trained){
+
+    Mat currentmatte = mattes[0];
+    classifier = new CombinedClassifier(trained);
+    for (int i = 1; i < imgs.size(); i++) {
+        //compute optical flow
+        Mat warped_matte,warped_img;
+        computeOpitcalFlow(imgs[i-1], imgs[i], currentmatte, warped_matte, warped_img);
+//        imshow("warped_matte", warped_matte);
+//        imshow("warped_img", warped_img);
+//        imshow("check", warped_matte-warped_mattes[i-1]);
+//        waitKey(0);
+        
+        
+        Mat UDCprob,UDCconf,raw_dist;
+        computeRawDist(warped_matte, raw_dist);
+        processUDC(imgs[i], warped_matte, raw_dist, UDCprob, UDCconf);
+        
+        Mat localprob,localconf;
+        processLC(imgs[i], warped_matte, raw_dist, localprob, localconf);
+        
+        Mat globalprob,globalconf;
+        processGC(imgs[i], warped_matte, raw_dist,globalprob, globalconf);
+        
+        
+        Mat shapeprob,shapeconf;
+        processSP(imgs[i], warped_matte, raw_dist, shapeprob, shapeconf);
+        
+        Mat errordensity,re;
+        re = warped_img - imgs[i];
+        cvtColor(re, re, CV_BGR2GRAY);
+        processRegistraionError(re, errordensity);
+        
+        
+        Mat finalprob(imgs[0].size(),CV_64FC1);
+        Mat finalconf(imgs[0].size(),CV_64FC1);
+        for (int dx = 0; dx < imgs[0].rows; dx++) {
+            for (int dy = 0; dy < imgs[0].cols; dy++) {
+                featureVector v;
+                v.ru = 0.5 + UDCconf.at<double>(dx,dy)*(UDCprob.at<double>(dx,dy)-0.5);
+                v.rl = 0.5 + localconf.at<double>(dx,dy)*(localprob.at<double>(dx,dy)-0.5);
+                v.rg = 0.5 + globalconf.at<double>(dx,dy)*(globalprob.at<double>(dx,dy)-0.5);
+                v.rs = 0.5 + shapeconf.at<double>(dx,dy)*(shapeprob.at<double>(dx,dy)-0.5);
+                v.e = errordensity.at<double>(dx,dy);
+                //                if (isnan(classifier->prob(v))) {
+                //                    cout<<classifier->prob(v);
+                //                }
+                finalprob.at<double>(dx,dy) = classifier->prob(v);
+                finalconf.at<double>(dx,dy) = classifier->conf(v);
+            }
+        }
+        
+        
+        //debug
+        //        imshow("UDCprob", UDCprob);
+        //        imshow("localprob", localprob);
+        //        imshow("globalprob", globalprob);
+        //        imshow("shapeprob", shapeprob);
+                imshow("errorden", errordensity);
+        //        imshow("ground truth", mattes[i]);
+        //        imshow("src", imgs[i]);
+        //        imshow("finalprob", finalprob);
+        //        imshow("finalconf", finalconf);
+        
+        //        Mat median,mean,gau;
+        //        finalprob.convertTo(finalprob, CV_32FC1);
+        //        medianBlur(finalprob, median, 5);
+        //        blur(finalprob, mean, Size(5,5),Point(-1,-1));
+        //        GaussianBlur(finalprob, gau, Size(5,5), 0,0);
+        //        imshow("median", median);
+        //        imshow("mean", mean);
+        //        imshow("gaussian", gau);
+        
+        //        refineProb(finalprob);
+        //        imshow("refinde_prob", finalprob);
+        //        imshow("prob", finalprob);
+        Mat dst;
+        combinedConfidenceMap(finalprob, finalconf, dst);
+                imshow("combined", dst);
+        //        imshow("conf", finalconf);
+        dst.convertTo(dst, CV_32FC1);
+        Mat ur;
+        threshold(dst, ur, 0.95 , 1.0, CV_THRESH_BINARY);
+        //        cout<<ur<<endl;
+        //        cout<<(int)ur.at<uchar>(2,4);
+//        imshow("unknow region", ur*255);
+        //        waitKey(0);
+        //Mat trimap(ur.size(),CV_32SC1);
+        Mat constmap(ur.size(),CV_32FC1);
+        Mat constval(ur.size(),CV_32FC1);
+        //construct trimap
+        constmap.setTo(0);
+        constval.setTo(0);
+        
+        
+        for (int dx = 0; dx < ur.rows; dx++) {
+            for (int dy = 0; dy < ur.cols; dy++) {
+                if (ur.at<float>(dx,dy)==1) { //known region
+                    if (finalprob.at<double>(dx,dy)<0.4) {//background
+                        constmap.at<float>(dx,dy)=1;
+                    }
+                    else{//foreground
+                        constmap.at<float>(dx,dy)=1;
+                        constval.at<float>(dx,dy)=1;
+                    }
+                }
+                
+            }
+        }
+        
+        
+        imshow("constmap", constmap);
+        imshow("constval", constval);
+        Mat constval_cut,known;
+        getCutout2(imgs[i], constval, constval_cut);
+        getCutout2(imgs[i], constmap, known);
+        imshow("constval_cut", constval_cut);
+        imshow("known", known);
+        //waitKey(0);
+        Mat solvedMatte;
+        solveMatte(imgs[i], constmap, constval, finalprob, finalconf, solvedMatte);
+        
+        //        imshow("matte", solvedMatte);
+        
+        Mat cut,probcut;
+        getCutout2(imgs[i], solvedMatte, cut);
+        getCutout2(imgs[i], finalprob, probcut);
+        
+        imshow("result", cut);
+        imshow("probcut", probcut);
+        waitKey(0);
+        final.push_back(cut);
+        output_probs.push_back(finalprob);
+        output_confs.push_back(finalconf);
+        imwrite("../../result/"+to_string(i)+".png", cut);
+        solvedMatte=solvedMatte*255;
+        solvedMatte.convertTo(solvedMatte, CV_8U);
+        imwrite("../../result/"+to_string(i)+"_alpha.png", solvedMatte);
+        imwrite("../../result/"+to_string(i)+"_alpha_p.png", probcut);
+        
+        
+        currentmatte = solvedMatte.clone();
+        //        p<<"prob"+to_string(i)<<finalprob;
+        //        c<<"conf"+to_string(i)<<finalconf;
+    }
+    
+    //    for (int i = 0; i < output_probs.size(); i++) {
+    //        p<<"prob"+to_string(i)<<output_probs[i];
+    //        c<<"conf"+to_string(i)<<output_confs[i];
+    //    }
+    //    p.release();
+    //    c.release();
+}
+
+
+
+
+
+
+
 
 void App::exportimg(const vector<cv::Mat> &imgs, string path){
     for (int i = 0; i < imgs.size(); i++) {

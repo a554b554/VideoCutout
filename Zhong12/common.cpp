@@ -375,14 +375,48 @@ void solveMatte(const Mat& src, const Mat& constmap, const Mat& constval, const 
 //    D.setFromTriplets(vals.begin(), vals.end());
 //    SpMat A = lambdaS*laplacian + D;
     
-    //by original matting method
+    //by my method
+//    vector<Td> vals;
+//    int len = laplacian.rows();
+//    int count = -1;
+//    for (int i = 0; i < constmap.cols; i++) {
+//        for (int j = 0; j < constmap.rows; j++) {
+//            count++;
+//            if (boundary.at<float>(j,i)==0) {
+//                continue;
+//            }
+//            Td t(count,count,1);
+//            
+//            vals.push_back(t);
+//        }
+//    }
+//    D.setFromTriplets(vals.begin(), vals.end());
+//    
+//    double lambda = 100;
+//    Eigen::VectorXd b(len);
+//    
+//    count = 0;
+//    for (int i = 0; i < constmap.cols; i++) {
+//        for (int j = 0; j < constmap.rows; j++) {
+//            b[count] = (double)boundary.at<float>(j,i)*lambda*foreboundary.at<float>(j,i);
+//
+//            count++;
+//        }
+//    }
+//    SpMat A = laplacian+lambda*D;
+//    
+//    Eigen::SimplicialCholesky<SpMat> sol;  // performs a Cholesky factorization of A
+//    sol.compute(A);
+//    Eigen::VectorXd x = sol.solve(b);
+    
+    //by origin method
     vector<Td> vals;
     int len = laplacian.rows();
     int count = -1;
     for (int i = 0; i < constmap.cols; i++) {
         for (int j = 0; j < constmap.rows; j++) {
             count++;
-            if (boundary.at<float>(j,i)==0) {
+            if (constmap.at<float>(j,i)==0) {
                 continue;
             }
             Td t(count,count,1);
@@ -398,8 +432,8 @@ void solveMatte(const Mat& src, const Mat& constmap, const Mat& constval, const 
     count = 0;
     for (int i = 0; i < constmap.cols; i++) {
         for (int j = 0; j < constmap.rows; j++) {
-            b[count] = (double)boundary.at<float>(j,i)*lambda*foreboundary.at<float>(j,i);
-
+            b[count] = (double)constmap.at<float>(j,i)*lambda*constval.at<float>(j,i);
+            
             count++;
         }
     }
@@ -408,6 +442,8 @@ void solveMatte(const Mat& src, const Mat& constmap, const Mat& constval, const 
     Eigen::SimplicialCholesky<SpMat> sol;  // performs a Cholesky factorization of A
     sol.compute(A);
     Eigen::VectorXd x = sol.solve(b);
+    
+    
 
     
     dst.create(src.size(), CV_64FC1);
@@ -436,8 +472,8 @@ void solveMatte(const Mat& src, const Mat& constmap, const Mat& constval, const 
 
     
     
-    imshow("alp", dst);
-
+//    imshow("alp", dst);
+//
 //    waitKey(0);
     
     

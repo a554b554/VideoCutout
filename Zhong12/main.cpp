@@ -76,16 +76,16 @@ int main(int argc, const char * argv[]){
 
     
     string testPath = "../../Zhong12-SIGA-dataset/TEST/";
-    string dirname = "BB";
+    string dirname = "DEBUG2";
 //    testPath = testPath + argv[1] + "/";
     App* app = new App("app", testPath, dirname);
   
     
-    app->calcOpticalFlows();
+    
     vector<string> list;
     parse("../../config/datalist.cfg", list);
     
-    app->start(list);
+    app->start2(list);
     
     //App* app = new App("app", "./filelist.txt");
     //app.testUDC();
@@ -118,14 +118,23 @@ int mainvvv(int argc, const char* argv[])
 
 
 //this is test for matting.
-int mainmatting(int argc, const char * argv[]){
+int main2333(int argc, const char * argv[]){
     
+    if (argc!=4) {
+        cout<<"usage: file1 filealpha outputname"<<endl;
+        exit(0);
+    }
     
-    
+    string file1 = argv[1];
+    string filealpha = argv[2];
+    string output = argv[3];
     string base = "../../matting/";
     string file = "kid1";
-    Mat img = imread(base+file+".bmp");
-    Mat scribs = imread(base+file+"_m.bmp");
+    Mat img = imread(file1);
+    Mat scribs = imread(filealpha);
+    
+    Mat png[3];
+    split(img, png);
     
     img.convertTo(img, CV_32F);
     img = img/255;
@@ -214,7 +223,16 @@ int mainmatting(int argc, const char * argv[]){
     imshow("alp", alpha);
     alpha = alpha*255;
     alpha.convertTo(alpha, CV_8UC1);
-    imwrite("../../"+file+".png", alpha);
+    imwrite(output, alpha);
+    
+    vector<Mat> channel;
+    channel.push_back(png[0]);
+    channel.push_back(png[1]);
+    channel.push_back(png[2]);
+    channel.push_back(alpha);
+    Mat dst;
+    merge(channel, dst);
+    imwrite("_"+output, dst);
     waitKey(0);
     
     return 0;

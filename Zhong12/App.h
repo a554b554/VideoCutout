@@ -49,8 +49,10 @@ public:
     void showImg();
     void calcOpticalFlows();
     void changeShowState();
-    void start(const vector<string>& trained);
+    void start(const vector<string>& trained); //compute by ground truth
+    void start2(const vector<string>& trained); //compute by previous frame
     void creategroundtruth();
+    void computeOpitcalFlow(const Mat& srcimg, const Mat& dstimg, const Mat& srcmatte, Mat& warped_matte, Mat& warped_img);
     
     //unit test
     void testUDC();
