@@ -84,8 +84,8 @@ int main(int argc, const char * argv[]){
     
     vector<string> list;
     parse("../../config/datalist.cfg", list);
-    
-    app->start2(list);
+    //app->reverse();
+    app->start3(list);
     
     //App* app = new App("app", "./filelist.txt");
     //app.testUDC();

@@ -36,6 +36,7 @@ using namespace std;
 using namespace cv;
 
 void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes, int code = MAGIC_NUMBER_BGR);
+void loadmatte(string dirname, vector<Mat>& mattes);
 void parse(string filepath, vector<string>& content);
 
 
@@ -51,8 +52,12 @@ public:
     void changeShowState();
     void start(const vector<string>& trained); //compute by ground truth
     void start2(const vector<string>& trained); //compute by previous frame
+    void start3(const vector<string>& trained); //begin refinement
     void creategroundtruth();
     void computeOpitcalFlow(const Mat& srcimg, const Mat& dstimg, const Mat& srcmatte, Mat& warped_matte, Mat& warped_img);
+    void reverse();
+    
+    void refinement(vector<Mat>& right, vector<Mat>& left);
     
     //unit test
     void testUDC();
@@ -82,6 +87,9 @@ private:
     vector<Mat> output_probs;
     vector<Mat> output_confs;
     vector<Mat> final;
+    
+    vector<Mat> forward;
+    vector<Mat> backward;
     
     CombinedClassifier* classifier;
     void clear(); //clear all storaged image in App.

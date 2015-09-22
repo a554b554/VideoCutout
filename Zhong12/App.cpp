@@ -58,6 +58,33 @@ void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes, int code)
     
 }
 
+void loadmatte(string dirname, vector<Mat>& mattes){
+    string path = dirname + "/";
+    
+    
+    //load image
+    DIR *dp;
+    struct dirent *dirp;
+    if((dp=opendir(path.c_str()))==NULL){
+        perror("opendir error");
+        free(dp);
+        exit(1);
+    }
+    
+    struct stat buf;
+    while((dirp=readdir(dp))!=NULL){
+        if((strcmp(dirp->d_name,".")==0)||(strcmp(dirp->d_name,"..")==0))
+            continue;
+        string fname = path+dirp->d_name;
+        Mat img = imread(fname,0);
+        if (img.empty()) {
+            continue;
+        }
+        mattes.push_back(img);
+    }
+    closedir(dp);
+}
+
 void parse(string filepath, vector<string>& content){
     ifstream f;
     f.open(filepath);
@@ -274,7 +301,7 @@ void App::start(const vector<string>& trained){
 //        imshow("conf", finalconf);
         dst.convertTo(dst, CV_32FC1);
         Mat ur;
-        threshold(dst, ur, 0.9 , 1.0, CV_THRESH_BINARY);
+        threshold(dst, ur, 0.2 , 1.0, CV_THRESH_BINARY);
 //        cout<<ur<<endl;
 //        cout<<(int)ur.at<uchar>(2,4);
 //        imshow("unknow region", ur*255);
@@ -354,10 +381,7 @@ void App::start2(const vector<string>& trained){
         //compute optical flow
         Mat warped_matte,warped_img;
         computeOpitcalFlow(imgs[i-1], imgs[i], currentmatte, warped_matte, warped_img);
-//        imshow("warped_matte", warped_matte);
-//        imshow("warped_img", warped_img);
-//        imshow("check", warped_matte-warped_mattes[i-1]);
-//        waitKey(0);
+        
         
         
         Mat UDCprob,UDCconf,raw_dist;
@@ -404,7 +428,7 @@ void App::start2(const vector<string>& trained){
         //        imshow("localprob", localprob);
         //        imshow("globalprob", globalprob);
         //        imshow("shapeprob", shapeprob);
-                imshow("errorden", errordensity);
+//                imshow("errorden", errordensity);
         //        imshow("ground truth", mattes[i]);
         //        imshow("src", imgs[i]);
         //        imshow("finalprob", finalprob);
@@ -428,7 +452,7 @@ void App::start2(const vector<string>& trained){
         //        imshow("conf", finalconf);
         dst.convertTo(dst, CV_32FC1);
         Mat ur;
-        threshold(dst, ur, 0.95 , 1.0, CV_THRESH_BINARY);
+        threshold(dst, ur, 0.2 , 1.0, CV_THRESH_BINARY);
         //        cout<<ur<<endl;
         //        cout<<(int)ur.at<uchar>(2,4);
 //        imshow("unknow region", ur*255);
@@ -457,8 +481,8 @@ void App::start2(const vector<string>& trained){
         }
         
         
-        imshow("constmap", constmap);
-        imshow("constval", constval);
+//        imshow("constmap", constmap);
+//        imshow("constval", constval);
         Mat constval_cut,known;
         getCutout2(imgs[i], constval, constval_cut);
         getCutout2(imgs[i], constmap, known);
@@ -476,17 +500,19 @@ void App::start2(const vector<string>& trained){
         
         imshow("result", cut);
         imshow("probcut", probcut);
-        waitKey(0);
+        //waitKey(0);
         final.push_back(cut);
         output_probs.push_back(finalprob);
         output_confs.push_back(finalconf);
-        imwrite("../../result/"+to_string(i)+".png", cut);
+//        imwrite("../../result/"+to_string(i)+".png", cut);
         solvedMatte=solvedMatte*255;
         solvedMatte.convertTo(solvedMatte, CV_8U);
-        imwrite("../../result/"+to_string(i)+"_alpha.png", solvedMatte);
-        imwrite("../../result/"+to_string(i)+"_alpha_p.png", probcut);
+        imwrite("../../result/mr"+to_string(i)+".png", solvedMatte);
+//        imwrite("../../result/"+to_string(i)+"_alpha_p.png", probcut);
         
-        
+        imshow("current", currentmatte);
+        imshow("propagate", solvedMatte-currentmatte);
+//        waitKey(0);
         currentmatte = solvedMatte.clone();
         //        p<<"prob"+to_string(i)<<finalprob;
         //        c<<"conf"+to_string(i)<<finalconf;
@@ -500,7 +526,66 @@ void App::start2(const vector<string>& trained){
     //    c.release();
 }
 
+static vector<Point> fmattee,bmattee;
+static bool setf = false;
+static bool setb = false;
+void onMouse(int event,int x,int y,int,void*){
+    if(setf)
+    {
+        cout<<"setting F: "<<Point(x,y)<<endl;
+        fmattee.push_back(Point(x,y));
+    }
+    if (setb) {
+        cout<<"setting B: "<<Point(x,y)<<endl;
+        bmattee.push_back(Point(x,y));
+    }
+    if(event==CV_EVENT_LBUTTONDOWN){
+        cout<<"begin F: "<<Point(x,y)<<endl;
+        setf = true;
+        fmattee.push_back(Point(x,y));
+     
+    }
+    if(event==CV_EVENT_LBUTTONUP)
+    {
+        cout<<"end F: "<<Point(x,y)<<endl;
+        setf = false;
+    }
+    if (event==CV_EVENT_RBUTTONDOWN) {
+        cout<<"begin B: "<<Point(x,y)<<endl;
+        setb = true;
+        bmattee.push_back(Point(x,y));
+    }
+    if (event==CV_EVENT_RBUTTONUP) {
+        cout<<"end B: "<<Point(x,y)<<endl;
+        setb = false;
+    }
+}
 
+void App::start3(const vector<string>& trained){
+    
+    classifier = new CombinedClassifier(trained);
+    vector<Mat> right,left;
+    loadmatte("../../result/BB_forward", right);
+    loadmatte("../../result/BB_backward", left);
+
+
+    namedWindow("left");
+    cvSetMouseCallback("left", onMouse);
+    while (1) {
+        if (waitKey(10)=='a') {
+            for (int i = 0; i < fmattee.size(); i++) {
+                circle(right[3], fmattee[i], 5, 255, -1);
+            }
+            for (int i = 0; i < bmattee.size(); i++) {
+                circle(right[3], bmattee[i], 5, 0, -1);
+            }
+            fmattee.clear();
+            bmattee.clear();
+        }
+        imshow("left", right[3]);
+    }
+    //refinement(right, left);
+}
 
 
 
@@ -583,7 +668,16 @@ void App::creategroundtruth(){
 }
 
 
+void App::reverse(){
+    std::reverse(imgs.begin(), imgs.end());
+    std::reverse(mattes.begin(), mattes.end());
+}
 
 
-
+void App::refinement(vector<cv::Mat> &right, vector<cv::Mat> &left){
+    vector<Mat> finalmat;
+    for (int i = 0; i < right.size(); i++) {
+        finalmat.push_back(right[i]);
+    }
+}
 

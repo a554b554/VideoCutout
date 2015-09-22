@@ -514,7 +514,7 @@ void getL(const Mat& src, const Mat& trimap, SpMat& laplacian){
     for (int j = winStep; j < src.cols-winStep; j++) {
         for (int i = winStep; i < src.rows-winStep; i++) {
             if (constm.at<float>(i,j)!=0) {
-                //continue;
+                continue;
             }
             
             Rect wk(j-winStep, i-winStep, winLenth, winLenth);
