@@ -504,7 +504,7 @@ void App::start2(const vector<string>& trained){
         final.push_back(cut);
         output_probs.push_back(finalprob);
         output_confs.push_back(finalconf);
-//        imwrite("../../result/"+to_string(i)+".png", cut);
+        imwrite("../../result/"+to_string(i)+".png", cut);
         solvedMatte=solvedMatte*255;
         solvedMatte.convertTo(solvedMatte, CV_8U);
         imwrite("../../result/mr"+to_string(i)+".png", solvedMatte);
@@ -569,21 +569,49 @@ void App::start3(const vector<string>& trained){
     loadmatte("../../result/BB_backward", left);
 
 
-    namedWindow("left");
-    cvSetMouseCallback("left", onMouse);
-    while (1) {
-        if (waitKey(10)=='a') {
-            for (int i = 0; i < fmattee.size(); i++) {
-                circle(right[3], fmattee[i], 5, 255, -1);
+    namedWindow("main");
+    cvSetMouseCallback("main", onMouse);
+    
+    for (int i = right.size()-1; i>=0; i--) {
+        Mat current = right[i];
+        Mat out,show;
+        getCutout2(imgs[i], current, out);
+        show = imgs[i].clone();
+        while (1) {
+            
+            if (waitKey(10)=='a') {
+                for (int i = 0; i < fmattee.size(); i++) {
+                    circle(current, fmattee[i], 5, 255, -1);
+                }
+                for (int i = 0; i < bmattee.size(); i++) {
+                    circle(current, bmattee[i], 5, 0, -1);
+                }
+                fmattee.clear();
+                bmattee.clear();
             }
-            for (int i = 0; i < bmattee.size(); i++) {
-                circle(right[3], bmattee[i], 5, 0, -1);
+            if (waitKey(10)=='q') {
+                //imwrite("../../"+to_string(i)+".png", out);
+                cout<<"break!"<<endl;
+                break;
             }
-            fmattee.clear();
-            bmattee.clear();
+            if (waitKey(10)=='b') {
+                show = imgs[i].clone();
+                grabCut(show, current, Rect(), Mat(), Mat(), 5, GC_INIT_WITH_MASK);
+            }
+            
+            getCutout2(imgs[i], current, out);
+        
+            imshow("main", out);
+            imshow("curr", current);
+            imshow("grabcut", show);
         }
-        imshow("left", right[3]);
+        //imshow("dif", current-right[i-1]);
+        Mat ds = current-right[i-1];
+        vector<vector<Point> > contours; vector<Vec4i> hierarchy;
+        findContours( ds, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
     }
+    
+    
     //refinement(right, left);
 }
 

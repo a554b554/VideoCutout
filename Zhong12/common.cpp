@@ -96,7 +96,13 @@ void getCutout(const Mat& src, const Mat& prob, double low, Mat& cutout){
 void getCutout2(const Mat& src, const Mat& prob, Mat& cutout){
     cutout = src.clone();
     Mat p;
-    prob.convertTo(p, CV_64F);
+    if (prob.type()==CV_8U) {
+        prob.convertTo(p, CV_64F);
+        p/=255;
+    }
+    else{
+        prob.convertTo(p, CV_64F);
+    }
     for (int i = 0; i < src.rows; i++) {
         for (int j = 0; j < src.cols; j++) {
             cutout.at<Vec3b>(i,j)=p.at<double>(i,j)*cutout.at<Vec3b>(i,j);

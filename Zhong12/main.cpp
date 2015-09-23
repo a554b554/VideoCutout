@@ -85,6 +85,7 @@ int main(int argc, const char * argv[]){
     vector<string> list;
     parse("../../config/datalist.cfg", list);
     //app->reverse();
+    //app->calcOpticalFlows();
     app->start3(list);
     
     //App* app = new App("app", "./filelist.txt");

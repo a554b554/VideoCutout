@@ -158,6 +158,11 @@ void OFFeatureMatcher::registration(int idx_i, int idx_j, Mat &registrated_img, 
         j_pts.push_back(j_pt);
         
     }
+    if (i_pts.size()<4||j_pts.size()<4) {
+        registrated_img = imgs[idx_i].clone();
+        registrated_matte = mattes[idx_i].clone();
+        return;
+    }
     Mat M = findHomography(i_pts, j_pts, CV_RANSAC);
     Mat warped,warped_mat;
     warpPerspective(imgs[idx_i], warped, M, imgs[0].size());

@@ -362,11 +362,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/App.cpp"
-            timestampString = "464623578.952918"
+            timestampString = "464626270.173143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "643"
-            endingLineNumber = "643"
+            startingLineNumber = "666"
+            endingLineNumber = "666"
             landmarkName = "App::maskbypreviousframe()"
             landmarkType = "5">
          </BreakpointContent>
@@ -490,11 +490,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464358096.177538"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "computeRawDist(const Mat&amp; matte, Mat&amp; raw_dist, double minArea)"
             landmarkType = "7">
          </BreakpointContent>
@@ -506,11 +506,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464358096.177538"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
             landmarkName = "computeRawDist(const Mat&amp; matte, Mat&amp; raw_dist, double minArea)"
             landmarkType = "7">
          </BreakpointContent>
@@ -666,7 +666,23 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "526"
+            endingLineNumber = "526"
+            landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Zhong12/common.cpp"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "520"
@@ -682,11 +698,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "514"
-            endingLineNumber = "514"
+            startingLineNumber = "581"
+            endingLineNumber = "581"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -698,11 +714,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "575"
-            endingLineNumber = "575"
+            startingLineNumber = "582"
+            endingLineNumber = "582"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -714,27 +730,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "576"
-            endingLineNumber = "576"
-            landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "589"
-            endingLineNumber = "589"
+            startingLineNumber = "595"
+            endingLineNumber = "595"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -762,11 +762,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "511"
-            endingLineNumber = "511"
+            startingLineNumber = "517"
+            endingLineNumber = "517"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -778,11 +778,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "528"
-            endingLineNumber = "528"
+            startingLineNumber = "534"
+            endingLineNumber = "534"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -794,11 +794,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "544"
-            endingLineNumber = "544"
+            startingLineNumber = "550"
+            endingLineNumber = "550"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -810,11 +810,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "554"
-            endingLineNumber = "554"
+            startingLineNumber = "560"
+            endingLineNumber = "560"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -826,11 +826,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "562"
-            endingLineNumber = "562"
+            startingLineNumber = "568"
+            endingLineNumber = "568"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -906,11 +906,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "592"
-            endingLineNumber = "592"
+            startingLineNumber = "598"
+            endingLineNumber = "598"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -938,11 +938,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "500"
-            endingLineNumber = "500"
+            startingLineNumber = "506"
+            endingLineNumber = "506"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -970,11 +970,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "588"
-            endingLineNumber = "588"
+            startingLineNumber = "594"
+            endingLineNumber = "594"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -986,11 +986,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "587"
-            endingLineNumber = "587"
+            startingLineNumber = "593"
+            endingLineNumber = "593"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1034,11 +1034,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "574"
-            endingLineNumber = "574"
+            startingLineNumber = "580"
+            endingLineNumber = "580"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1050,11 +1050,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/common.cpp"
-            timestampString = "464516884.338884"
+            timestampString = "464625193.82113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "549"
-            endingLineNumber = "549"
+            startingLineNumber = "555"
+            endingLineNumber = "555"
             landmarkName = "getL(const Mat&amp; src, const Mat&amp; trimap, SpMat&amp; laplacian)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1146,11 +1146,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Zhong12/App.cpp"
-            timestampString = "464623578.952918"
+            timestampString = "464626270.173143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "585"
-            endingLineNumber = "585"
+            startingLineNumber = "600"
+            endingLineNumber = "600"
             landmarkName = "App::start3(const vector&lt;string&gt;&amp; trained)"
             landmarkType = "5">
          </BreakpointContent>
