@@ -15,6 +15,8 @@ void processGC(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probm
     
     probmat.create(img.rows, img.cols, CV_64FC1);
     confmat.create(img.rows, img.cols, CV_64FC1);
+    probmat.setTo(0);
+    confmat.setTo(1);
     vector<Vec3d> fSamples,bSamples;
     //create sample set.
     for (int i = 0; i < img.rows; i++) {

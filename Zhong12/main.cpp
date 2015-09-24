@@ -86,13 +86,32 @@ int main(int argc, const char * argv[]){
     parse("../../config/datalist.cfg", list);
     //app->reverse();
     //app->calcOpticalFlows();
-    app->start3(list);
+    app->start2(list);
     
     //App* app = new App("app", "./filelist.txt");
     //app.testUDC();
     //app.calcOpticalFlows();
     return 0;
 }
+
+int maincut(int argc, const char * argv[]){
+    if (argc != 3) {
+        cout<<"./cutout inputpath outputpath"<<endl;
+        return 1;
+    }
+    string dir = argv[1];
+    string outputpath = argv[2];
+    vector<Mat> imgs, mattes;
+    loadimage(dir, imgs, mattes);
+    for (int i = 0; i < imgs.size(); i++) {
+        Mat out;
+        getCutout2(imgs[i], mattes[i], out);
+        imwrite(outputpath+"/"+to_string(i)+".jpg", out);
+    }
+    return 0;
+}
+
+
 
 int main231(int argc, const char * argv[]){
     App* app = new App("app", "../../config/train.cfg");

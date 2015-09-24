@@ -50,7 +50,11 @@ void loadimage(string dirname, vector<Mat>& imgs, vector<Mat>& mattes, int code)
         if((strcmp(dirp->d_name,".")==0)||(strcmp(dirp->d_name,"..")==0))
             continue;
         string fname = alpha+dirp->d_name;
-        mattes.push_back(imread(fname,0));
+        Mat m = imread(fname,0);
+        if (m.empty()) {
+            continue;
+        }
+        mattes.push_back(m);
         //        imshow("matte", mattes[mattes.size()-1]);
         //        waitKey(0);
     }
@@ -297,7 +301,7 @@ void App::start(const vector<string>& trained){
 //        imshow("prob", finalprob);
         Mat dst;
         combinedConfidenceMap(finalprob, finalconf, dst);
-        imshow("combined", dst);
+//        imshow("combined", dst);
 //        imshow("conf", finalconf);
         dst.convertTo(dst, CV_32FC1);
         Mat ur;
@@ -305,7 +309,7 @@ void App::start(const vector<string>& trained){
 //        cout<<ur<<endl;
 //        cout<<(int)ur.at<uchar>(2,4);
 //        imshow("unknow region", ur*255);
-        waitKey(0);
+//        waitKey(0);
         //Mat trimap(ur.size(),CV_32SC1);
         Mat constmap(ur.size(),CV_32FC1);
         Mat constval(ur.size(),CV_32FC1);
@@ -330,13 +334,13 @@ void App::start(const vector<string>& trained){
         }
         
        
-        imshow("constmap", constmap);
-        imshow("constval", constval);
+//        imshow("constmap", constmap);
+//        imshow("constval", constval);
         Mat constval_cut,known;
         getCutout2(imgs[i], constval, constval_cut);
         getCutout2(imgs[i], constmap, known);
-        imshow("constval_cut", constval_cut);
-        imshow("known", known);
+//        imshow("constval_cut", constval_cut);
+//        imshow("known", known);
         //waitKey(0);
         Mat solvedMatte;
         solveMatte(imgs[i], constmap, constval, finalprob, finalconf, solvedMatte);
@@ -347,9 +351,9 @@ void App::start(const vector<string>& trained){
         getCutout2(imgs[i], solvedMatte, cut);
         getCutout2(imgs[i], finalprob, probcut);
         
-        imshow("result", cut);
-        imshow("probcut", probcut);
-        waitKey(0);
+//        imshow("result", cut);
+//        imshow("probcut", probcut);
+//        waitKey(0);
         final.push_back(cut);
         output_probs.push_back(finalprob);
         output_confs.push_back(finalconf);
@@ -360,7 +364,7 @@ void App::start(const vector<string>& trained){
         imwrite("../../result/"+to_string(i)+"_alpha_p.png", probcut);
         
         
-        warped_mattes[i] = solvedMatte.clone();
+//        warped_mattes[i] = solvedMatte.clone();
 //        p<<"prob"+to_string(i)<<finalprob;
 //        c<<"conf"+to_string(i)<<finalconf;
     }
@@ -452,7 +456,7 @@ void App::start2(const vector<string>& trained){
         //        imshow("conf", finalconf);
         dst.convertTo(dst, CV_32FC1);
         Mat ur;
-        threshold(dst, ur, 0.2 , 1.0, CV_THRESH_BINARY);
+        threshold(dst, ur, 0.6 , 1.0, CV_THRESH_BINARY);
         //        cout<<ur<<endl;
         //        cout<<(int)ur.at<uchar>(2,4);
 //        imshow("unknow region", ur*255);
@@ -492,8 +496,8 @@ void App::start2(const vector<string>& trained){
         Mat solvedMatte;
         solveMatte(imgs[i], constmap, constval, finalprob, finalconf, solvedMatte);
         
-        //        imshow("matte", solvedMatte);
-        
+        imshow("matte", solvedMatte);
+        waitKey(0);
         Mat cut,probcut;
         getCutout2(imgs[i], solvedMatte, cut);
         getCutout2(imgs[i], finalprob, probcut);
@@ -603,12 +607,108 @@ void App::start3(const vector<string>& trained){
         
             imshow("main", out);
             imshow("curr", current);
-            imshow("grabcut", show);
+            //imshow("grabcut", show);
         }
+        imshow("main", out);
+        imshow("curr", current);
         //imshow("dif", current-right[i-1]);
-        Mat ds = current-right[i-1];
+        Mat ds = current - right[i-1];
         vector<vector<Point> > contours; vector<Vec4i> hierarchy;
         findContours( ds, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
+        vector<int> good;
+        double minArea = 500;
+        Mat dscp;
+        cvtColor(ds, dscp, CV_GRAY2BGR);
+        vector<Rect> boundingboxes;
+        for (int k = 0; k < contours.size(); k++) {
+            if (contourArea(contours[k]) < minArea) {
+                good.push_back(0);
+                continue;
+            }
+            good.push_back(1);
+            drawContours(dscp, contours, k, Scalar(255,255,0));
+            Rect r = boundingRect(contours[k]);
+            if (r.width>=21&&r.height>=21) {
+                boundingboxes.push_back(r);
+                rectangle(out, r, Scalar(0,255,255));
+            }
+
+            
+        }
+        
+        //debug
+        imshow("bounding box", out);
+        imshow("contour", dscp);
+        imshow("diff", ds);
+        Mat previous;
+        getCutout2(imgs[i-1], right[i-1], previous);
+        imshow("previous", previous);
+        waitKey(0);
+        
+        
+        Mat warped_matte,warped_img;
+        computeOpitcalFlow(imgs[i], imgs[i-1], current, warped_matte, warped_img);
+        for (int k = 0; k < boundingboxes.size(); k++) {
+            Mat boxmatte,boximg;
+            boximg = imgs[i](boundingboxes[k]).clone();
+            boxmatte = warped_matte(boundingboxes[k]).clone();
+            
+            
+            
+            
+            
+            Mat UDCprob,UDCconf,raw_dist;
+            computeRawDist(boxmatte, raw_dist);
+            processUDC(boximg, boxmatte, raw_dist, UDCprob, UDCconf);
+            
+            Mat localprob,localconf;
+            processLC(boximg, boxmatte, raw_dist, localprob, localconf);
+            
+            Mat globalprob,globalconf;
+            processGC(boximg, boxmatte, raw_dist,globalprob, globalconf);
+            
+            
+            Mat shapeprob,shapeconf;
+            processSP(boximg, boxmatte, raw_dist, shapeprob, shapeconf);
+            
+            Mat errordensity,re;
+            re = warped_img(boundingboxes[k]) - boximg;
+            cvtColor(re, re, CV_BGR2GRAY);
+            processRegistraionError(re, errordensity);
+            
+            
+            Mat finalprob(imgs[0].size(),CV_64FC1);
+            Mat finalconf(imgs[0].size(),CV_64FC1);
+            for (int dx = 0; dx < imgs[0].rows; dx++) {
+                for (int dy = 0; dy < imgs[0].cols; dy++) {
+                    featureVector v;
+                    v.ru = 0.5 + UDCconf.at<double>(dx,dy)*(UDCprob.at<double>(dx,dy)-0.5);
+                    v.rl = 0.5 + localconf.at<double>(dx,dy)*(localprob.at<double>(dx,dy)-0.5);
+                    v.rg = 0.5 + globalconf.at<double>(dx,dy)*(globalprob.at<double>(dx,dy)-0.5);
+                    v.rs = 0.5 + shapeconf.at<double>(dx,dy)*(shapeprob.at<double>(dx,dy)-0.5);
+                    v.e = errordensity.at<double>(dx,dy);
+                    
+                    
+                    finalprob.at<double>(dx,dy) = classifier->prob(v);
+                    finalconf.at<double>(dx,dy) = classifier->conf(v);
+                }
+            }
+
+            //debug
+            imshow("UDCprob", UDCprob);
+            imshow("localprob", localprob);
+            imshow("globalprob", globalprob);
+            imshow("shapeprob", shapeprob);
+            imshow("errorden", errordensity);
+            imshow("boxmatte", boxmatte);
+            imshow("boximg", boximg);
+            imshow("finalprob", finalprob);
+            imshow("finalconf", finalconf);
+            waitKey(0);
+            
+            
+        }
+        
     }
     
     

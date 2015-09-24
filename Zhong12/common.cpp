@@ -354,7 +354,7 @@ void solveMatte(const Mat& src, const Mat& constmap, const Mat& constval, const 
             }
         }
     }
-    imshow("boundary", boundary);
+//    imshow("boundary", boundary);
     Mat foreboundary = boundary.mul(constval);
 
     getL(img, boundary, laplacian);

@@ -1,6 +1,9 @@
 Zhong12-SIGA-dataset
+knn-video-matting-input
+knn-video-matting-input.zip
 testdata
 result
 precompute
+matting
 *.txt
 *.png

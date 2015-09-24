@@ -13,7 +13,7 @@ void processSP(const Mat& img, const Mat& matte, const Mat& raw_dist, Mat& probm
     probmat.convertTo(probmat, CV_64FC1);
     probmat = probmat/255;
     confmat.create(img.size(), CV_64FC1);
-    
+    confmat.setTo(1);
     for (int i = 0; i < img.rows; i++) {
         for (int j = 0; j < img.cols; j++) {
             double dist = raw_dist.at<double>(i,j);
